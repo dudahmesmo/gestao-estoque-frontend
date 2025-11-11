@@ -1,38 +1,43 @@
 package Modelo;
 
 public class Amigos {
-    private int idUsuario;
-    private String nome;
-    private String telefone;
 
-    public Amigos(int idUsuario, String nome, String telefone) {
-        this.idUsuario = idUsuario;
-        this.nome = nome;
-        this.telefone = telefone;
+    private int id_amigo;
+    private String nome_usuario;
+    private String telefone_usuario;
+
+    public Amigos() {
     }
 
-    // Getters e setters
-    public int getIdUsuario() {
-        return idUsuario;
+    public Amigos(int id_amigo, String nome_usuario, String telefone_usuario) {
+        this.id_amigo = id_amigo;
+        this.nome_usuario = nome_usuario;
+        this.telefone_usuario = telefone_usuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
+    // Métodos Getters e Setters 
+    
+    public int getId_amigo() {
+        return id_amigo;
     }
 
-    public String getNome() {
-        return nome;
+    public void setId_amigo(int id_amigo) {
+        this.id_amigo = id_amigo;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public String getNome_usuario() {
+        return nome_usuario;
     }
 
-    public String getTelefone() {
-        return telefone;
+    public void setNome_usuario(String nome_usuario) {
+        this.nome_usuario = nome_usuario;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public String getTelefone_usuario() {
+        return telefone_usuario;
+    }
+
+    public void setTelefone_usuario(String telefone_usuario) {
+        this.telefone_usuario = telefone_usuario;
     }
 }

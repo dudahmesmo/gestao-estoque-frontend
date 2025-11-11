@@ -5,24 +5,24 @@
 package Visao;
 import Controle.AmigosControle;
 import Modelo.Amigos;
-import DAO.AmigosDAO;
-import projetodb.projetoa3sql.Conexao;
-import java.sql.Connection;
-import java.sql.SQLException;
+// import DAO.AmigosDAO;
+// import projetodb.projetoa3sql.Conexao;
+// import java.sql.Connection;
+// import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import Controle.AmigosControle;
-import DAO.AmigosDAO;
+// import Controle.AmigosControle;
+// import DAO.AmigosDAO;
 import javax.swing.JTextField; 
-import Controle.AmigosControle;
-import DAO.AmigosDAO;
-import projetodb.projetoa3sql.Conexao;
-import javax.swing.JOptionPane;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+///import Controle.AmigosControle;
+// import DAO.AmigosDAO;
+///import projetodb.projetoa3sql.Conexao;
+// import javax.swing.JOptionPane;
+// import java.sql.Connection;
+// import java.sql.PreparedStatement;
+// import java.sql.ResultSet;
+// import java.sql.SQLException;
 
 /**
  *
@@ -38,13 +38,16 @@ public class cadastrarAmigo extends javax.swing.JFrame {
      */
     public cadastrarAmigo() {
         initComponents(); // Inicializa os componentes da interface gráfica
-        try {
-            Connection conexao = Conexao.conectar(); // Estabelece a conexão com o banco de dados
-            this.amigosControle = new AmigosControle(new AmigosDAO(conexao)); // Inicializa o controle de amigos
-        } catch (SQLException ex) {
-            Logger.getLogger(cadastrarAmigo.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados: " + ex.getMessage()); // Exibe mensagem de erro
-        }
+
+        // try {
+            // Connection conexao = Conexao.conectar(); // Estabelece a conexão com o banco de dados
+         // this.amigosControle = new AmigosControle(new AmigosDAO(conexao)); // Inicializa o controle de amigos
+        // } catch (SQLException ex) {
+            // Logger.getLogger(cadastrarAmigo.class.getName()).log(Level.SEVERE, null, ex);
+            // JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados: " + ex.getMessage()); // Exibe mensagem de erro
+        // }
+        // Inicia o controle com o novo construtor vazia 
+        this.amigosControle = new AmigosControle();
     }
 
     /**
@@ -139,7 +142,7 @@ public class cadastrarAmigo extends javax.swing.JFrame {
            String nomeUsuario = txtCadastrarNomeAmigo.getText(); // Coleta o nome do amigo
         String telefoneUsuario = txtCadastrarTelefoneAmigo.getText(); // Coleta o telefone do amigo
 
-        try {
+        /* try {
             // Obtém a conexão com o banco de dados
             Connection conexao = Conexao.conectar();
 
@@ -160,7 +163,30 @@ public class cadastrarAmigo extends javax.swing.JFrame {
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Erro ao cadastrar amigo: " + e.getMessage()); // Exibe mensagem de erro
+        } */
+
+       // 1. Criar o objeto Amigo
+        Amigos novoAmigo = new Amigos();
+        novoAmigo.setNome_usuario(nomeUsuario);
+        novoAmigo.setTelefone_usuario(telefoneUsuario);
+
+        // 2. Chamar o Controle 
+        try {
+            // Usa o controle que já foi inicializado no construtor
+            // Precisa ajustar o 'adicionarAmigo' no Controle para receber o objeto
+            // this.amigosControle.adicionarAmigo(novoAmigo); 
+            
+            System.out.println("Lógica de cadastro será implementada via API.");
+            JOptionPane.showMessageDialog(null, "Amigo cadastrado com sucesso. (Lógica de API pendente)"); // Mensagem provisória
+            
+            // Limpa os campos
+            txtCadastrarNomeAmigo.setText(""); 
+            txtCadastrarTelefoneAmigo.setText("");
+        
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao cadastrar amigo: " + e.getMessage()); // Exibe mensagem de erro
         }
+
     }//GEN-LAST:event_buttonCadastrarAmigoActionPerformed
 
     private void txtCadastrarTelefoneAmigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCadastrarTelefoneAmigoActionPerformed

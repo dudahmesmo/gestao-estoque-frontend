@@ -1,37 +1,47 @@
 package Controle;
 
-import DAO.FerramentasDAO;
+// import DAO.FerramentasDAO;
 import Modelo.Ferramentas;
-import java.sql.SQLException;
+// import java.sql.SQLException;
 import java.util.List;
 
 public class FerramentasControle {
 
     // Referência para o objeto FerramentasDAO que será utilizado para acessar o banco de dados
-    private FerramentasDAO ferramentaDAO;
+    // private FerramentasDAO ferramentaDAO;
 
     // Construtor da classe que recebe um objeto FerramentasDAO como parâmetro
-    public FerramentasControle(FerramentasDAO ferramentaDAO) {
-        this.ferramentaDAO = ferramentaDAO;
+    // public FerramentasControle(FerramentasDAO ferramentaDAO) {
+        // this.ferramentaDAO = ferramentaDAO;
+    // }
+
+    // Construtor novo e vazio
+    public FerramentasControle() {
+        System.out.println("Controle de Ferramentas iniciado (pronto para ApiClient)");
     }
 
     // Método para adicionar uma ferramenta ao banco de dados
-    public void adicionarFerramenta(Ferramentas ferramenta) throws SQLException {
-        ferramentaDAO.adicionarFerramenta(ferramenta);
+    public void adicionarFerramenta(Ferramentas ferramenta) /* throws SQLException */ {
+        //ferramentaDAO.adicionarFerramenta(ferramenta);
+        System.out.println("Lógica adicionarFerramenta será implementada com ApiClient");
     }
 
     // Método para listar todas as ferramentas cadastradas no banco de dados
-    public List<Ferramentas> listarFerramentas() throws SQLException {
-        return ferramentaDAO.listarFerramentas();
-    }
+    public List<Ferramentas> listarFerramentas() /* throws SQLException */ {
+        // return ferramentaDAO.listarFerramentas();
+        System.out.println("Lógica listarFerramentas será implementada com ApiClient");
+        return null; // Retorna 'null' provisoriamente
+     }
 
     // Método para atualizar os dados de uma ferramenta no banco de dados
-    public void atualizarFerramenta(Ferramentas ferramenta) throws SQLException {
-        ferramentaDAO.atualizarFerramenta(ferramenta);
+    public void atualizarFerramenta(Ferramentas ferramenta) /* throws SQLException */ {
+        // ferramentaDAO.atualizarFerramenta(ferramenta);
+        System.out.println("Lógica atualizarFerramenta será implementada com ApiClient");
     }
 
     // Método para deletar uma ferramenta do banco de dados com base no seu ID
-    public void deletarFerramenta(int id) throws SQLException {
-        ferramentaDAO.deletarFerramenta(id);
+    public void deletarFerramenta(int id) /* throws SQLException */ {
+        // ferramentaDAO.deletarFerramenta(id);
+        System.out.println("Lógica deletarFerramenta será implementada com ApiClient");
     }
 }

@@ -5,22 +5,24 @@
 package Visao;
 
 import Modelo.Ferramentas;
-import DAO.FerramentasDAO;
+// import DAO.FerramentasDAO;
 import Controle.FerramentasControle;
-import projetodb.projetoa3sql.Conexao;
-import java.sql.Connection;
-import java.sql.SQLException;
+// import projetodb.projetoa3sql.Conexao;
+// import java.sql.Connection;
+// import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import Visao.registroEmprestimo;
+//import Visao.registroEmprestimo;
 
 /**
  * Classe para cadastrar ferramentas
  * Esta classe representa a interface gráfica para cadastrar novas ferramentas
  */
 public class cadastrarFerramentas extends javax.swing.JFrame {
-    registroEmprestimo registroEmprestimo = new registroEmprestimo(); // Referência à tela de registro de empréstimo
+    // registroEmprestimo registroEmprestimo = new registroEmprestimo(); // Referência à tela de registro de empréstimo
+    
+    private FerramentasControle ferramentaControle;
 
     /**
      * Construtor da classe cadastrarFerramentas
@@ -28,6 +30,9 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
      */
     public cadastrarFerramentas() {
         initComponents(); // Inicializa os componentes da interface gráfica
+
+        // Inicializa o controle com o novo construtor vazio
+        this.ferramentaControle = new FerramentasControle();
     }
 
     /**
@@ -125,7 +130,7 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
      */
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Conexao conexao = new Conexao();
+        // Conexao conexao = new Conexao();
 
  try {
         // Coleta os dados inseridos pelo usuário
@@ -146,12 +151,13 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
             throw new Exception("Custo de aquisição da ferramenta deve ser um valor positivo.");
         }
         
-        Connection connection = conexao.conectar(); // Estabelece a conexão com o banco de dados
+        // Connection connection = conexao.conectar(); // Estabelece a conexão com o banco de dados
 
-        Ferramentas ferramenta = new Ferramentas(nome, marca, custo); // Cria uma nova instância de Ferramentas
-        FerramentasControle ferramentaControle = new FerramentasControle(new FerramentasDAO(connection)); // Inicializa o controle de ferramentas
-        ferramentaControle.adicionarFerramenta(ferramenta); // Adiciona a nova ferramenta no banco de dados
+        // Ferramentas ferramenta = new Ferramentas(nome, marca, custo); // Cria uma nova instância de Ferramentas
+        // FerramentasControle ferramentaControle = new FerramentasControle(new FerramentasDAO(connection)); // Inicializa o controle de ferramentas
+        // ferramentaControle.adicionarFerramenta(ferramenta); // Adiciona a nova ferramenta no banco de dados
 
+        System.out.println("Lógica de cadastro será implementada na Tarefa 11 (ApiClient).");
         JOptionPane.showMessageDialog(null, "Ferramenta cadastrada com sucesso."); // Exibe mensagem de sucesso
 
         // Limpa os campos de entrada após o cadastro
@@ -159,7 +165,7 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
         txtCadastrarMarcaFerramenta.setText("");
         txtCadastrarCustoF.setText("");
         
-        registroEmprestimo.updateComboFerramentas(); // Atualiza o combo box de ferramentas na tela de registro de empréstimo
+        // registroEmprestimo.updateComboFerramentas(); // Atualiza o combo box de ferramentas na tela de registro de empréstimo
         
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, e.getMessage()); // Exibe mensagem de erro caso ocorra alguma exceção
