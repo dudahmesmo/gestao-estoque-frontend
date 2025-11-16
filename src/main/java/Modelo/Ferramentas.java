@@ -1,58 +1,63 @@
 package Modelo;
 
 public class Ferramentas {
-    // Atributos da classe Ferramentas
-    private int id;
-    private String nome;
-    private String marca;
-    private double custo;
 
-    // Construtor da classe que recebe nome, marca e custo como parâmetros
-    public Ferramentas(String nome, String marca, double custo) {
-        this.nome = nome;
-        this.marca = marca;
-        this.custo = custo;
+    // Os atributos 
+    private int id_ferramenta;
+    private String nome_ferramenta;
+    private String marca_ferramenta;
+    private double preco;
+
+    // Construtor vazio
+    public Ferramentas() {
     }
 
-    // Métodos getters e setters para acessar e modificar os atributos da classe
+    // Construtor antigo
+    public Ferramentas(String nome, String marca, double custo) {
+        this.nome_ferramenta = nome;
+        this.marca_ferramenta = marca;
+        this.preco = custo;
+    }
+
+    // Métodos Getters e Setters 
 
     // Getter para o atributo id
-    public int getId() {
-        return id;
+    public int getId_ferramenta() {
+        return id_ferramenta;
     }
 
     // Setter para o atributo id
-    public void setId(int id) {
-        this.id = id;
+    public void setId_ferramenta(int id_ferramenta) {
+        this.id_ferramenta = id_ferramenta;
     }
 
     // Getter para o atributo nome
-    public String getNome() {
-        return nome;
+    public String getNome_ferramenta() {
+        return nome_ferramenta;
     }
 
     // Setter para o atributo nome
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setNome_ferramenta(String nome_ferramenta) {
+        this.nome_ferramenta = nome_ferramenta;
     }
 
     // Getter para o atributo marca
-    public String getMarca() {
-        return marca;
+    public String getMarca_ferramenta() {
+        return marca_ferramenta;
     }
 
     // Setter para o atributo marca
-    public void setMarca(String marca) {
-        this.marca = marca;
+    public void setMarca_ferramenta(String marca_ferramenta) {
+        this.marca_ferramenta = marca_ferramenta;
     }
 
-    // Getter para o atributo custo
-    public double getCusto() {
-        return custo;
+    // Getter para o atributo preco
+    public double getPreco() {
+        return preco;
     }
 
-    // Setter para o atributo custo
-    public void setCusto(double custo) {
-        this.custo = custo;
+    // Setter para o atributo preco
+    public void setPreco(double preco) {
+        this.preco = preco;
     }
 }
