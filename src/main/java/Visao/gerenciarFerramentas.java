@@ -1,36 +1,42 @@
 package Visao;
 
 import Controle.FerramentasControle;
-import DAO.FerramentasDAO;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+// import DAO.FerramentasDAO;
+// import java.sql.Connection;
+// import java.sql.PreparedStatement;
+// import java.sql.ResultSet;
+// import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import projetodb.projetoa3sql.Conexao;
+// import projetodb.projetoa3sql.Conexao;
 
 public class gerenciarFerramentas extends javax.swing.JFrame {
 
-    private Connection conexao; // Conexão com o banco de dados
+    // private Connection conexao; // Conexão com o banco de dados
     private FerramentasControle ferramentasControle; // Controle de ferramentas
 
     public gerenciarFerramentas() {
         initComponents(); // Inicializa os componentes da interface gráfica
-        conectarBanco(); // Conecta ao banco de dados
-        ferramentasControle = new FerramentasControle(new FerramentasDAO(conexao)); // Inicializa o controle de ferramentas
-        atualizarBanco(); // Atualiza a tabela de ferramentas com os dados do banco
+        // conectarBanco(); // Conecta ao banco de dados
+        // ferramentasControle = new FerramentasControle(new FerramentasDAO(conexao)); // Inicializa o controle de ferramentas
+
+        this.ferramentasControle = new FerramentasControle();
+
+        // atualizarBanco(); // Atualiza a tabela de ferramentas com os dados do banco
+        System.out.println("Tela gerenciarFerramentas iniciada.");
+        atualizarBanco();
     }
 
     // Método para conectar ao banco de dados
-    private void conectarBanco() {
+    /* private void conectarBanco() {
         try {
             conexao = Conexao.conectar(); // Estabelece a conexão
             System.out.println("Conexão com o banco de dados estabelecida.");
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados: " + ex.getMessage());
         }
-    }
+    } */
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -133,19 +139,20 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
             return;
         }
         int idFerramenta = (int) TabelaFerramentas.getValueAt(rowIndex, 0);
-        try {
+        /* try {
             ferramentasControle.deletarFerramenta(idFerramenta);
             JOptionPane.showMessageDialog(this, "Ferramenta excluída com sucesso.");
             atualizarBanco();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao excluir a ferramenta: " + ex.getMessage());
-        }
+        } */
+
     }//GEN-LAST:event_jButton1ActionPerformed
    
     // Método para atualizar a tabela de ferramentas com os dados do banco de dados
 
     private void atualizarBanco() {
-        String sql = "SELECT * FROM ferramentas";
+        /* String sql = "SELECT * FROM ferramentas";
         try {
             PreparedStatement pst = conexao.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
@@ -158,7 +165,12 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar a tabela de ferramentas: " + ex.getMessage());
-        }
+        } */
+       System.out.println("Lógica de 'atualizarBanco' será implementada com ApiClient.");
+
+       DefaultTableModel model = (DefaultTableModel) TabelaFerramentas.getModel();
+        model.setRowCount(0);
+
     }
     
     

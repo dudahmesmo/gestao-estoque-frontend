@@ -4,13 +4,13 @@
  */
 package Visao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+// import java.sql.Connection;
+// import java.sql.PreparedStatement;
+// import java.sql.ResultSet;
+// import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import projetodb.projetoa3sql.Conexao;
+// import projetodb.projetoa3sql.Conexao;
 
 /**
  * Classe para exibir o relatório de histórico de empréstimos
@@ -107,7 +107,7 @@ public class relatorioHistoricoEmprestimo extends javax.swing.JFrame {
 
     
     private void atualizarBanco() {
-       try {
+       /* try {
             // 1. Estabelecer conexão com o banco de dados
             Connection conexao = Conexao.conectar();
 
@@ -141,8 +141,15 @@ public class relatorioHistoricoEmprestimo extends javax.swing.JFrame {
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Erro ao recuperar dados dos empréstimos ativos: " + e.getMessage()); // Exibe mensagem de erro
-        }
+        } */
+
+       System.out.println("Lógica de 'atualizarBanco' (Relatório Histórico) será implementada com ApiClient.");
+        
+        DefaultTableModel model = (DefaultTableModel) tableEmprestimosAtivos.getModel();
+        model.setRowCount(0);
+
     }
+    
     private void autualizarBDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autualizarBDActionPerformed
  atualizarBanco();
     }//GEN-LAST:event_autualizarBDActionPerformed

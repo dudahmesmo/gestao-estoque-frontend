@@ -1,35 +1,40 @@
 package Visao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+// import java.sql.Connection;
+// import java.sql.PreparedStatement;
+// import java.sql.ResultSet;
+// import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import Controle.AmigosControle;
-import DAO.AmigosDAO;
-import projetodb.projetoa3sql.Conexao;
+// import DAO.AmigosDAO;
+// import projetodb.projetoa3sql.Conexao;
 
 public class gerenciarAmigo extends javax.swing.JFrame {
 
     private AmigosControle amigosControle; // Controle de amigos
-    private Connection conexao; // Conexão com o banco de dados
+    // private Connection conexao; // Conexão com o banco de dados
 
     public gerenciarAmigo() {
         initComponents(); // Inicializa os componentes da interface gráfica
-        conectarBanco(); // Conecta ao banco de dados
-        this.amigosControle = new AmigosControle(new AmigosDAO(conexao)); // Inicializa o controle de amigos
+        // conectarBanco(); // Conecta ao banco de dados
+        // this.amigosControle = new AmigosControle(new AmigosDAO(conexao)); // Inicializa o controle de amigos
+        
+        //Inicializa o controle com o novo construtor vazio
+        this.amigosControle = new AmigosControle();
+
         atualizarTabela(); // Atualiza a tabela de amigos
     }
 
-    private void conectarBanco() {
+    /* private void conectarBanco() {
         try {
             conexao = Conexao.conectar(); // Estabelece a conexão com o banco de dados
             System.out.println("Conexão com o banco de dados estabelecida.");
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados: " + ex.getMessage());
         }
-    }
+    } */
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -143,7 +148,8 @@ public class gerenciarAmigo extends javax.swing.JFrame {
         }
         // Obtém o ID do amigo da linha selecionada
         int idAmigo = (int) TabelaAmigos.getValueAt(rowIndex, 0);
-        try {
+
+        /* try {
             // Tenta excluir o amigo através do controle
             amigosControle.deletarAmigo(idAmigo);
             // Exibe uma mensagem de sucesso
@@ -153,7 +159,11 @@ public class gerenciarAmigo extends javax.swing.JFrame {
         } catch (SQLException ex) {
             // Exibe uma mensagem de erro se ocorrer uma exceção
             JOptionPane.showMessageDialog(this, "Erro ao excluir o amigo: " + ex.getMessage());
-        }
+        } */
+
+      System.out.println("Lógica de exclusão será implementada ApiClient.");
+        JOptionPane.showMessageDialog(this, "Lógica de exclusão (API) ainda não implementada.");
+
     }//GEN-LAST:event_buttonExcluirAmigoActionPerformed
 
     private void autualizarBDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autualizarBDActionPerformed
@@ -167,7 +177,7 @@ public class gerenciarAmigo extends javax.swing.JFrame {
     }//GEN-LAST:event_autualizarBDActionPerformed
     
    private void atualizarTabela() {
-       String sql = "SELECT * FROM amigos"; // Consulta SQL para selecionar todos os amigos
+       /* String sql = "SELECT * FROM amigos"; // Consulta SQL para selecionar todos os amigos
         try {
             PreparedStatement pst = conexao.prepareStatement(sql); // Prepara a consulta
             ResultSet rs = pst.executeQuery(); // Executa a consulta e obtém os resultados
@@ -180,7 +190,14 @@ public class gerenciarAmigo extends javax.swing.JFrame {
         } catch (SQLException ex) {
             // Exibe uma mensagem de erro se ocorrer uma exceção
             JOptionPane.showMessageDialog(this, "Erro ao atualizar a tabela de amigos: " + ex.getMessage());
-        }
+        } */
+       
+        System.out.println("Lógica de 'atualizarTabela' será implementada com ApiClient.");
+        
+        // Limpa a tabela para não mostrar dados falsos 
+        DefaultTableModel model = (DefaultTableModel) TabelaAmigos.getModel();
+        model.setRowCount(0);
+
     }
     
     /**

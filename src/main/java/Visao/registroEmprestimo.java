@@ -4,25 +4,27 @@ package Visao;
 
 import javax.swing.JTextField; 
 import Controle.AmigosControle;
-import DAO.AmigosDAO;
-import projetodb.projetoa3sql.Conexao;
+// import DAO.AmigosDAO;
+// import projetodb.projetoa3sql.Conexao;
 import javax.swing.JOptionPane;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+// import java.sql.Connection;
+// import java.sql.PreparedStatement;
+// import java.sql.ResultSet;
+// import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import Modelo.Emprestimos;
-import DAO.EmprestimosDAO;
-import java.util.Calendar;
+// import DAO.EmprestimosDAO;
+// import java.util.Calendar;
 import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
+// import java.text.SimpleDateFormat;
+// import java.text.ParseException;
 import javax.swing.JComboBox;
-import DAO.FerramentasDAO;
+// import DAO.FerramentasDAO;
 import Modelo.Ferramentas;
+import Controle.FerramentasControle; 
+import Controle.EmprestimosControle; 
 /**
  * Registro de Empréstimo
  * Autor: Maria
@@ -35,10 +37,10 @@ public class registroEmprestimo extends javax.swing.JFrame {
     private AmigosControle amigoControle;
     private JTextField JTFAmigo; // Declare JTFAmigo as a class-level variable
     private JTextField JTFFerramenta;
-    private AmigosDAO amigosDAO;
-    private FerramentasDAO ferramentasDAO; // Movido para cá para inicialização posterior
 
-    private EmprestimosDAO emprestimosDAO;
+    // private AmigosDAO amigosDAO;
+    // private FerramentasDAO ferramentasDAO; // Movido para cá para inicialização posterior
+    // private EmprestimosDAO emprestimosDAO;
 
 
 
@@ -48,7 +50,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
         JTFAmigo = new JTextField();
         JTFFerramenta = new JTextField();
 
-        try {
+        /* try {
             // Inicialização das variáveis e conexão com o banco de dados
             conexao = Conexao.conectar();
             amigosDAO = new AmigosDAO(conexao);
@@ -60,7 +62,19 @@ public class registroEmprestimo extends javax.swing.JFrame {
             updateComboFerramentas();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados: " + e.getMessage());
-        }
+        } */
+
+       this.amigoControle = new AmigosControle();
+        this.ferramentaControle = new FerramentasControle();
+        this.emprestimosControle = new EmprestimosControle();
+        
+        this.setLocationRelativeTo(null);
+        
+        // Chamamos os métodos limpos
+        updateCombo(); 
+        updateComboFerramentas();
+
+
     }
 
     // O restante do código da classe continua aqui...
@@ -423,7 +437,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonRegistrarEmprestimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRegistrarEmprestimoActionPerformed
- try {
+ /* try {
             // Obtém os dados do formulário
             String amigoSelecionado = (String) itemAmigoRegistro.getSelectedItem();
             String ferramentaSelecionada = (String) itemFerramenta.getSelectedItem();
@@ -473,13 +487,14 @@ public class registroEmprestimo extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao converter data: " + e.getMessage());
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Erro ao registrar empréstimo: " + e.getMessage());
-        }
+        } */
+
+       System.out.println("Lógica de 'Registrar Empréstimo' será implementada na ApiClient.");
+        JOptionPane.showMessageDialog(this, "Lógica de 'Registrar Empréstimo' (API) ainda não implementada.");
 
 
 
-// Método auxiliar para obter o ID da ferramenta pelo nome
-
-    
+// Método auxiliar para obter o ID da ferramenta pelo nome 
 
 
 // Método auxiliar para obter o ID do usuário pelo nome
@@ -493,7 +508,8 @@ public class registroEmprestimo extends javax.swing.JFrame {
 // Método para atualizar a JComboBox com nomes de amigos
 public void updateCombo() {
     System.out.println("Atualizando ComboBox de Amigos");
-    // Consulta SQL para selecionar os nomes dos amigos
+
+   /* // Consulta SQL para selecionar os nomes dos amigos
     String sql = "SELECT nome_usuario FROM amigos";
     try (PreparedStatement pst = conexao.prepareStatement(sql);
          ResultSet rs = pst.executeQuery()) {
@@ -508,13 +524,14 @@ public void updateCombo() {
         }
     } catch (SQLException e) {
         JOptionPane.showMessageDialog(this, "Erro ao carregar amigos: " + e.getMessage());
-    }
+    } */
 }
 
   // Método para atualizar a JComboBox com nomes de ferramentas
 public void updateComboFerramentas() {
     System.out.println("Atualizando ComboBox de Ferramentas");
-    // Consulta SQL para selecionar os nomes das ferramentas
+
+    /* // Consulta SQL para selecionar os nomes das ferramentas
     String sql = "SELECT nome_ferramenta FROM ferramentas";
     try (PreparedStatement pst = conexao.prepareStatement(sql);
          ResultSet rs = pst.executeQuery()) {
@@ -529,7 +546,13 @@ public void updateComboFerramentas() {
         }
     } catch (SQLException e) {
         JOptionPane.showMessageDialog(this, "Erro ao carregar ferramentas: " + e.getMessage());
-    }
+    } */
+
+   System.out.println("Lógica de 'updateComboFerramentas' será implementada na ApiClient.");
+    // Limpa os combos 
+    itemFerramenta.removeAllItems();
+    itemFerramentaDevolucao.removeAllItems();
+
     }
   
     private void menuItemCadastrarAmigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCadastrarAmigoActionPerformed
@@ -583,7 +606,7 @@ public void updateComboFerramentas() {
 
     private void buttonRegistrarDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRegistrarDevolucaoActionPerformed
                                                                                                   
-  try {
+  /* try {
     // Obter o nome do amigo selecionado
     String amigoSelecionado = (String) itemAmigoDevolucao.getSelectedItem();
     // Obter o nome da ferramenta selecionada
@@ -621,8 +644,12 @@ public void updateComboFerramentas() {
     }
 } catch (SQLException e) {
     JOptionPane.showMessageDialog(this, "Erro ao realizar a devolução: " + e.getMessage());
-}
+} */
+ 
+        System.out.println("Lógica de 'Registrar Devolução' será implementada na ApiClient.");
+        JOptionPane.showMessageDialog(this, "Lógica de 'Registrar Devolução' (API) ainda não implementada.");
     }//GEN-LAST:event_buttonRegistrarDevolucaoActionPerformed
+    
  
 // Definição do comportamento para quando um item é selecionado na JComboBox de devolução de ferramenta
     private void itemAmigoDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAmigoDevolucaoActionPerformed
@@ -658,11 +685,11 @@ public void updateComboFerramentas() {
     }//GEN-LAST:event_dataEmprestimoActionPerformed
 
     private void autualizarBancoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autualizarBancoActionPerformed
-        registroEmprestimo registroEmprestimo = new registroEmprestimo();
+        /* registroEmprestimo registroEmprestimo = new registroEmprestimo();
     registroEmprestimo.limparCombo(itemFerramenta);
     registroEmprestimo.limparCombo(itemAmigoRegistro);
     registroEmprestimo.limparCombo(itemAmigoDevolucao);
-    registroEmprestimo.limparCombo(itemFerramentaDevolucao);
+    registroEmprestimo.limparCombo(itemFerramentaDevolucao); */
 
     updateCombo();
     updateComboFerramentas();

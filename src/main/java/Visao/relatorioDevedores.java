@@ -6,22 +6,22 @@ package Visao;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTextField; 
 import Controle.AmigosControle;
-import DAO.AmigosDAO;
-import projetodb.projetoa3sql.Conexao;
+//import DAO.AmigosDAO;
+//import projetodb.projetoa3sql.Conexao;
 import javax.swing.JOptionPane;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+//import java.sql.Connection;
+//import java.sql.PreparedStatement;
+//mport java.sql.ResultSet;
+//import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import Modelo.Emprestimos;
-import DAO.EmprestimosDAO;
-import java.util.Calendar;
+//import DAO.EmprestimosDAO;
+//import java.util.Calendar;
 import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
+//import java.text.SimpleDateFormat;
+//import java.text.ParseException;
 import javax.swing.JComboBox;
 
 public class relatorioDevedores extends javax.swing.JFrame {
@@ -115,7 +115,8 @@ public class relatorioDevedores extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void atualizarBanco() {
-   try {
+
+   /* try {
     // 1. Estabelecer conexão com o banco de dados
     Connection conexao = Conexao.conectar();
 
@@ -148,7 +149,12 @@ public class relatorioDevedores extends javax.swing.JFrame {
 } catch (SQLException e) {
     // Tratar qualquer exceção SQL que possa ocorrer
     JOptionPane.showMessageDialog(this, "Erro ao recuperar dados dos empréstimos atrasados: " + e.getMessage());
-}
+} */
+    System.out.println("Lógica de 'atualizarBanco' (Relatório Devedores) será implementada com ApiClient.");
+    
+    DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        model.setRowCount(0);
+
 }
     
     private void autualizarBDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autualizarBDActionPerformed
