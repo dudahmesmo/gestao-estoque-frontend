@@ -1,39 +1,25 @@
 package Visao;
 
-// import java.sql.Connection;
-// import java.sql.PreparedStatement;
-// import java.sql.ResultSet;
-// import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import Controle.AmigosControle;
-// import DAO.AmigosDAO;
-// import projetodb.projetoa3sql.Conexao;
+import Modelo.Amigos; 
+import java.util.List; 
 
 public class gerenciarAmigo extends javax.swing.JFrame {
 
-    private AmigosControle amigosControle; // Controle de amigos
-    // private Connection conexao; // Conexão com o banco de dados
+    private AmigosControle amigosControle; 
 
     public gerenciarAmigo() {
         initComponents(); // Inicializa os componentes da interface gráfica
-        // conectarBanco(); // Conecta ao banco de dados
-        // this.amigosControle = new AmigosControle(new AmigosDAO(conexao)); // Inicializa o controle de amigos
         
-        //Inicializa o controle com o novo construtor vazio
+        //Inicializa o controle com o novo construtor vazio (que já inicializa o ApiClient)
         this.amigosControle = new AmigosControle();
 
         atualizarTabela(); // Atualiza a tabela de amigos
     }
 
-    /* private void conectarBanco() {
-        try {
-            conexao = Conexao.conectar(); // Estabelece a conexão com o banco de dados
-            System.out.println("Conexão com o banco de dados estabelecida.");
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados: " + ex.getMessage());
-        }
-    } */
+    /* O método conectarBanco() foi removido */
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -149,55 +135,40 @@ public class gerenciarAmigo extends javax.swing.JFrame {
         // Obtém o ID do amigo da linha selecionada
         int idAmigo = (int) TabelaAmigos.getValueAt(rowIndex, 0);
 
-        /* try {
-            // Tenta excluir o amigo através do controle
-            amigosControle.deletarAmigo(idAmigo);
-            // Exibe uma mensagem de sucesso
-            JOptionPane.showMessageDialog(this, "Amigo excluído com sucesso.");
-            // Atualiza a tabela de amigos
-            atualizarTabela();
-        } catch (SQLException ex) {
-            // Exibe uma mensagem de erro se ocorrer uma exceção
-            JOptionPane.showMessageDialog(this, "Erro ao excluir o amigo: " + ex.getMessage());
-        } */
-
-      System.out.println("Lógica de exclusão será implementada ApiClient.");
-        JOptionPane.showMessageDialog(this, "Lógica de exclusão (API) ainda não implementada.");
-
+        // 1. Chama o Controle (que chama o ApiClient e trata os erros/JOptionPanes)
+        amigosControle.deletarAmigo(idAmigo); 
+            
+        // 2. Atualiza a tabela para mostrar que o amigo sumiu
+        atualizarTabela();
     }//GEN-LAST:event_buttonExcluirAmigoActionPerformed
 
     private void autualizarBDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autualizarBDActionPerformed
-           
-
-      // Atualiza a tabela de amigos
-      atualizarTabela();
-                                                      
-
-        
+        // Atualiza a tabela de amigos
+         atualizarTabela();
     }//GEN-LAST:event_autualizarBDActionPerformed
     
-   private void atualizarTabela() {
-       /* String sql = "SELECT * FROM amigos"; // Consulta SQL para selecionar todos os amigos
-        try {
-            PreparedStatement pst = conexao.prepareStatement(sql); // Prepara a consulta
-            ResultSet rs = pst.executeQuery(); // Executa a consulta e obtém os resultados
-            DefaultTableModel model = (DefaultTableModel) TabelaAmigos.getModel(); // Obtém o modelo da tabela
-            model.setRowCount(0); // Limpa a tabela
-            while (rs.next()) {
-                // Adiciona cada linha de resultados na tabela
-                model.addRow(new Object[]{rs.getInt("id_amigo"), rs.getString("nome_usuario"), rs.getString("telefone_usuario")});
-            }
-        } catch (SQLException ex) {
-            // Exibe uma mensagem de erro se ocorrer uma exceção
-            JOptionPane.showMessageDialog(this, "Erro ao atualizar a tabela de amigos: " + ex.getMessage());
-        } */
-       
-        System.out.println("Lógica de 'atualizarTabela' será implementada com ApiClient.");
+    private void atualizarTabela() {
         
-        // Limpa a tabela para não mostrar dados falsos 
+        
+        // 1. Limpa a tabela 
         DefaultTableModel model = (DefaultTableModel) TabelaAmigos.getModel();
         model.setRowCount(0);
+            
+        // 2. Chama o Controle para buscar os dados da API
+        // O 'amigosControle' já trata o erro (mostra JOptionPane) e retorna null se falhar
+        List<Amigos> listaDeAmigos = this.amigosControle.listarAmigos();
 
+        // 3. Preenche a tabela com os resultados da API
+        if (listaDeAmigos != null) { // Verifica se a API não deu erro
+            for (Amigos amigo : listaDeAmigos) {
+                // Adiciona cada amigo como uma nova linha na tabela
+                model.addRow(new Object[]{
+                    amigo.getId_amigo(), 
+                    amigo.getNome_usuario(), 
+                    amigo.getTelefone_usuario()
+                });
+            }
+        }
     }
     
     /**
