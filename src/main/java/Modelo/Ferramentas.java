@@ -2,62 +2,87 @@ package Modelo;
 
 public class Ferramentas {
 
-    // Os atributos 
-    private int id_ferramenta;
-    private String nome_ferramenta;
-    private String marca_ferramenta;
+    private int id;
+    private String nome;
+    private String marca;
     private double preco;
+    private int quantidade;
+    private boolean disponivel;
+    private double custoAquisicao; 
 
-    // Construtor vazio
     public Ferramentas() {
     }
 
-    // Construtor antigo
-    public Ferramentas(String nome, String marca, double custo) {
-        this.nome_ferramenta = nome;
-        this.marca_ferramenta = marca;
-        this.preco = custo;
+    public Ferramentas(int id, String nome, String marca, double preco, int quantidade, boolean disponivel, double custoAquisicao) {
+        this.id = id;
+        this.nome = nome;
+        this.marca = marca;
+        this.preco = preco;
+        this.quantidade = quantidade;
+        this.disponivel = disponivel;
+        this.custoAquisicao = custoAquisicao;
     }
 
-    // Métodos Getters e Setters 
+    // -- Getters e Setters ---
 
-    // Getter para o atributo id
-    public int getId_ferramenta() {
-        return id_ferramenta;
+    public int getId() {
+        return id;
     }
 
-    // Setter para o atributo id
-    public void setId_ferramenta(int id_ferramenta) {
-        this.id_ferramenta = id_ferramenta;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    // Getter para o atributo nome
-    public String getNome_ferramenta() {
-        return nome_ferramenta;
+    public String getNome() {
+        return nome;
     }
 
-    // Setter para o atributo nome
-    public void setNome_ferramenta(String nome_ferramenta) {
-        this.nome_ferramenta = nome_ferramenta;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    // Getter para o atributo marca
-    public String getMarca_ferramenta() {
-        return marca_ferramenta;
+    public String getMarca() {
+        return marca;
     }
 
-    // Setter para o atributo marca
-    public void setMarca_ferramenta(String marca_ferramenta) {
-        this.marca_ferramenta = marca_ferramenta;
+    public void setMarca(String marca) {
+        this.marca = marca;
     }
 
-    // Getter para o atributo preco
     public double getPreco() {
         return preco;
     }
 
-    // Setter para o atributo preco
     public void setPreco(double preco) {
         this.preco = preco;
+    }
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public boolean isDisponivel() {
+        return disponivel;
+    }
+
+    public void setDisponivel(boolean disponivel) {
+        this.disponivel = disponivel;
+    }
+
+    public double getCustoAquisicao() {
+        return custoAquisicao;
+    }
+
+    public void setCustoAquisicao(double custoAquisicao) {
+        this.custoAquisicao = custoAquisicao;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
     }
 }

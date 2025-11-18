@@ -1,47 +1,58 @@
 package Controle;
 
-// import DAO.FerramentasDAO;
-import Modelo.Ferramentas;
-// import java.sql.SQLException;
 import java.util.List;
+
+import javax.swing.JOptionPane;
+
+import Modelo.Ferramentas;
+import http.ApiClient;
 
 public class FerramentasControle {
 
-    // Referência para o objeto FerramentasDAO que será utilizado para acessar o banco de dados
-    // private FerramentasDAO ferramentaDAO;
+    private final ApiClient apiClient;
 
-    // Construtor da classe que recebe um objeto FerramentasDAO como parâmetro
-    // public FerramentasControle(FerramentasDAO ferramentaDAO) {
-        // this.ferramentaDAO = ferramentaDAO;
-    // }
-
-    // Construtor novo e vazio
     public FerramentasControle() {
-        System.out.println("Controle de Ferramentas iniciado (pronto para ApiClient)");
+        this.apiClient = new ApiClient();
     }
 
-    // Método para adicionar uma ferramenta ao banco de dados
-    public void adicionarFerramenta(Ferramentas ferramenta) /* throws SQLException */ {
-        //ferramentaDAO.adicionarFerramenta(ferramenta);
-        System.out.println("Lógica adicionarFerramenta será implementada com ApiClient");
+    public List<Ferramentas> listarFerramentas() {
+        try {
+            return apiClient.listarFerramentas();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    // Método para listar todas as ferramentas cadastradas no banco de dados
-    public List<Ferramentas> listarFerramentas() /* throws SQLException */ {
-        // return ferramentaDAO.listarFerramentas();
-        System.out.println("Lógica listarFerramentas será implementada com ApiClient");
-        return null; // Retorna 'null' provisoriamente
-     }
+    // Recebe Preço e envia Quantidade e Disponível (adaptando ao backend)
+    public boolean adicionarFerramenta(String nome, String marca, double preco) {
+        try {
+            Ferramentas nova = new Ferramentas();
+            nova.setNome(nome);
+            nova.setMarca(marca);
+            nova.setPreco(preco); 
+            
+            
+            nova.setQuantidade(1); 
+            nova.setDisponivel(true); 
 
-    // Método para atualizar os dados de uma ferramenta no banco de dados
-    public void atualizarFerramenta(Ferramentas ferramenta) /* throws SQLException */ {
-        // ferramentaDAO.atualizarFerramenta(ferramenta);
-        System.out.println("Lógica atualizarFerramenta será implementada com ApiClient");
+            apiClient.cadastrarFerramenta(nova);
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao cadastrar ferramenta: " + e.getMessage());
+            return false;
+        }
     }
 
-    // Método para deletar uma ferramenta do banco de dados com base no seu ID
-    public void deletarFerramenta(int id) /* throws SQLException */ {
-        // ferramentaDAO.deletarFerramenta(id);
-        System.out.println("Lógica deletarFerramenta será implementada com ApiClient");
+    public boolean deletarFerramenta(int id) {
+        try {
+            apiClient.excluirFerramenta(id);
+            return true;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao deletar ferramenta: " + e.getMessage());
+            return false;
+        }
     }
 }
