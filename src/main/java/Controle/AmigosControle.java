@@ -1,45 +1,116 @@
 package Controle;
 
-import Modelo.Amigos;
-//import java.sql.SQLException;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import Modelo.Amigos;
+
 public class AmigosControle {
-    //private AmigosDAO amigoDAO;
 
-    // Construtor da classe que recebe um objeto AmigosDAO como parâmetro
-    //public AmigosControle(AmigosDAO amigoDAO) {
-        //this.amigoDAO = amigoDAO;
-    //}
+    private final HttpClient client;
+    private final Gson gson;
+    private final String API_URL = "http://localhost:8080/amigos"; 
 
-    // Método para adicionar um novo amigo ao banco de dados
-    public void adicionarAmigo(String nomeAmigo, String telefoneAmigo) throws SQLException {
-        //amigoDAO.adicionarAmigo(nomeAmigo, telefoneAmigo);
+    public AmigosControle() {
+        this.client = HttpClient.newHttpClient();
+        this.gson = new Gson();
     }
 
-    // Método para listar todos os amigos cadastrados no banco de dados
-    public List<Amigos> listarAmigos() /* throws SQLException */ {
-        //return amigoDAO.listarAmigos();
-        System.out.println("Lógica de listarAmigos será implementada com ApiClient");
-        return null; // Retornar null provisoriamente, só parfa o código compilar
+    // 1. MÉTODO LISTAR (GET)
+    
+    public List<Amigos> listarAmigos() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(API_URL))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                Type listaTipo = new TypeToken<ArrayList<Amigos>>() {}.getType();
+                return gson.fromJson(response.body(), listaTipo);
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro ao buscar dados: " + response.statusCode());
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    // Método para atualizar os dados de um amigo no banco de dados
-    public void atualizarAmigo(Amigos amigo) /* throws SQLException */ {
-        //amigoDAO.atualizarAmigo(amigo);
-        System.out.println("Lógica de atualizarAmigo será implementada com ApiClient");
+    // 2. MÉTODO DELETAR (DELETE) - Retorna boolean
+    
+    public boolean deletarAmigo(int id) {
+        try {
+            String urlDeletar = API_URL + "/" + id; 
+            
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(urlDeletar))
+                    .DELETE()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200 || response.statusCode() == 204) {
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro ao deletar. Status: " + response.statusCode());
+                return false;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro de conexão ao deletar: " + e.getMessage());
+            return false;
+        }
     }
 
-    // Método para deletar um amigo do banco de dados com base no ID do usuário
-    public void deletarAmigo(int idUsuario) /* throws SQLException */ {
-        //amigoDAO.deletarAmigo(idUsuario);
-        System.out.println("Lógica para deletarAmigo será implementada com ApiClient");
-    }
+    // 3. MÉTODO ADICIONAR (POST)
 
-    // Método para obter o ID de um usuário com base no seu nome
-    public int obterIdUsuario(String nomeUsuario) /* throws SQLException */ {
-        //return amigoDAO.obterIdUsuario(nomeUsuario);
-        System.out.println("Lógica de obterIdUsuario será implementada com ApiClient");
-        return 0; // Retorna '0' por enqunato, só para o código compilar
+    public boolean adicionarAmigo(String nome, String telefone) {
+        try {
+            // 1. Cria o objeto Amigo
+            Amigos novoAmigo = new Amigos();
+            novoAmigo.setNome(nome);
+            novoAmigo.setTelefone(telefone);
+
+            // 2. Converte para JSON
+            String jsonBody = gson.toJson(novoAmigo);
+
+            // 3. Monta a requisição POST
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(API_URL))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
+
+            // 4. Envia
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // 5. Verifica sucesso (201 Created ou 200 OK)
+            if (response.statusCode() == 201 || response.statusCode() == 200) {
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro ao cadastrar. Status: " + response.statusCode());
+                return false;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro de conexão ao cadastrar: " + e.getMessage());
+            return false;
+        }
     }
 }
