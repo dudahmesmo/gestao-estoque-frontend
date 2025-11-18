@@ -1,43 +1,56 @@
 package Modelo;
 
+// import java.time.LocalDateTime;
+
 public class Amigos {
 
-    private int id_amigo;
-    private String nome_usuario;
-    private String telefone_usuario;
+    private Long id;
+    private String nome;
+    private String telefone;
+    private String email;
+    // private LocalDateTime dataCadastro; 
+    private Boolean oDevedor; 
 
     public Amigos() {
     }
 
-    public Amigos(int id_amigo, String nome_usuario, String telefone_usuario) {
-        this.id_amigo = id_amigo;
-        this.nome_usuario = nome_usuario;
-        this.telefone_usuario = telefone_usuario;
-    }
+    // --- Getters e Setters ---
 
-    // Métodos Getters e Setters 
-    
-    public int getId_amigo() {
-        return id_amigo;
+    public Long getId_amigo() {
+        return id;
     }
-
-    public void setId_amigo(int id_amigo) {
-        this.id_amigo = id_amigo;
+    public void setId_amigo(Long id) {
+        this.id = id;
     }
 
     public String getNome_usuario() {
-        return nome_usuario;
+        return nome;
     }
-
-    public void setNome_usuario(String nome_usuario) {
-        this.nome_usuario = nome_usuario;
+    public void setNome_usuario(String nome) {
+        this.nome = nome;
     }
 
     public String getTelefone_usuario() {
-        return telefone_usuario;
+        return telefone;
+    }
+    public void setTelefone_usuario(String telefone) {
+        this.telefone = telefone;
     }
 
-    public void setTelefone_usuario(String telefone_usuario) {
-        this.telefone_usuario = telefone_usuario;
-    }
+    // --- Getters e Setters Novos ---
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public Boolean getoDevedor() { return oDevedor; }
+    public void setoDevedor(Boolean oDevedor) { this.oDevedor = oDevedor; }
 }

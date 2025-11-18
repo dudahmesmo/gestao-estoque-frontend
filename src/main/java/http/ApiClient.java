@@ -1,16 +1,18 @@
 package http; 
 
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import Modelo.Amigos;
 import Modelo.Emprestimos;
-import Modelo.Ferramentas;
-import java.util.List;
-import com.google.gson.Gson; 
-import java.net.http.HttpClient; 
-import java.net.http.HttpRequest; 
-import java.net.http.HttpResponse; 
-import java.net.URI;
-import java.lang.reflect.Type; 
-import com.google.gson.reflect.TypeToken; 
+import Modelo.Ferramentas; 
 
 
 /**
@@ -20,7 +22,7 @@ import com.google.gson.reflect.TypeToken;
 public class ApiClient {
 
     // Endereço onde o back-end irá rodar
-    private static final String BASE_URL = "http://localhost:8080/api";
+    private static final String BASE_URL = "http://localhost:8080/";
 
     // Ferramentas para fazer a ligação e traduzir o JSON
     private final HttpClient client;

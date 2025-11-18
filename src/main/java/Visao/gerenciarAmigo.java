@@ -13,13 +13,11 @@ public class gerenciarAmigo extends javax.swing.JFrame {
     public gerenciarAmigo() {
         initComponents(); // Inicializa os componentes da interface gráfica
         
-        //Inicializa o controle com o novo construtor vazio (que já inicializa o ApiClient)
+        // Inicializa o controle com o construtor (que já inicializa o ApiClient)
         this.amigosControle = new AmigosControle();
 
-        atualizarTabela(); // Atualiza a tabela de amigos
+        atualizarTabela(); // Atualiza a tabela assim que a janela abre
     }
-
-    /* O método conectarBanco() foi removido */
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -56,18 +54,6 @@ public class gerenciarAmigo extends javax.swing.JFrame {
 
         TabelaAmigos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
             },
             new String [] {
                 "ID", "Nome", "Telefone"
@@ -76,9 +62,16 @@ public class gerenciarAmigo extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         TabelaAmigos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -128,58 +121,58 @@ public class gerenciarAmigo extends javax.swing.JFrame {
         // Obtém o índice da linha selecionada na tabela
         int rowIndex = TabelaAmigos.getSelectedRow();
         if (rowIndex == -1) {
-            // Exibe uma mensagem se nenhuma linha estiver selecionada
             JOptionPane.showMessageDialog(this, "Selecione um amigo para excluir.");
             return;
         }
+        
+        // Confirmação antes de excluir (Segurança extra)
+        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
         // Obtém o ID do amigo da linha selecionada
         int idAmigo = (int) TabelaAmigos.getValueAt(rowIndex, 0);
 
-        // 1. Chama o Controle (que chama o ApiClient e trata os erros/JOptionPanes)
-        amigosControle.deletarAmigo(idAmigo); 
+        // Chama o Controle para deletar
+        boolean sucesso = amigosControle.deletarAmigo(idAmigo); 
             
-        // 2. Atualiza a tabela para mostrar que o amigo sumiu
-        atualizarTabela();
+        if (sucesso) {
+            atualizarTabela(); // Atualiza a tabela visualmente
+            JOptionPane.showMessageDialog(this, "Amigo excluído com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao excluir amigo.");
+        }
     }//GEN-LAST:event_buttonExcluirAmigoActionPerformed
 
     private void autualizarBDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autualizarBDActionPerformed
-        // Atualiza a tabela de amigos
-         atualizarTabela();
+        atualizarTabela();
     }//GEN-LAST:event_autualizarBDActionPerformed
     
     private void atualizarTabela() {
-        
-        
-        // 1. Limpa a tabela 
+        // 1. Pega o modelo da tabela
         DefaultTableModel model = (DefaultTableModel) TabelaAmigos.getModel();
+        
+        // 2. Limpa a tabela visualmente (reseta as linhas)
         model.setRowCount(0);
             
-        // 2. Chama o Controle para buscar os dados da API
-        // O 'amigosControle' já trata o erro (mostra JOptionPane) e retorna null se falhar
+        // 3. Chama o Controle para buscar os dados da API
         List<Amigos> listaDeAmigos = this.amigosControle.listarAmigos();
 
-        // 3. Preenche a tabela com os resultados da API
-        if (listaDeAmigos != null) { // Verifica se a API não deu erro
+        // 4. Preenche a tabela com os resultados da API (USANDO OS GETTERS CORRETOS)
+        if (listaDeAmigos != null) {
             for (Amigos amigo : listaDeAmigos) {
-                // Adiciona cada amigo como uma nova linha na tabela
                 model.addRow(new Object[]{
-                    amigo.getId_amigo(), 
-                    amigo.getNome_usuario(), 
-                    amigo.getTelefone_usuario()
+                    amigo.getId(),       // <--- Corrigido para getId()
+                    amigo.getNome(),     // <--- Corrigido para getNome()
+                    amigo.getTelefone()  // <--- Corrigido para getTelefone()
                 });
             }
         }
     }
     
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -196,7 +189,6 @@ public class gerenciarAmigo extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(gerenciarAmigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

@@ -1,76 +1,116 @@
 package Controle;
 
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import Modelo.Amigos;
-import http.ApiClient; 
 
 public class AmigosControle {
-    
-    private ApiClient apiClient; 
+
+    private final HttpClient client;
+    private final Gson gson;
+    private final String API_URL = "http://localhost:8080/amigos"; 
 
     public AmigosControle() {
-        // Inicializa o ApiClient
-        this.apiClient = new ApiClient(); 
-        System.out.println("Controle de Amigos iniciado (pronto para ApiClient)");
+        this.client = HttpClient.newHttpClient();
+        this.gson = new Gson();
     }
 
-    // Método para adicionar um novo amigo
-    public void adicionarAmigo(String nomeAmigo, String telefoneAmigo) {
-        // 1. Cria o objeto Amigo 
-        Amigos novoAmigo = new Amigos();
-        novoAmigo.setNome_usuario(nomeAmigo);
-        novoAmigo.setTelefone_usuario(telefoneAmigo);
-        
-        // 2. Chama o ApiClient para fazer a "ligação" (HTTP POST)
-        try {
-            apiClient.cadastrarAmigo(novoAmigo);
-            // Se o 'cadastrarAmigo' não lançar uma exceção, deu certo.
-            JOptionPane.showMessageDialog(null, "Amigo cadastrado com sucesso!");
-        } catch (Exception e) {
-            // Se der erro, é mostrado aqui
-            System.err.println("Erro no AmigosControle ao cadastrar: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar amigo: " + e.getMessage(), "Erro de API", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    // Método para listar todos os amigos
+    // 1. MÉTODO LISTAR (GET)
+    
     public List<Amigos> listarAmigos() {
         try {
-            // 1. Chama o ApiClient para buscar os dados (HTTP GET)
-            return apiClient.listarAmigos();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(API_URL))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                Type listaTipo = new TypeToken<ArrayList<Amigos>>() {}.getType();
+                return gson.fromJson(response.body(), listaTipo);
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro ao buscar dados: " + response.statusCode());
+                return null;
+            }
         } catch (Exception e) {
-            // Se der erro, mostra o pop-up e retorna nulo
-            System.err.println("Erro no AmigosControle ao listar: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Erro ao listar amigos: " + e.getMessage(), "Erro de API", JOptionPane.ERROR_MESSAGE);
-            return null; // Retorna nulo em caso de erro
+            e.printStackTrace();
+            return null;
         }
     }
 
-    // Método para atualizar os dados de um amigo
-    public void atualizarAmigo(Amigos amigo) {
-        System.out.println("Lógica de atualizarAmigo será implementada com ApiClient.");
-        // pendente até a criação do endpoint PUT
-    }
-
-    // Método para deletar um amigo
-    public void deletarAmigo(int idUsuario) {
+    // 2. MÉTODO DELETAR (DELETE) - Retorna boolean
+    
+    public boolean deletarAmigo(int id) {
         try {
-            // 1. Chama o ApiClient para deletar (HTTP DELETE)
-            apiClient.excluirAmigo(idUsuario);
-            JOptionPane.showMessageDialog(null, "Amigo excluído com sucesso.");
+            String urlDeletar = API_URL + "/" + id; 
+            
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(urlDeletar))
+                    .DELETE()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200 || response.statusCode() == 204) {
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro ao deletar. Status: " + response.statusCode());
+                return false;
+            }
+
         } catch (Exception e) {
-            // Se der erro, mostra o pop-up
-            System.err.println("Erro no AmigosControle ao deletar: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Erro ao excluir amigo: " + e.getMessage(), "Erro de API", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro de conexão ao deletar: " + e.getMessage());
+            return false;
         }
     }
 
-    // Método para obter o ID de um usuário
-    public int obterIdUsuario(String nomeUsuario) {
-        System.out.println("Lógica de obterIdUsuario agora está obsoleta (ID vem do listarAmigos).");
-        return 0; // Retorna '0' por enquanto.
+    // 3. MÉTODO ADICIONAR (POST)
+
+    public boolean adicionarAmigo(String nome, String telefone) {
+        try {
+            // 1. Cria o objeto Amigo
+            Amigos novoAmigo = new Amigos();
+            novoAmigo.setNome(nome);
+            novoAmigo.setTelefone(telefone);
+
+            // 2. Converte para JSON
+            String jsonBody = gson.toJson(novoAmigo);
+
+            // 3. Monta a requisição POST
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(API_URL))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
+
+            // 4. Envia
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // 5. Verifica sucesso (201 Created ou 200 OK)
+            if (response.statusCode() == 201 || response.statusCode() == 200) {
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro ao cadastrar. Status: " + response.statusCode());
+                return false;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro de conexão ao cadastrar: " + e.getMessage());
+            return false;
+        }
     }
 }
