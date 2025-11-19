@@ -24,15 +24,14 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
 
         if (lista != null) {
             for (Ferramentas f : lista) {
-                // CORREÇÃO: Usa os getters LONGOS do seu Modelo Ferramentas
                 String status = f.isDisponivel() ? "Sim" : "Não";
                 
                 model.addRow(new Object[]{
-                    f.getId_ferramenta(),             // ⬅️ getId_ferramenta()
-                    f.getNome_ferramenta(),           // ⬅️ getNome_ferramenta()
-                    f.getMarca_ferramenta(),          // ⬅️ getMarca_ferramenta()
-                    f.getPreco(),                     // ⬅️ getPreco()
-                    status 
+                    f.getId_ferramenta(),             // ID
+                    f.getNome_ferramenta(),           // NOME
+                    f.getMarca_ferramenta(),          // MARCA
+                    f.getPreco(),                     // PREÇO
+                    status                            // DISPONÍVEL
                 });
             }
         }
@@ -133,11 +132,9 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
             return;
         }
         
-        // Obtém o ID e garante o tipo int para o método do Controle
         Object idObj = TabelaFerramentas.getValueAt(rowIndex, 0);
         int idFerramenta = ((Number) idObj).intValue();
 
-        // Espera um boolean de retorno
         boolean sucesso = ferramentasControle.deletarFerramenta(idFerramenta);
 
         if (sucesso) {

@@ -9,7 +9,6 @@ Visao\relatorioDevedores$1.class
 Visao\cadastrarAmigo$3.class
 Visao\registroEmprestimo$1.class
 Visao\relatorioEmprestimoAtivo$2.class
-Visao\cadastrarFerramentas$2.class
 projetodb\projetoa3sql\ProjetoA3SQL.class
 Visao\registroEmprestimo$16.class
 Visao\registroEmprestimo$5.class
@@ -26,7 +25,6 @@ Visao\cadastrarAmigo$4.class
 Visao\registroEmprestimo$2.class
 Visao\registroEmprestimo$15.class
 Modelo\Ferramentas.class
-Visao\cadastrarFerramentas$1.class
 Visao\gerenciarAmigo$1.class
 Visao\gerenciarFerramentas$4.class
 Visao\registroEmprestimo$12.class
@@ -49,7 +47,6 @@ Visao\registroEmprestimo$3.class
 Modelo\Emprestimos.class
 Visao\gerenciarFerramentas$3.class
 Visao\registroEmprestimo$6.class
-Visao\cadastrarFerramentas$3.class
 Visao\relatorioDevedores.class
 Visao\registroEmprestimo$11.class
 Visao\relatorioFerramenta.class
