@@ -1,57 +1,53 @@
 package Controle;
 
-// import DAO.EmprestimosDAO;
-import Modelo.Emprestimos;
-// import java.sql.Connection;
-// import java.sql.SQLException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import Modelo.Emprestimos;
+import http.ApiClient;
+
 public class EmprestimosControle {
-    //private EmprestimosDAO emprestimoDAO;
-
-    // Construtor da classe que recebe um objeto EmprestimosDAO como parâmetro
-    //public EmprestimosControle(EmprestimosDAO emprestimoDAO) {
-        //this.emprestimoDAO = emprestimoDAO;
-    //}
-
-    // Construtor novo e vazio para o código não quebrar
+    
+    private final ApiClient apiClient;
+    
     public EmprestimosControle() {
-        System.out.println("Controle de Empréstimos iniciado (pronto para ApiClient)");
+        this.apiClient = new ApiClient();
     }
 
-    // Método para criar um novo empréstimo no banco de dados
-    // Os paramêtros 'Connection' e 'trows' foram removidos.
-    public void criarEmprestimo(Emprestimos emprestimo, String idUsuarioStr) {
-        // Convertendo a String para int
-        // int idUsuario = Integer.parseInt(idUsuarioStr);
-        // Chamando o método correspondente no DAO passando a conexão e o ID do usuário
-        // emprestimoDAO.criarEmprestimo(conexao, emprestimo, idUsuario);
-        System.out.println("Lógica de criarEmprestimo será implementada com APiClient");
+    /**
+     * Registra um novo empréstimo (POST para a API).
+     * @return true se o registro foi bem-sucedido, false caso contrário.
+     */
+    public boolean registrarEmprestimo(Emprestimos novoEmprestimo) {
+        try {
+            apiClient.registrarEmprestimo(novoEmprestimo);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao registrar empréstimo: " + e.getMessage());
+            return false;
+        }
     }
 
-    // Método para ler um empréstimo
-    public Emprestimos lerEmprestimoPorId(int id) /* throws SQLException */ {
-        //return emprestimoDAO.lerEmprestimoPorId(conexao, id);
-        System.out.println("Lógica de lerEmprestimoPorId será implementada com ApiClient");
-        return null; // Retorna 'null' provisoriamente, só para o código compilar
+    /**
+     * Registra a devolução de uma ferramenta (PUT para a API).
+     * @return true se o registro foi bem-sucedido, false caso contrário.
+     */
+    public boolean registrarDevolucao(int idFerramenta) {
+        try {
+            apiClient.registrarDevolucao(idFerramenta);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao registrar devolução: " + e.getMessage());
+            return false;
+        }
     }
-
-    //Método para atualizar os dados de um empréstimo 
-    public void atualizarEmprestimo(Emprestimos emprestimo) /* throws SQLException */ {
-        //emprestimoDAO.atualizarEmprestimo(conexao, emprestimo);
-        System.out.println("Lógica de atualizarEmprestimo será implementada com ApiClient");
-    }
-
-    // Método para excluir um empréstimo
-    public void excluirEmprestimo(int id) /* throws SQLException */ {
-        //emprestimoDAO.excluirEmprestimo(conexao, id);
-        System.out.println("Lógica de excluirEmprestimo será implementada com ApiClient");
-    }
-
-    // Método para listar todos os empréstimos cadastrados 
-    public List<Emprestimos> listarEmprestimos() /* throws SQLException */ {
-        // return emprestimoDAO.listarEmprestimos(conexao); 
-        System.out.println("Lógica de listarEmprestimos será implementada com ApiClient");
-        return null; // Retorna null provisoriamente
+    
+    // Método de listar Empréstimos Ativos (para relatórios, se necessário)
+    public List<Emprestimos> listarEmprestimosAtivos() {
+        
+         return null; 
     }
 }
