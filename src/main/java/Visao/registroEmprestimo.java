@@ -165,8 +165,8 @@ public class registroEmprestimo extends javax.swing.JFrame {
                 return;
             }
             
-            // 3. Converte a data (formato yyyy-MM-dd)
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            // 3. Converte a data (formato dd-MM-yyyy)
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
             format.setLenient(false); 
             java.util.Date parsedEmprestimoDate = format.parse(dataEmprestimoStr);
             
@@ -190,7 +190,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
             }
             
         } catch (ParseException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao converter data. Use o formato YYYY-MM-DD.");
+            JOptionPane.showMessageDialog(this, "Erro ao converter data. Use o formato DD-MM-YYYY.");
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro inesperado ao registrar empréstimo.");
@@ -341,10 +341,10 @@ public class registroEmprestimo extends javax.swing.JFrame {
         });
 
         jLabel8.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel8.setText("Escreva da seguinte forma: YYYY - MM - DD");
+        jLabel8.setText("Escreva da seguinte forma: DD - MM - YYYY");
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel9.setText("Exemplo: 2024-06-02 (dia 2 de junho de 2024)");
+        jLabel9.setText("Exemplo: 24-06-2025 (dia 24 de junho de 2025)");
 
         autualizarBanco.setText("Atualizar banco de dados");
         autualizarBanco.addActionListener(new java.awt.event.ActionListener() {
@@ -445,10 +445,10 @@ public class registroEmprestimo extends javax.swing.JFrame {
         });
 
         jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel10.setText("Escreva da seguinte forma: YYYY - MM - DD");
+        jLabel10.setText("Escreva da seguinte forma: DD - MM - YYYY");
 
         jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jLabel11.setText("Exemplo: 2024-06-02 (dia 2 de junho de 2024)");
+        jLabel11.setText("Exemplo: 24-07-2025 (dia 24 de julho de 2025)");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);

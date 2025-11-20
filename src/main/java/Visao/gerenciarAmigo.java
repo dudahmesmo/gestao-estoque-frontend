@@ -13,7 +13,7 @@ public class gerenciarAmigo extends javax.swing.JFrame {
     public gerenciarAmigo() {
         initComponents(); // Inicializa os componentes da interface gráfica
         
-        // Inicializa o controle com o construtor (que já inicializa o ApiClient)
+        // Inicializa o controle com o construtor (que inicializa o ApiClient)
         this.amigosControle = new AmigosControle();
 
         atualizarTabela(); // Atualiza a tabela assim que a janela abre
@@ -125,7 +125,7 @@ public class gerenciarAmigo extends javax.swing.JFrame {
             return;
         }
         
-        // Confirmação antes de excluir (Segurança extra)
+        // Confirmação antes de excluir
         int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm != JOptionPane.YES_OPTION) {
             return;
@@ -159,13 +159,13 @@ public class gerenciarAmigo extends javax.swing.JFrame {
         // 3. Chama o Controle para buscar os dados da API
         List<Amigos> listaDeAmigos = this.amigosControle.listarAmigos();
 
-        // 4. Preenche a tabela com os resultados da API (USANDO OS GETTERS CORRETOS)
+        // 4. Preenche a tabela com os resultados da API
         if (listaDeAmigos != null) {
             for (Amigos amigo : listaDeAmigos) {
                 model.addRow(new Object[]{
-                    amigo.getId(),       // <--- Corrigido para getId()
-                    amigo.getNome(),     // <--- Corrigido para getNome()
-                    amigo.getTelefone()  // <--- Corrigido para getTelefone()
+                    amigo.getId(),      
+                    amigo.getNome(),     
+                    amigo.getTelefone()  
                 });
             }
         }

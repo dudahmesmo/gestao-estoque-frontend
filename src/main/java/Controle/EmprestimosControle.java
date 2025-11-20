@@ -46,7 +46,7 @@ public class EmprestimosControle {
         }
     }
     
-    // Método de listar Empréstimos Ativos (para relatórios, se necessário)
+    // Método de listar Empréstimos Ativos (para relatórios)
     public List<Emprestimos> listarEmprestimosAtivos() {
         // Implementação de listagem pendente
         return null; 

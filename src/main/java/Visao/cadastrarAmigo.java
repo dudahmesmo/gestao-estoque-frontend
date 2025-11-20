@@ -26,7 +26,6 @@ public class cadastrarAmigo extends javax.swing.JFrame {
     public cadastrarAmigo() {
         initComponents(); 
 
-        // Inicia o controle com o novo construtor vazio (que já inicializa o ApiClient)
         this.amigosControle = new AmigosControle();
     }
 
@@ -128,13 +127,18 @@ public class cadastrarAmigo extends javax.swing.JFrame {
             return;
         }
 
-        // 1. Chamar o Controle 
-        // O próprio 'amigosControle' vai tratar o try-catch e mostrar o JOptionPane de sucesso ou erro
-        this.amigosControle.adicionarAmigo(nomeUsuario, telefoneUsuario); 
+        // 1. Chamar o Controle e receber o status de sucesso
+        boolean sucesso = this.amigosControle.adicionarAmigo(nomeUsuario, telefoneUsuario); 
             
-        // 2. Limpa os campos
-        txtCadastrarNomeAmigo.setText(""); 
-        txtCadastrarTelefoneAmigo.setText("");
+        if (sucesso) {
+            // Mostra a mensagem de sucesso
+            JOptionPane.showMessageDialog(this, "Amigo cadastrado com sucesso!");
+            
+            // 2. Limpa os campos
+            txtCadastrarNomeAmigo.setText(""); 
+            txtCadastrarTelefoneAmigo.setText("");
+        }
+        // A mensagem de ERRO (se 'sucesso' for false) é tratada dentro do Controle.
         
     }//GEN-LAST:event_buttonCadastrarAmigoActionPerformed
 
