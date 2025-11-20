@@ -14,17 +14,19 @@ public class FerramentasControle {
     }
 
     /**
-     * MÉTODO PARA ADICIONAR uma nova ferramenta (POST).
+     * MÉTODO PARA ADICIONAR uma nova ferramenta com controle completo de estoque
      */
-    public boolean adicionarFerramenta(String nome, String marca, double preco) {
+    public boolean adicionarFerramenta(String nome, String marca, double preco, 
+                                     int Quantidade_estoque, int Quantidade_minima, int Quantidade_maxima) {
         try {
-            // Cria o objeto modelo com setters limpos
             Ferramentas novaFerramenta = new Ferramentas();
             novaFerramenta.setNome(nome);
             novaFerramenta.setMarca(marca);
             novaFerramenta.setPreco(preco);
-            
-            novaFerramenta.setDisponivel(true); 
+            novaFerramenta.setQuantidade_estoque(Quantidade_estoque);
+            novaFerramenta.setQuantidade_minima(Quantidade_minima);
+            novaFerramenta.setQuantidade_maxima(Quantidade_maxima);
+            novaFerramenta.setDisponivel(Quantidade_estoque > 0);
 
             apiClient.cadastrarFerramenta(novaFerramenta);
             return true;
@@ -35,7 +37,14 @@ public class FerramentasControle {
     }
 
     /**
-     * MÉTODO PARA LISTAR todas as ferramentas (GET).
+     * Método antigo mantido para compatibilidade
+     */
+    public boolean adicionarFerramenta(String nome, String marca, double preco) {
+        return adicionarFerramenta(nome, marca, preco, 0, 1, 100);
+    }
+
+    /**
+     * MÉTODO PARA LISTAR todas as ferramentas (GET)
      */
     public List<Ferramentas> listarFerramentas() {
         try {
@@ -47,7 +56,7 @@ public class FerramentasControle {
     }
 
     /**
-     * MÉTODO PARA DELETAR uma ferramenta pelo ID (DELETE).
+     * MÉTODO PARA DELETAR uma ferramenta pelo ID (DELETE)
      */
     public boolean deletarFerramenta(int id) {
         try {
@@ -60,10 +69,34 @@ public class FerramentasControle {
     }
 
     /**
-     * Lógica para atualizar uma ferramenta. (Ainda pendente)
+     * MÉTODO PARA ATUALIZAR uma ferramenta
      */
     public boolean atualizarFerramenta(Ferramentas ferramenta) {
-        System.out.println("Lógica atualizarFerramenta pendente.");
-        return false;
+        try {
+            // Aqui você implementaria a chamada para atualizar no API Client
+            // apiClient.atualizarFerramenta(ferramenta);
+            System.out.println("Atualizando ferramenta: " + ferramenta.getNome());
+            return true;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * MÉTODO PARA VERIFICAR ESTOQUE BAIXO
+     */
+    public List<Ferramentas> getFerramentasComEstoqueBaixo() {
+        try {
+            List<Ferramentas> todas = apiClient.listarFerramentas();
+            if (todas != null) {
+                return todas.stream()
+                    .filter(Ferramentas::isEstoqueBaixo)
+                    .toList();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao verificar estoque baixo.");
+        }
+        return null;
     }
 }

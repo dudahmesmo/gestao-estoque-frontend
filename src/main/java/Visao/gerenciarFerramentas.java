@@ -1,4 +1,4 @@
-package Visao;
+package visao;
 
 import Controle.FerramentasControle;
 import Modelo.Ferramentas;
@@ -24,50 +24,53 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
 
         if (lista != null) {
             for (Ferramentas f : lista) {
-                String status = f.isDisponivel() ? "Sim" : "Não";
+                String statusEstoque = f.getStatusEstoque();
+                String resumoEstoque = f.getResumoEstoque();
                 
                 model.addRow(new Object[]{
                     f.getId_ferramenta(),             // ID
                     f.getNome_ferramenta(),           // NOME
                     f.getMarca_ferramenta(),          // MARCA
                     f.getPreco(),                     // PREÇO
-                    status                            // DISPONÍVEL
+                    statusEstoque,                    // STATUS DO ESTOQUE
+                    resumoEstoque                     // RESUMO COMPLETO
                 });
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         TabelaFerramentas = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         autualizarBD = new javax.swing.JButton();
+        btnEstoqueBaixo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Gerenciar Ferramentas");
 
         TabelaFerramentas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Ferramenta", "Marca", "Custo de Aquisição", "Estoque"
+                "ID", "Ferramenta", "Marca", "Custo de Aquisição", "Status Estoque", "Detalhes Estoque"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, 
+                java.lang.Double.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -91,6 +94,13 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
             }
         });
 
+        btnEstoqueBaixo.setText("Ver Estoque Baixo");
+        btnEstoqueBaixo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEstoqueBaixoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -99,9 +109,11 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 796, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(266, 266, 266)
+                        .addGap(20, 20, 20)
+                        .addComponent(btnEstoqueBaixo)
+                        .addGap(18, 18, 18)
                         .addComponent(autualizarBD)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -113,9 +125,11 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addComponent(autualizarBD)
-                .addGap(31, 31, 31)
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(autualizarBD)
+                    .addComponent(btnEstoqueBaixo))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
@@ -123,7 +137,7 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }                     
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         int rowIndex = TabelaFerramentas.getSelectedRow();
@@ -154,6 +168,19 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         atualizarBanco();
     }
 
+    private void btnEstoqueBaixoActionPerformed(java.awt.event.ActionEvent evt) {
+        List<Ferramentas> estoqueBaixo = ferramentasControle.getFerramentasComEstoqueBaixo();
+        if (estoqueBaixo != null && !estoqueBaixo.isEmpty()) {
+            StringBuilder mensagem = new StringBuilder("Ferramentas com estoque baixo:\n\n");
+            for (Ferramentas f : estoqueBaixo) {
+                mensagem.append(f.getNome()).append(" - ").append(f.getStatusEstoque()).append("\n");
+            }
+            JOptionPane.showMessageDialog(this, mensagem.toString(), "Estoque Baixo", JOptionPane.WARNING_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhuma ferramenta com estoque baixo encontrada.", "Estoque Baixo", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -162,10 +189,11 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JTable TabelaFerramentas;
     private javax.swing.JButton autualizarBD;
+    private javax.swing.JButton btnEstoqueBaixo;
     private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }
