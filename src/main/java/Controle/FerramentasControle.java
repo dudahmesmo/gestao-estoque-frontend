@@ -13,7 +13,9 @@ public class FerramentasControle {
         this.apiClient = new ApiClient();
     }
 
-    // MÉTODO PARA ADICIONAR 
+    /**
+     * MÉTODO PARA ADICIONAR uma nova ferramenta (POST).
+     */
     public boolean adicionarFerramenta(String nome, String marca, double preco) {
         try {
             // Cria o objeto modelo com setters limpos
@@ -32,6 +34,9 @@ public class FerramentasControle {
         }
     }
 
+    /**
+     * MÉTODO PARA LISTAR todas as ferramentas (GET).
+     */
     public List<Ferramentas> listarFerramentas() {
         try {
             return apiClient.listarFerramentas();
@@ -41,6 +46,9 @@ public class FerramentasControle {
         }
     }
 
+    /**
+     * MÉTODO PARA DELETAR uma ferramenta pelo ID (DELETE).
+     */
     public boolean deletarFerramenta(int id) {
         try {
             apiClient.excluirFerramenta(id);
@@ -51,6 +59,9 @@ public class FerramentasControle {
         }
     }
 
+    /**
+     * Lógica para atualizar uma ferramenta. (Ainda pendente)
+     */
     public boolean atualizarFerramenta(Ferramentas ferramenta) {
         System.out.println("Lógica atualizarFerramenta pendente.");
         return false;

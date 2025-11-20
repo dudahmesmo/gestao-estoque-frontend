@@ -5,11 +5,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.text.SimpleDateFormat;
-import java.util.Date; 
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,7 +21,7 @@ import Modelo.Ferramentas;
  * Esta classe faz todas as chamadas HTTP
  * para a API REST do back-end.
  */
-public class ApiClient { // ⬅️ A CHAVE DA CLASSE COMEÇA AQUI
+public class ApiClient { 
 
     // Endereço onde o back-end irá rodar
     private static final String BASE_URL = "http://localhost:8080"; 
@@ -159,4 +158,3 @@ public class ApiClient { // ⬅️ A CHAVE DA CLASSE COMEÇA AQUI
         }
     }
 }
-// ⬆️ A CHAVE DE FECHAMENTO FINAL DA CLASSE ESTÁ AQUI
