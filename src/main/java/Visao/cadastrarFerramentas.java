@@ -2,22 +2,36 @@ package visao;
 
 import Controle.FerramentasControle;
 import javax.swing.JOptionPane; 
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.util.List;
 
 public class cadastrarFerramentas extends javax.swing.JFrame {
     
     private FerramentasControle ferramentaControle;
+    private javax.swing.JLabel lblStatusEstoque;
 
     public cadastrarFerramentas() {
         initComponents(); 
         this.ferramentaControle = new FerramentasControle();
+        
+        // Configurar labels
         jLabel3.setText("Custo de Aquisição (R$):");
-        jLabel4.setText("Quantidade_estoque:");
-        jLabel5.setText("Quantidade_minima:"); 
-        jLabel6.setText("Quantidade_maxima:");
+        jLabel4.setText("Quantidade em Estoque:");
+        jLabel5.setText("Quantidade Mínima:"); 
+        jLabel6.setText("Quantidade Máxima:");
         jLabel7.setText("Categoria:");
         
-        // Carregar categorias do back-end
+        // Configurar valores padrão
+        txtQuantidade_estoque.setText("0");
+        txtQuantidade_minima.setText("1");
+        txtQuantidade_maxima.setText("100");
+        
+        // Carregar categorias do back-end - COM TRATAMENTO MELHORADO
         carregarCategorias();
+        
+        // Adicionar listeners para atualização em tempo real do status
+        adicionarListenersEstoque();
     }
 
     @SuppressWarnings("unchecked")
@@ -37,6 +51,7 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         comboBoxCategoria = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
+        lblStatusEstoque = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cadastro de Ferramentas");
@@ -44,15 +59,16 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
         jLabel1.setText("Nome:");
         jLabel2.setText("Marca:");
         jLabel3.setText("Custo de Aquisição (R$):");
-        jLabel4.setText("Quantidade_estoque:");
-        jLabel5.setText("Quantidade_minima:");
-        jLabel6.setText("Quantidade_maxima:");
+        jLabel4.setText("Quantidade em Estoque:");
+        jLabel5.setText("Quantidade Mínima:");
+        jLabel6.setText("Quantidade Máxima:");
         jLabel7.setText("Categoria:");
 
-        // Configurar valores padrão
-        txtQuantidade_estoque.setText("0");
-        txtQuantidade_minima.setText("1");
-        txtQuantidade_maxima.setText("100");
+        // Configurar label de status
+        lblStatusEstoque.setFont(new java.awt.Font("Segoe UI", 1, 12));
+        lblStatusEstoque.setForeground(new java.awt.Color(100, 100, 100));
+        lblStatusEstoque.setText("Status: Aguardando dados...");
+        lblStatusEstoque.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         jButton1.setText("Cadastrar Ferramenta");
         jButton1.addActionListener(evt -> jButton1ActionPerformed(evt));
@@ -91,7 +107,8 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(comboBoxCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(comboBoxCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblStatusEstoque, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(52, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -129,45 +146,132 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboBoxCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
-                .addGap(32, 32, 32)
+                .addGap(18, 18, 18)
+                .addComponent(lblStatusEstoque)
+                .addGap(18, 18, 18)
                 .addComponent(jButton1)
                 .addContainerGap(40, Short.MAX_VALUE))
         );
         pack();
+        setLocationRelativeTo(null); // Centralizar a janela
     }
 
     private void carregarCategorias() {
+        System.out.println("Iniciando carregamento de categorias...");
+        
         try {
-            // Obter categorias do back-end através do controle
-            java.util.List<String> categorias = ferramentaControle.obterCategorias();
-            
-            // Limpar e adicionar as categorias no comboBox
+            // Limpar o comboBox primeiro
             comboBoxCategoria.removeAllItems();
             
-            // Adicionar item vazio ou padrão
+            // Adicionar item padrão
             comboBoxCategoria.addItem("Selecione uma categoria");
             
-            // Adicionar categorias obtidas do back-end
-            for (String categoria : categorias) {
-                comboBoxCategoria.addItem(categoria);
+            // Obter categorias do back-end através do controle
+            System.out.println("Solicitando categorias ao controle...");
+            List<String> categorias = ferramentaControle.obterCategorias();
+            
+            if (categorias != null && !categorias.isEmpty()) {
+                System.out.println("Categorias recebidas: " + categorias.size());
+                
+                // Adicionar categorias obtidas do back-end
+                for (String categoria : categorias) {
+                    System.out.println("Adicionando categoria: " + categoria);
+                    comboBoxCategoria.addItem(categoria);
+                }
+                
+                JOptionPane.showMessageDialog(this, 
+                    "Categorias carregadas com sucesso! Total: " + categorias.size(), 
+                    "Sucesso", 
+                    JOptionPane.INFORMATION_MESSAGE);
+                    
+            } else {
+                System.out.println("Lista de categorias vazia ou nula");
+                // Adicionar categorias padrão em caso de erro
+                adicionarCategoriasPadrao();
+                JOptionPane.showMessageDialog(this, 
+                    "Usando categorias padrão (back-end não disponível)", 
+                    "Aviso", 
+                    JOptionPane.WARNING_MESSAGE);
             }
             
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar categorias: " + e.getMessage());
+            System.err.println("Erro ao carregar categorias: " + e.getMessage());
+            e.printStackTrace();
+            
             // Adicionar categorias padrão em caso de erro
-            comboBoxCategoria.removeAllItems();
-            comboBoxCategoria.addItem("Selecione uma categoria");
-            comboBoxCategoria.addItem("Elétrica");
-            comboBoxCategoria.addItem("Manual");
-            comboBoxCategoria.addItem("Hidráulica");
-            comboBoxCategoria.addItem("Pneumática");
+            adicionarCategoriasPadrao();
+            JOptionPane.showMessageDialog(this, 
+                "Erro ao carregar categorias. Usando categorias padrão.\nErro: " + e.getMessage(), 
+                "Erro", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void adicionarCategoriasPadrao() {
+        String[] categoriasPadrao = {
+            "Elétrica", 
+            "Manual", 
+            "Hidráulica", 
+            "Pneumática", 
+            "Medição", 
+            "Corte", 
+            "Fixação", 
+            "Jardim", 
+            "Construção", 
+            "Outros"
+        };
+        
+        for (String categoria : categoriasPadrao) {
+            comboBoxCategoria.addItem(categoria);
+        }
+    }
+
+    private void adicionarListenersEstoque() {
+        // Listener para quantidade em estoque
+        DocumentListener listener = new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) { atualizarStatusEstoque(); }
+            public void removeUpdate(DocumentEvent e) { atualizarStatusEstoque(); }
+            public void insertUpdate(DocumentEvent e) { atualizarStatusEstoque(); }
+        };
+
+        txtQuantidade_estoque.getDocument().addDocumentListener(listener);
+        txtQuantidade_minima.getDocument().addDocumentListener(listener);
+    }
+
+    private void atualizarStatusEstoque() {
+        try {
+            int estoque = txtQuantidade_estoque.getText().isEmpty() ? 0 : Integer.parseInt(txtQuantidade_estoque.getText());
+            int minimo = txtQuantidade_minima.getText().isEmpty() ? 1 : Integer.parseInt(txtQuantidade_minima.getText());
+            
+            if (estoque <= 0) {
+                lblStatusEstoque.setText("STATUS: ❌ FORA DE ESTOQUE");
+                lblStatusEstoque.setForeground(new java.awt.Color(200, 0, 0)); // Vermelho
+            } else if (estoque <= minimo) {
+                lblStatusEstoque.setText("STATUS: ⚠️ ESTOQUE BAIXO (" + estoque + " unidades)");
+                lblStatusEstoque.setForeground(new java.awt.Color(255, 140, 0)); // Laranja
+            } else {
+                lblStatusEstoque.setText("STATUS: ✅ EM ESTOQUE (" + estoque + " unidades disponíveis)");
+                lblStatusEstoque.setForeground(new java.awt.Color(0, 100, 0)); // Verde
+            }
+        } catch (NumberFormatException e) {
+            lblStatusEstoque.setText("STATUS: ⚠️ Dados inválidos");
+            lblStatusEstoque.setForeground(new java.awt.Color(100, 100, 100)); // Cinza
         }
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            String nome = txtCadastrarNomeFerramenta.getText();
-            String marca = txtCadastrarMarcaFerramenta.getText();
+            String nome = txtCadastrarNomeFerramenta.getText().trim();
+            String marca = txtCadastrarMarcaFerramenta.getText().trim();
+            
+            // Validações básicas
+            if (nome.isEmpty() || marca.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "Nome e marca são obrigatórios.", 
+                    "Campos Obrigatórios", 
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             
             // Lógica de PREÇO (Troca vírgula por ponto)
             String precoTexto = txtCadastrarCustoF.getText().replace(",", ".");
@@ -183,59 +287,112 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
 
             // Validações
             if (nome.length() < 2) {
-                JOptionPane.showMessageDialog(this, "Nome inválido.");
+                JOptionPane.showMessageDialog(this, "Nome deve ter pelo menos 2 caracteres.");
                 return;
             }
             
             if (categoria == null || categoria.equals("Selecione uma categoria")) {
-                JOptionPane.showMessageDialog(this, "Selecione uma categoria.");
+                JOptionPane.showMessageDialog(this, "Selecione uma categoria válida.");
                 return;
             }
             
             if (Quantidade_estoque < 0) {
-                JOptionPane.showMessageDialog(this, "Quantidade_estoque não pode ser negativa.");
+                JOptionPane.showMessageDialog(this, "Quantidade em estoque não pode ser negativa.");
                 return;
             }
             
             if (Quantidade_minima < 0) {
-                JOptionPane.showMessageDialog(this, "Quantidade_minima não pode ser negativa.");
+                JOptionPane.showMessageDialog(this, "Quantidade mínima não pode ser negativa.");
                 return;
             }
             
             if (Quantidade_maxima <= 0) {
-                JOptionPane.showMessageDialog(this, "Quantidade_maxima deve ser maior que zero.");
+                JOptionPane.showMessageDialog(this, "Quantidade máxima deve ser maior que zero.");
                 return;
             }
             
             if (Quantidade_minima >= Quantidade_maxima) {
-                JOptionPane.showMessageDialog(this, "Quantidade_minima deve ser menor que Quantidade_maxima.");
+                JOptionPane.showMessageDialog(this, "Quantidade mínima deve ser menor que quantidade máxima.");
                 return;
+            }
+
+            // Verificar se estoque está acima do máximo permitido
+            if (Quantidade_estoque > Quantidade_maxima) {
+                int resposta = JOptionPane.showConfirmDialog(this, 
+                    "A quantidade em estoque (" + Quantidade_estoque + ") excede o máximo permitido (" + Quantidade_maxima + ").\nDeseja continuar mesmo assim?",
+                    "Estoque excedido",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+                
+                if (resposta != JOptionPane.YES_OPTION) {
+                    return;
+                }
             }
 
             // Passa os dados para o Controle (incluindo a categoria)
             boolean sucesso = ferramentaControle.adicionarFerramenta(nome, marca, preco, Quantidade_estoque, Quantidade_minima, Quantidade_maxima, categoria);
 
             if (sucesso) {
-                JOptionPane.showMessageDialog(this, "Ferramenta cadastrada com sucesso!");
+                String mensagemSucesso = "Ferramenta cadastrada com sucesso!\n";
+                mensagemSucesso += "Status do estoque: ";
+                
+                if (Quantidade_estoque <= 0) {
+                    mensagemSucesso += "FORA DE ESTOQUE";
+                } else if (Quantidade_estoque <= Quantidade_minima) {
+                    mensagemSucesso += "ESTOQUE BAIXO";
+                } else {
+                    mensagemSucesso += "EM ESTOQUE";
+                }
+                
+                JOptionPane.showMessageDialog(this, mensagemSucesso, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                
                 // Limpa todos os campos
-                txtCadastrarNomeFerramenta.setText("");
-                txtCadastrarMarcaFerramenta.setText("");
-                txtCadastrarCustoF.setText("");
-                txtQuantidade_estoque.setText("0");
-                txtQuantidade_minima.setText("1");
-                txtQuantidade_maxima.setText("100");
-                comboBoxCategoria.setSelectedIndex(0);
-            } 
+                limparCampos();
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "Erro ao cadastrar ferramenta. Verifique o console para mais detalhes.", 
+                    "Erro no Cadastro", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
             
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Verifique se todos os valores numéricos estão corretos.");
+            JOptionPane.showMessageDialog(this, 
+                "Verifique se todos os valores numéricos estão corretos.\n• Preço deve ser um número decimal\n• Quantidades devem ser números inteiros", 
+                "Erro de Formatação", 
+                JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, 
+                "Erro inesperado: " + e.getMessage(), 
+                "Erro", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
+    private void limparCampos() {
+        txtCadastrarNomeFerramenta.setText("");
+        txtCadastrarMarcaFerramenta.setText("");
+        txtCadastrarCustoF.setText("");
+        txtQuantidade_estoque.setText("0");
+        txtQuantidade_minima.setText("1");
+        txtQuantidade_maxima.setText("100");
+        comboBoxCategoria.setSelectedIndex(0);
+        lblStatusEstoque.setText("Status: Aguardando dados...");
+        lblStatusEstoque.setForeground(new java.awt.Color(100, 100, 100));
+    }
+
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> new cadastrarFerramentas().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new cadastrarFerramentas().setVisible(true);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, 
+                    "Erro ao iniciar a tela de cadastro: " + e.getMessage(), 
+                    "Erro de Inicialização", 
+                    JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        });
     }
 
     // Variables declaration - do not modify                     
@@ -254,5 +411,6 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
     private javax.swing.JTextField txtQuantidade_minima;
     private javax.swing.JTextField txtQuantidade_maxima;
     private javax.swing.JComboBox<String> comboBoxCategoria;
-    // End of variables declaration                   
+   // private javax.swing.JLabel lblStatusEstoque;
+    // End of variables declaration                                
 }

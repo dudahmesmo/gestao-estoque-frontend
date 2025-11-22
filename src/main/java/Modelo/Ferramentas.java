@@ -117,4 +117,23 @@ public class Ferramentas {
         String status = this.getStatusEstoque();
         return this.id + " - " + this.nome + " (" + this.marca + ") - " + this.categoria + " - R$ " + df.format(this.preco) + " - " + status;
     }
+        // MÉTODO PARA OBTER STATUS SIMPLIFICADO (para exibição rápida)
+    public String getStatusSimples() {
+        if (Quantidade_estoque <= 0) {
+            return "❌ FORA DE ESTOQUE";
+        } else if (isEstoqueBaixo()) {
+            return "⚠️ ESTOQUE BAIXO";
+        } else {
+            return "✅ EM ESTOQUE";
+        }
+    }
+
+    // MÉTODO PARA OBTER QUANTIDADE DISPONÍVEL
+    public String getQuantidadeDisponivel() {
+        if (Quantidade_estoque <= 0) {
+            return "Indisponível";
+        } else {
+            return Quantidade_estoque + " unidades";
+        }
+    }
 }
