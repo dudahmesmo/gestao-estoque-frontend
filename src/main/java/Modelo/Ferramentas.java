@@ -13,16 +13,19 @@ public class Ferramentas {
     private int Quantidade_estoque;      // Quantidade atual em estoque
     private int Quantidade_minima;       // Quantidade mínima necessária
     private int Quantidade_maxima;       // Quantidade máxima permitida
+    private String categoria;            // NOVO CAMPO - Categoria da ferramenta
 
     public Ferramentas() {}
 
-    public Ferramentas(String nome, String marca, double preco, int Quantidade_estoque, int Quantidade_minima, int Quantidade_maxima) {
+    public Ferramentas(String nome, String marca, double preco, int Quantidade_estoque, 
+                      int Quantidade_minima, int Quantidade_maxima, String categoria) {
         this.nome = nome;
         this.marca = marca;
         this.preco = preco;
         this.Quantidade_estoque = Quantidade_estoque;
         this.Quantidade_minima = Quantidade_minima;
         this.Quantidade_maxima = Quantidade_maxima;
+        this.categoria = categoria; // NOVO CAMPO
         this.disponivel = Quantidade_estoque > 0;
     }
 
@@ -48,6 +51,10 @@ public class Ferramentas {
 
     public double getCustoAquisicao() { return custoAquisicao; }
     public void setCustoAquisicao(double custoAquisicao) { this.custoAquisicao = custoAquisicao; }
+    
+    // NOVO GETTER E SETTER PARA CATEGORIA
+    public String getCategoria() { return categoria; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
     
     // MÉTODOS PARA CONTROLE DE ESTOQUE
     public int getQuantidade_estoque() { return Quantidade_estoque; }
@@ -108,6 +115,6 @@ public class Ferramentas {
     public String toString() {
         DecimalFormat df = new DecimalFormat("#.00");
         String status = this.getStatusEstoque();
-        return this.id + " - " + this.nome + " (" + this.marca + ") - R$ " + df.format(this.preco) + " - " + status;
+        return this.id + " - " + this.nome + " (" + this.marca + ") - " + this.categoria + " - R$ " + df.format(this.preco) + " - " + status;
     }
 }
