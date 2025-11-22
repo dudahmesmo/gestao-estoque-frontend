@@ -34,6 +34,76 @@ public class ApiClient {
         this.gson = new Gson();
     }
     
+    // ========== MÉTODOS DE CATEGORIA ==========
+    
+    /**
+     * OBTER CATEGORIAS - Para popular o ComboBox no cadastro de ferramentas
+     */
+    public List<String> obterCategorias() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/api/categorias/nomes"))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            throw new Exception("Falha ao obter categorias. Código: " + response.statusCode());
+        }
+        Type tipoListaStrings = new TypeToken<List<String>>() {}.getType();
+        return gson.fromJson(response.body(), tipoListaStrings);
+    }
+    
+    /**
+     * CADASTRAR CATEGORIA - Seguindo o mesmo padrão dos outros métodos
+     */
+    public void cadastrarCategoria(String nome, String descricao) throws Exception {
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("nome", nome);
+        requestBody.put("descricao", descricao != null ? descricao : "");
+        
+        String jsonBody = gson.toJson(requestBody);
+        
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/api/categorias"))
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .header("Content-Type", "application/json")
+                .build();
+        
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200 && response.statusCode() != 201) {
+            throw new Exception("Falha ao cadastrar categoria. Código: " + response.statusCode());
+        }
+    }
+    
+    /**
+     * LISTAR TODAS AS CATEGORIAS (objetos completos)
+     */
+    public List<Map<String, Object>> listarCategoriasCompletas() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/api/categorias"))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            throw new Exception("Falha ao listar categorias. Código: " + response.statusCode());
+        }
+        Type tipoListaCategorias = new TypeToken<List<Map<String, Object>>>() {}.getType();
+        return gson.fromJson(response.body(), tipoListaCategorias);
+    }
+    
+    /**
+     * EXCLUIR CATEGORIA
+     */
+    public void excluirCategoria(Long id) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/api/categorias/" + id))
+                .DELETE()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200 && response.statusCode() != 204) {
+            throw new Exception("Falha ao excluir categoria. Código: " + response.statusCode());
+        }
+    }
+    
     // MÉTODOS DE AMIGOS
     
     public void cadastrarAmigo(Amigos amigo) throws Exception {
