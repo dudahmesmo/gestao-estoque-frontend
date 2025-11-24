@@ -1,4 +1,4 @@
-package visao;
+package Visao;
 
 import Controle.FerramentasControle;
 import Modelo.Ferramentas;
@@ -414,7 +414,8 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
             return;
         }
         
-        // Implementar lógica de edição aqui
+        // Falta implementar lógica de edição nesse espaço
+        
         JOptionPane.showMessageDialog(this, 
             "Funcionalidade de edição será implementada em breve!", 
             "Funcionalidade em Desenvolvimento", 

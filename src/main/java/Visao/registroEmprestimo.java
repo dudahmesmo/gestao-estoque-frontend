@@ -8,6 +8,16 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import Visao.cadastrarAmigo;
+import Visao.cadastrarFerramentas;
+import Visao.gerenciarAmigo;
+import Visao.gerenciarFerramentas;
+import Visao.relatorioDevedores;
+import Visao.relatorioEmprestimoAtivo;
+import Visao.relatorioFerramenta;
+import Visao.relatorioHistoricoEmprestimo;
+import Visao.consultarEstoque; 
+
 import Controle.AmigosControle;
 import Controle.EmprestimosControle; 
 import Controle.FerramentasControle;
@@ -18,7 +28,6 @@ import Modelo.Ferramentas;
 
 /**
  * Registro de Empréstimo
- * Autor: Maria
  */
 public class registroEmprestimo extends javax.swing.JFrame {
     
@@ -36,7 +45,6 @@ public class registroEmprestimo extends javax.swing.JFrame {
     public registroEmprestimo() {
         initComponents();
 
-        // Inicializa os controles com os novos construtores vazios
         this.amigoControle = new AmigosControle();
         this.ferramentaControle = new FerramentasControle();
         this.emprestimosControle = new EmprestimosControle();
@@ -220,8 +228,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
                  return;
             }
 
-        
-            // Se a data de devolução precisar ser usada, a assinatura do método no Controle precisa ser alterada.
+
             boolean sucesso = emprestimosControle.registrarDevolucao(idFerramenta.intValue()); 
             
             if (sucesso) {
@@ -249,7 +256,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
     } 
     
     // CÓDIGO GERADO PELO NETBEANS (parte visual)
-   
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -284,6 +291,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItemConsultarEstoque = new javax.swing.JMenuItem(); // NOVO ITEM INSERIDO
         jMenu3 = new javax.swing.JMenu();
         menuRFerramenta = new javax.swing.JMenuItem();
         menuREativos = new javax.swing.JMenuItem();
@@ -540,6 +548,15 @@ public class registroEmprestimo extends javax.swing.JFrame {
             }
         });
         jMenu2.add(jMenuItem3);
+        
+        // Consultar EStoque
+        jMenuItemConsultarEstoque.setText("Consultar Estoque");
+        jMenuItemConsultarEstoque.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemConsultarEstoqueActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItemConsultarEstoque); // Adiciona ao menu Gerenciar
 
         jMenuBar1.add(jMenu2);
 
@@ -607,7 +624,6 @@ public class registroEmprestimo extends javax.swing.JFrame {
 
     
     // MÉTODOS DE MANIPULAÇÃO DE EVENTOS 
-
     
     private void itemAmigoRegistroItemStateChanged(java.awt.event.ItemEvent evt) {                                                  
     }                                                 
@@ -615,19 +631,19 @@ public class registroEmprestimo extends javax.swing.JFrame {
     private void itemAmigoRegistroActionPerformed(java.awt.event.ActionEvent evt) {                                                  
     }                                                 
 
-    private void itemFerramentaActionPerformed(java.awt.event.ActionEvent evt) {                                              
+    private void itemFerramentaActionPerformed(java.awt.event.ActionEvent evt) {                                               
     }                                              
 
-    private void dataEmprestimoActionPerformed(java.awt.event.ActionEvent evt) {                                                
+    private void dataEmprestimoActionPerformed(java.awt.event.ActionEvent evt) {                                               
     }                                              
 
-    private void dataDeDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {                                                    
+    private void dataDeDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {                                                
     }                                               
 
     private void itemAmigoDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {                                                   
     }                                                  
 
-    private void itemFerramentaDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {                                                               
+    private void itemFerramentaDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {                                                        
     }                                                       
 
     
@@ -635,17 +651,22 @@ public class registroEmprestimo extends javax.swing.JFrame {
          new cadastrarAmigo().setVisible(true);
     }                                                      
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
          new cadastrarFerramentas().setVisible(true);
-    }                                          
+    }                                        
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         new gerenciarAmigo().setVisible(true);
-    }                                          
+    }                                        
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         new gerenciarFerramentas().setVisible(true);
-    }                                          
+    }                                        
+
+    // Abre a tela de consultar estoque
+    private void jMenuItemConsultarEstoqueActionPerformed(java.awt.event.ActionEvent evt) {
+        new consultarEstoque().setVisible(true);
+    }
 
     private void menuRFerramentaActionPerformed(java.awt.event.ActionEvent evt) {                                                
         new relatorioFerramenta().setVisible(true);
@@ -659,9 +680,9 @@ public class registroEmprestimo extends javax.swing.JFrame {
         new relatorioHistoricoEmprestimo().setVisible(true);
     }                                               
 
-    private void menuRDevedoresActionPerformed(java.awt.event.ActionEvent evt) {                                               
+    private void menuRDevedoresActionPerformed(java.awt.event.ActionEvent evt) {                                              
          new relatorioDevedores().setVisible(true);
-    }                                              
+    }                                             
 
 
     // MÉTODO main
@@ -731,6 +752,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItemConsultarEstoque;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JMenu menuCadastrar;
