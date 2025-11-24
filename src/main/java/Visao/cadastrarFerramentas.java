@@ -1,10 +1,12 @@
-package visao;
+package Visao;
 
-import Controle.FerramentasControle;
-import javax.swing.JOptionPane; 
+import java.util.List;
+ 
+import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.util.List;
+
+import Controle.FerramentasControle;
 
 public class cadastrarFerramentas extends javax.swing.JFrame {
     
@@ -15,7 +17,6 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
         initComponents(); 
         this.ferramentaControle = new FerramentasControle();
         
-        // Configurar labels
         jLabel3.setText("Custo de Aquisição (R$):");
         jLabel4.setText("Quantidade em Estoque:");
         jLabel5.setText("Quantidade Mínima:"); 
@@ -27,7 +28,7 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
         txtQuantidade_minima.setText("1");
         txtQuantidade_maxima.setText("100");
         
-        // Carregar categorias do back-end - COM TRATAMENTO MELHORADO
+        // Carregar categorias do back-end 
         carregarCategorias();
         
         // Adicionar listeners para atualização em tempo real do status
