@@ -1,38 +1,56 @@
 package Modelo;
 
+// import java.time.LocalDateTime;
+
 public class Amigos {
-    private int idUsuario;
+
+    private Long id;
     private String nome;
     private String telefone;
+    private String email;
+    // private LocalDateTime dataCadastro; 
+    private Boolean oDevedor; 
 
-    public Amigos(int idUsuario, String nome, String telefone) {
-        this.idUsuario = idUsuario;
-        this.nome = nome;
-        this.telefone = telefone;
+    public Amigos() {
     }
 
-    // Getters e setters
-    public int getIdUsuario() {
-        return idUsuario;
+    // --- Getters e Setters ---
+
+    public Long getId_amigo() {
+        return id;
+    }
+    public void setId_amigo(Long id) {
+        this.id = id;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public String getNome() {
+    public String getNome_usuario() {
         return nome;
     }
-
-    public void setNome(String nome) {
+    public void setNome_usuario(String nome) {
         this.nome = nome;
     }
 
-    public String getTelefone() {
+    public String getTelefone_usuario() {
         return telefone;
     }
-
-    public void setTelefone(String telefone) {
+    public void setTelefone_usuario(String telefone) {
         this.telefone = telefone;
     }
+
+    // --- Getters e Setters Novos ---
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public Boolean getoDevedor() { return oDevedor; }
+    public void setoDevedor(Boolean oDevedor) { this.oDevedor = oDevedor; }
 }

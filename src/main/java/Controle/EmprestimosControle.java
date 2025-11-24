@@ -1,44 +1,54 @@
 package Controle;
 
-import DAO.EmprestimosDAO;
-import Modelo.Emprestimos;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
+import javax.swing.JOptionPane;
+import Modelo.Emprestimos;
+import http.ApiClient;
 
 public class EmprestimosControle {
-    private EmprestimosDAO emprestimoDAO;
-
-    // Construtor da classe que recebe um objeto EmprestimosDAO como parâmetro
-    public EmprestimosControle(EmprestimosDAO emprestimoDAO) {
-        this.emprestimoDAO = emprestimoDAO;
+    
+    private final ApiClient apiClient;
+    
+    public EmprestimosControle() {
+        this.apiClient = new ApiClient();
     }
 
-    // Método para criar um novo empréstimo no banco de dados
-    public void criarEmprestimo(Connection conexao, Emprestimos emprestimo, String idUsuarioStr) throws SQLException {
-        // Convertendo a String para int
-        int idUsuario = Integer.parseInt(idUsuarioStr);
-        // Chamando o método correspondente no DAO passando a conexão e o ID do usuário
-        emprestimoDAO.criarEmprestimo(conexao, emprestimo, idUsuario);
+    /**
+     * Registra um novo empréstimo (POST para a API).
+     * O Backend deve mudar o status da Ferramenta para indisponível.
+     */
+    public boolean registrarEmprestimo(Emprestimos novoEmprestimo) {
+        try {
+            // Chama o método HTTP real no ApiClient
+            apiClient.registrarEmprestimo(novoEmprestimo); 
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            // A mensagem de erro da API é passada para a View
+            JOptionPane.showMessageDialog(null, "Erro ao registrar empréstimo: " + e.getMessage());
+            return false;
+        }
     }
 
-    // Método para ler um empréstimo do banco de dados com base no seu ID
-    public Emprestimos lerEmprestimoPorId(Connection conexao, int id) throws SQLException {
-        return emprestimoDAO.lerEmprestimoPorId(conexao, id);
+    /**
+     * Registra a devolução de uma ferramenta (PUT para a API).
+     * O Backend deve mudar o status da Ferramenta de volta para disponível.
+     */
+    public boolean registrarDevolucao(int idFerramenta) {
+        try {
+            // Chama o método HTTP real no ApiClient
+            apiClient.registrarDevolucao(idFerramenta);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao registrar devolução: " + e.getMessage());
+            return false;
+        }
     }
-
-    // Método para atualizar os dados de um empréstimo no banco de dados
-    public void atualizarEmprestimo(Connection conexao, Emprestimos emprestimo) throws SQLException {
-        emprestimoDAO.atualizarEmprestimo(conexao, emprestimo);
-    }
-
-    // Método para excluir um empréstimo do banco de dados com base no seu ID
-    public void excluirEmprestimo(Connection conexao, int id) throws SQLException {
-        emprestimoDAO.excluirEmprestimo(conexao, id);
-    }
-
-    // Método para listar todos os empréstimos cadastrados no banco de dados
-    public List<Emprestimos> listarEmprestimos(Connection conexao) throws SQLException {
-        return emprestimoDAO.listarEmprestimos(conexao);
+    
+    // Método de listar Empréstimos Ativos (para relatórios)
+    public List<Emprestimos> listarEmprestimosAtivos() {
+        // Implementação de listagem pendente
+        return null; 
     }
 }

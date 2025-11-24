@@ -1,35 +1,24 @@
 package Visao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import Controle.AmigosControle;
-import DAO.AmigosDAO;
-import projetodb.projetoa3sql.Conexao;
+import Modelo.Amigos; 
+import java.util.List; 
 
 public class gerenciarAmigo extends javax.swing.JFrame {
 
-    private AmigosControle amigosControle; // Controle de amigos
-    private Connection conexao; // Conexão com o banco de dados
+    private AmigosControle amigosControle; 
 
     public gerenciarAmigo() {
         initComponents(); // Inicializa os componentes da interface gráfica
-        conectarBanco(); // Conecta ao banco de dados
-        this.amigosControle = new AmigosControle(new AmigosDAO(conexao)); // Inicializa o controle de amigos
-        atualizarTabela(); // Atualiza a tabela de amigos
+        
+        // Inicializa o controle com o construtor (que inicializa o ApiClient)
+        this.amigosControle = new AmigosControle();
+
+        atualizarTabela(); // Atualiza a tabela assim que a janela abre
     }
 
-    private void conectarBanco() {
-        try {
-            conexao = Conexao.conectar(); // Estabelece a conexão com o banco de dados
-            System.out.println("Conexão com o banco de dados estabelecida.");
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados: " + ex.getMessage());
-        }
-    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -65,18 +54,6 @@ public class gerenciarAmigo extends javax.swing.JFrame {
 
         TabelaAmigos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
             },
             new String [] {
                 "ID", "Nome", "Telefone"
@@ -85,9 +62,16 @@ public class gerenciarAmigo extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         TabelaAmigos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -137,61 +121,58 @@ public class gerenciarAmigo extends javax.swing.JFrame {
         // Obtém o índice da linha selecionada na tabela
         int rowIndex = TabelaAmigos.getSelectedRow();
         if (rowIndex == -1) {
-            // Exibe uma mensagem se nenhuma linha estiver selecionada
             JOptionPane.showMessageDialog(this, "Selecione um amigo para excluir.");
             return;
         }
+        
+        // Confirmação antes de excluir
+        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
         // Obtém o ID do amigo da linha selecionada
         int idAmigo = (int) TabelaAmigos.getValueAt(rowIndex, 0);
-        try {
-            // Tenta excluir o amigo através do controle
-            amigosControle.deletarAmigo(idAmigo);
-            // Exibe uma mensagem de sucesso
-            JOptionPane.showMessageDialog(this, "Amigo excluído com sucesso.");
-            // Atualiza a tabela de amigos
-            atualizarTabela();
-        } catch (SQLException ex) {
-            // Exibe uma mensagem de erro se ocorrer uma exceção
-            JOptionPane.showMessageDialog(this, "Erro ao excluir o amigo: " + ex.getMessage());
+
+        // Chama o Controle para deletar
+        boolean sucesso = amigosControle.deletarAmigo(idAmigo); 
+            
+        if (sucesso) {
+            atualizarTabela(); // Atualiza a tabela visualmente
+            JOptionPane.showMessageDialog(this, "Amigo excluído com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao excluir amigo.");
         }
     }//GEN-LAST:event_buttonExcluirAmigoActionPerformed
 
     private void autualizarBDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autualizarBDActionPerformed
-           
-
-      // Atualiza a tabela de amigos
-      atualizarTabela();
-                                                      
-
-        
+        atualizarTabela();
     }//GEN-LAST:event_autualizarBDActionPerformed
     
-   private void atualizarTabela() {
-       String sql = "SELECT * FROM amigos"; // Consulta SQL para selecionar todos os amigos
-        try {
-            PreparedStatement pst = conexao.prepareStatement(sql); // Prepara a consulta
-            ResultSet rs = pst.executeQuery(); // Executa a consulta e obtém os resultados
-            DefaultTableModel model = (DefaultTableModel) TabelaAmigos.getModel(); // Obtém o modelo da tabela
-            model.setRowCount(0); // Limpa a tabela
-            while (rs.next()) {
-                // Adiciona cada linha de resultados na tabela
-                model.addRow(new Object[]{rs.getInt("id_amigo"), rs.getString("nome_usuario"), rs.getString("telefone_usuario")});
+    private void atualizarTabela() {
+        // 1. Pega o modelo da tabela
+        DefaultTableModel model = (DefaultTableModel) TabelaAmigos.getModel();
+        
+        // 2. Limpa a tabela visualmente (reseta as linhas)
+        model.setRowCount(0);
+            
+        // 3. Chama o Controle para buscar os dados da API
+        List<Amigos> listaDeAmigos = this.amigosControle.listarAmigos();
+
+        // 4. Preenche a tabela com os resultados da API
+        if (listaDeAmigos != null) {
+            for (Amigos amigo : listaDeAmigos) {
+                model.addRow(new Object[]{
+                    amigo.getId(),      
+                    amigo.getNome(),     
+                    amigo.getTelefone()  
+                });
             }
-        } catch (SQLException ex) {
-            // Exibe uma mensagem de erro se ocorrer uma exceção
-            JOptionPane.showMessageDialog(this, "Erro ao atualizar a tabela de amigos: " + ex.getMessage());
         }
     }
     
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -208,7 +189,6 @@ public class gerenciarAmigo extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(gerenciarAmigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

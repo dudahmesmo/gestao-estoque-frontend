@@ -3,26 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package Visao;
+
 import Controle.AmigosControle;
 import Modelo.Amigos;
-import DAO.AmigosDAO;
-import projetodb.projetoa3sql.Conexao;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import Controle.AmigosControle;
-import DAO.AmigosDAO;
 import javax.swing.JTextField; 
-import Controle.AmigosControle;
-import DAO.AmigosDAO;
-import projetodb.projetoa3sql.Conexao;
-import javax.swing.JOptionPane;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  *
@@ -30,21 +17,16 @@ import java.sql.SQLException;
  */
 public class cadastrarAmigo extends javax.swing.JFrame {
 
-    private AmigosControle amigosControle; // Controle de amigos
+    private AmigosControle amigosControle; 
 
     /**
      * Construtor da classe cadastrarAmigo
-     * Inicializa os componentes da interface gráfica e conecta ao banco de dados
+     * Inicializa os componentes da interface gráfica
      */
     public cadastrarAmigo() {
-        initComponents(); // Inicializa os componentes da interface gráfica
-        try {
-            Connection conexao = Conexao.conectar(); // Estabelece a conexão com o banco de dados
-            this.amigosControle = new AmigosControle(new AmigosDAO(conexao)); // Inicializa o controle de amigos
-        } catch (SQLException ex) {
-            Logger.getLogger(cadastrarAmigo.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados: " + ex.getMessage()); // Exibe mensagem de erro
-        }
+        initComponents(); 
+
+        this.amigosControle = new AmigosControle();
     }
 
     /**
@@ -136,31 +118,28 @@ public class cadastrarAmigo extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCadastrarNomeAmigoActionPerformed
 
     private void buttonCadastrarAmigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCadastrarAmigoActionPerformed
-           String nomeUsuario = txtCadastrarNomeAmigo.getText(); // Coleta o nome do amigo
+        String nomeUsuario = txtCadastrarNomeAmigo.getText(); // Coleta o nome do amigo
         String telefoneUsuario = txtCadastrarTelefoneAmigo.getText(); // Coleta o telefone do amigo
 
-        try {
-            // Obtém a conexão com o banco de dados
-            Connection conexao = Conexao.conectar();
-
-            // Executa a consulta SQL para adicionar o amigo
-            String sql = "INSERT INTO amigos (nome_usuario, telefone_usuario) VALUES (?, ?)";
-            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
-                stmt.setString(1, nomeUsuario);
-                stmt.setString(2, telefoneUsuario);
-                int rowsAffected = stmt.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(null, "Amigo cadastrado com sucesso."); // Exibe mensagem de sucesso
-                    txtCadastrarNomeAmigo.setText(""); // Limpa o campo de nome
-                    txtCadastrarTelefoneAmigo.setText(""); // Limpa o campo de telefone
-                } else {
-                    throw new Exception("Erro ao cadastrar amigo.");
-                }
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar amigo: " + e.getMessage()); // Exibe mensagem de erro
+        // Validação simples
+        if (nomeUsuario.isEmpty() || telefoneUsuario.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.");
+            return;
         }
+
+        // 1. Chamar o Controle e receber o status de sucesso
+        boolean sucesso = this.amigosControle.adicionarAmigo(nomeUsuario, telefoneUsuario); 
+            
+        if (sucesso) {
+            // Mostra a mensagem de sucesso
+            JOptionPane.showMessageDialog(this, "Amigo cadastrado com sucesso!");
+            
+            // 2. Limpa os campos
+            txtCadastrarNomeAmigo.setText(""); 
+            txtCadastrarTelefoneAmigo.setText("");
+        }
+        // A mensagem de ERRO (se 'sucesso' for false) é tratada dentro do Controle.
+        
     }//GEN-LAST:event_buttonCadastrarAmigoActionPerformed
 
     private void txtCadastrarTelefoneAmigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCadastrarTelefoneAmigoActionPerformed

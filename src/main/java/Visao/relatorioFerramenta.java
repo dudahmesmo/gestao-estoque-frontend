@@ -5,13 +5,13 @@
 package Visao;
 
 import javax.swing.table.DefaultTableModel;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+// import java.sql.Connection;
+// import java.sql.PreparedStatement;
+// import java.sql.ResultSet;
+// import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import projetodb.projetoa3sql.Conexao;
+// import projetodb.projetoa3sql.Conexao;
 
 /**
  * Esta classe representa a interface gráfica para exibir o relatório de ferramentas.
@@ -27,7 +27,7 @@ public class relatorioFerramenta extends javax.swing.JFrame {
      */
     public relatorioFerramenta() {
         initComponents();
-        calcularTotalCusto(); // Inicialmente calcula o custo total das ferramentas
+        // calcularTotalCusto(); // Inicialmente calcula o custo total das ferramentas
         atualizarBanco(); // Atualiza os dados da tabela de ferramentas
     }
 
@@ -119,7 +119,7 @@ public class relatorioFerramenta extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void atualizarBanco() {
-     try {
+     /* try {
     // 1. Estabelecer conexão com o banco de dados
     Connection conexao = Conexao.conectar();
 
@@ -150,7 +150,11 @@ public class relatorioFerramenta extends javax.swing.JFrame {
     }
 } catch (SQLException e) {
     JOptionPane.showMessageDialog(this, "Erro ao recuperar dados das ferramentas: " + e.getMessage());
-}    
+} */
+    System.out.println("Lógica de 'atualizarBanco' (Relatório Ferramenta) será implementada com ApiClient.");
+        
+        DefaultTableModel model = (DefaultTableModel) toolsTable.getModel();
+        model.setRowCount(0);
     }
     private void AtualizarBDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AtualizarBDActionPerformed
       
