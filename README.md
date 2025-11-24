@@ -9,4 +9,3 @@ Este repositório contém o código-fonte da camada de cliente (front-end) do pr
 * Maria Eduarda Eduarda Souza dos Santos Ferreira
 * Millena Ferreira Rodrigues
 * Kaue Santana de Oliveira
-
