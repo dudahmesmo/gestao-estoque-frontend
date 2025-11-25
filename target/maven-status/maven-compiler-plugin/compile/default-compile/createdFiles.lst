@@ -15,6 +15,7 @@ Visao\relatorioEmprestimoAtivo$2.class
 Visao\consultarEstoque$7.class
 Visao\gerenciarFerramentas$8.class
 projetodb\projetoa3sql\ProjetoA3SQL.class
+Visao\gerenciarFerramentas$11.class
 Visao\registroEmprestimo$16.class
 Visao\registroEmprestimo$5.class
 Visao\relatorioFerramenta$1.class
@@ -64,6 +65,7 @@ Visao\consultarEstoque.class
 Visao\consultarEstoque$2.class
 Visao\gerenciarFerramentas$3.class
 Visao\registroEmprestimo$6.class
+Visao\editarFerramentas.class
 Visao\relatorioDevedores.class
 http\ApiClient$3.class
 Visao\gerenciarFerramentas$5.class
