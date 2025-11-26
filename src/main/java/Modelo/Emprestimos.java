@@ -13,8 +13,10 @@ public class Emprestimos {
     private String nomeUsuario;
     private String telefoneUsuario;
     private String statusEmprestimo;
+    private String amigoNome;
+    private String ferramentaNome;
 
-    // Construtor da classe que recebe todos os parâmetros necessários para criar um objeto Emprestimos
+    // Recebe os parâmetros necessários para criar um objeto Emprestimos
     public Emprestimos(int idEmprestimo, int idFerramenta, String nomeFerramenta, Date dataEmprestimo, Date dataDevolucaoEsperada, int idAmigo, String nomeUsuario, String telefoneUsuario, String statusEmprestimo) {
         this.idEmprestimo = idEmprestimo;
         this.idFerramenta = idFerramenta;
@@ -27,7 +29,7 @@ public class Emprestimos {
         this.statusEmprestimo = statusEmprestimo;
     }
 
-    // Métodos getters para acessar os atributos da classe
+    // Getters para acessar os atributos da classe
 
     public int getIdEmprestimo() {
         return idEmprestimo;
@@ -63,5 +65,13 @@ public class Emprestimos {
 
     public String getStatusEmprestimo() {
         return statusEmprestimo;
+    }
+
+    public String getAmigoNome() {
+        return amigoNome;
+    }
+
+    public String getFerramentaNome() {
+        return ferramentaNome;
     }
 }

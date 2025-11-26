@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.JOptionPane;
 
@@ -36,9 +38,9 @@ public class registroEmprestimo extends javax.swing.JFrame {
     private EmprestimosControle emprestimosControle; 
     
     
-    // Listas para guardar os objetos (carregadas pelo método de atualização)
+    // Listas para guardar os objetos
     private List<Ferramentas> ferramentasDisponiveis;
-    private List<Ferramentas> ferramentasIndisponiveis;
+    private List<Emprestimos> emprestimosAtivos; 
     private List<Amigos> listaAmigos;
     
 
@@ -51,20 +53,20 @@ public class registroEmprestimo extends javax.swing.JFrame {
         
         // Inicializa as listas
         this.ferramentasDisponiveis = new ArrayList<>();
-        this.ferramentasIndisponiveis = new ArrayList<>();
+        this.emprestimosAtivos = new ArrayList<>(); 
         this.listaAmigos = new ArrayList<>();
         
         this.setLocationRelativeTo(null);
         
         // Chama os métodos que carregam os combos
         updateComboAmigos(); 
-        updateComboFerramentas();
+        updateComboFerramentas(); 
+        updateComboDevolucao(); 
     }
-    
-    // MÉTODOS DE PREENCHIMENTO E FILTRO (carregamento de dados)
+
     
     /**
-     * Atualiza a JComboBox de Amigos
+     * Atualiza a JComboBox de Amigos 
      */
     public void updateComboAmigos() {
         System.out.println("Atualizando ComboBox de Amigos");
@@ -75,6 +77,9 @@ public class registroEmprestimo extends javax.swing.JFrame {
         this.listaAmigos = this.amigoControle.listarAmigos();
 
         if (this.listaAmigos != null) {
+            // Ordena alfabeticamente
+            Collections.sort(this.listaAmigos, Comparator.comparing(Amigos::getNome));
+            
             for (Modelo.Amigos amigo : this.listaAmigos) {
                 itemAmigoRegistro.addItem(amigo.getNome());
                 itemAmigoDevolucao.addItem(amigo.getNome());
@@ -83,56 +88,71 @@ public class registroEmprestimo extends javax.swing.JFrame {
     }
 
     /**
-     * Atualiza a JComboBox de Ferramentas, aplicando o filtro de disponibilidade.
+     * Atualiza a JComboBox de Ferramentas (para EMPRÉSTIMO), aplicando o filtro de disponibilidade.
      */
     public void updateComboFerramentas() {
-        System.out.println("Atualizando ComboBox de Ferramentas com Filtro de Disponibilidade");
+        System.out.println("Atualizando ComboBox de Ferramentas Disponíveis");
         
         itemFerramenta.removeAllItems();
-        itemFerramentaDevolucao.removeAllItems();
-
-        List<Ferramentas> listaCompleta = this.ferramentaControle.listarFerramentas();
         
-        // Limpa as listas antes de preencher novamente
+        List<Ferramentas> listaCompleta = this.ferramentaControle.listarFerramentas(); 
+        
         this.ferramentasDisponiveis.clear();
-        this.ferramentasIndisponiveis.clear();
-
-
+        
         if (listaCompleta != null) {
+            // Ordena alfabeticamente
+            Collections.sort(listaCompleta, Comparator.comparing(Ferramentas::getNome));
+            
             for (Ferramentas ferramenta : listaCompleta) {
-                
-                // Filtra para Empréstimo: SÓ DISPONÍVEL
                 if (ferramenta.isDisponivel()) { 
                     itemFerramenta.addItem(ferramenta.toString());
                     this.ferramentasDisponiveis.add(ferramenta);
-                }
-                
-                // Regra para Devolução: SÓ INDISPONÍVEL
-                if (!ferramenta.isDisponivel()) { 
-                     itemFerramentaDevolucao.addItem(ferramenta.toString());
-                     this.ferramentasIndisponiveis.add(ferramenta);
                 }
             }
         }
     }
     
-    // MÉTODOS AUXILIARES PARA RESOLVER OBJETOS (DO NOME PARA O ID)
+    /**
+     * MÉTODO: Atualiza o ComboBox para DEVOLUÇÃO (mostra ferramentas ativamente emprestadas).
+     */
+    public void updateComboDevolucao() {
+        System.out.println("Atualizando ComboBox de Ferramentas para Devolução (Empréstimos Ativos)");
+        
+        itemFerramentaDevolucao.removeAllItems();
+        // Busca a lista de empréstimos ativos 
+        this.emprestimosAtivos = this.emprestimosControle.listarEmprestimosAtivos(); 
+        
+        if (this.emprestimosAtivos != null) {
+            for (Emprestimos emprestimo : this.emprestimosAtivos) {
+                // Formata o item do ComboBox para DEVOLUÇÃO (Amigo - Ferramenta)
+                String itemCombo = emprestimo.getAmigoNome() + " - " + emprestimo.getFerramentaNome();
+                itemFerramentaDevolucao.addItem(itemCombo);
+            }
+        }
+    }
+
     
     /**
      * Método auxiliar para obter o ID da ferramenta pelo toString() do ComboBox
-     * Deve ser usado só com as listas filtradas (Disponiveis/Indisponiveis)
      */
     private Long getFerramentaIdByName(String nome) {
         if (nome == null) return null;
         
-        // Tenta achar na lista de disponíveis (para empréstimo)
+        // 1. Tenta achar na lista de disponíveis (para empréstimo)
         for (Ferramentas f : this.ferramentasDisponiveis) {
-            if (f.toString().equals(nome)) return f.getId(); // Comparando com toString()
+            if (f.toString().equals(nome)) return f.getId(); 
         }
-        // Tenta achar na lista de indisponíveis (para devolução)
-        for (Ferramentas f : this.ferramentasIndisponiveis) {
-            if (f.toString().equals(nome)) return f.getId(); // Comparando com toString()
+        
+        // 2. Para devolução, busca o ID da Ferramenta pelo item do Empréstimo Ativo
+        if (this.emprestimosAtivos != null) {
+            for (Emprestimos e : this.emprestimosAtivos) {
+                String itemCombo = e.getAmigoNome() + " - " + e.getFerramentaNome();
+                if (itemCombo.equals(nome)) {
+                    return (long) e.getIdFerramenta(); // Retorna o ID da ferramenta
+                }
+            }
         }
+        
         return null;
     }
     
@@ -179,10 +199,8 @@ public class registroEmprestimo extends javax.swing.JFrame {
             java.util.Date parsedEmprestimoDate = format.parse(dataEmprestimoStr);
             
             // Cria o objeto empréstimo (ID=0 é placeholder, a API gera o ID)
-            // 'new Date()' para a data de devolução (como placeholder ou data atual).
-            // dataDevolucaoStr e status final("Em dia") são passadas como vazias/default.
             Emprestimos novoEmprestimo = new Emprestimos(0, idFerramenta.intValue(), ferramentaSelecionada, 
-                                                         parsedEmprestimoDate, new Date(), // Usando 'new Date()' como placeholder para dataDevolucao
+                                                         parsedEmprestimoDate, new Date(), 
                                                          idAmigo.intValue(), amigoSelecionado, "", "Em dia"); 
             
             // 4. Chama o Controle (API)
@@ -190,8 +208,8 @@ public class registroEmprestimo extends javax.swing.JFrame {
 
             if (sucesso) {
                 JOptionPane.showMessageDialog(this, "Empréstimo registrado com sucesso.");
-                updateComboFerramentas(); // Atualiza a lista para remover a ferramenta emprestada
-                // Limpar campo de data
+                updateComboFerramentas(); 
+                updateComboDevolucao(); 
                 dataEmprestimo.setText("");
             } else {
                 JOptionPane.showMessageDialog(this, "Falha ao registrar empréstimo.");
@@ -212,29 +230,26 @@ public class registroEmprestimo extends javax.swing.JFrame {
         try {
             String ferramentaSelecionada = (String) itemFerramentaDevolucao.getSelectedItem();
             
-            // Pega a data de devolução
-            String dataDevolucaoStr = dataDeDevolucao.getText();
-
             if (ferramentaSelecionada == null) {
                 JOptionPane.showMessageDialog(this, "Selecione uma ferramenta para devolução.");
                 return;
             }
             
-            // Resolve ID
-            Long idFerramenta = getFerramentaIdByName(ferramentaSelecionada);
+            // Resolve ID da Ferramenta pelo nome do item no combo box (corrigido para usar a lógica de empréstimos)
+            Long idFerramenta = getFerramentaIdByName(ferramentaSelecionada); 
             
             if (idFerramenta == null) {
                  JOptionPane.showMessageDialog(this, "Erro: Ferramenta não encontrada no sistema.");
                  return;
             }
 
-
+            // A chamada de devolução precisa do ID da Ferramenta.
             boolean sucesso = emprestimosControle.registrarDevolucao(idFerramenta.intValue()); 
             
             if (sucesso) {
                 JOptionPane.showMessageDialog(this, "Devolução registrada com sucesso.");
-                updateComboFerramentas(); // Atualiza a lista para disponibilizar a ferramenta devolvida
-                // Limpar campo de data
+                updateComboFerramentas(); 
+                updateComboDevolucao(); 
                 dataDeDevolucao.setText(""); 
             } else {
                 JOptionPane.showMessageDialog(this, "Falha ao registrar devolução.");
@@ -252,10 +267,10 @@ public class registroEmprestimo extends javax.swing.JFrame {
     private void autualizarBancoActionPerformed(java.awt.event.ActionEvent evt) { 
         updateComboAmigos(); 
         updateComboFerramentas();
-
+        updateComboDevolucao(); 
     } 
     
-    // CÓDIGO GERADO PELO NETBEANS (parte visual)
+    // GERADO PELO NETBEANS (java swing)
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -291,7 +306,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItemConsultarEstoque = new javax.swing.JMenuItem(); // NOVO ITEM INSERIDO
+        jMenuItemConsultarEstoque = new javax.swing.JMenuItem(); 
         jMenu3 = new javax.swing.JMenu();
         menuRFerramenta = new javax.swing.JMenuItem();
         menuREativos = new javax.swing.JMenuItem();
@@ -549,7 +564,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
         });
         jMenu2.add(jMenuItem3);
         
-        // Consultar EStoque
+        // Consultar Estoque
         jMenuItemConsultarEstoque.setText("Consultar Estoque");
         jMenuItemConsultarEstoque.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -656,7 +671,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
     }                                        
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        new gerenciarAmigo().setVisible(true);
+        new gerenciarAmigo().setVisible(true); 
     }                                        
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {                                         

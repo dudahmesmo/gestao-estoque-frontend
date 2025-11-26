@@ -1,30 +1,74 @@
 package Visao;
 
-import Controle.FerramentasControle;
-import Modelo.Ferramentas;
-import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
+import Controle.FerramentasControle;
+import Modelo.Ferramentas;
 
 public class gerenciarFerramentas extends javax.swing.JFrame {
 
     private FerramentasControle ferramentasControle;
     private javax.swing.JLabel lblEstatisticas;
     private javax.swing.JPanel panelEstatisticas;
+    private List<Ferramentas> listaCompletaFerramentas; 
+
+    // variáveis para pesquisa
+    private javax.swing.JTextField txtPesquisa;
+    private TableRowSorter<javax.swing.table.TableModel> sorter; 
 
     public gerenciarFerramentas() {
         initComponents();
         this.ferramentasControle = new FerramentasControle();
+        this.listaCompletaFerramentas = new ArrayList<>();
+        
+        // Inicializa o sorter após a tabela ser criada no initComponents()
+        sorter = new TableRowSorter<>(TabelaFerramentas.getModel());
+        TabelaFerramentas.setRowSorter(sorter);
+        
         configurarRenderizadorTabela();
+        adicionarListenerPesquisa();
         atualizarBanco();
+        this.setLocationRelativeTo(null);
+    }
+    
+    // ADICIONA O LISTENER À BARRA DE PESQUISA
+    private void adicionarListenerPesquisa() {
+        txtPesquisa.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { aplicarFiltro(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { aplicarFiltro(); }
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { aplicarFiltro(); }
+        });
+    }
+    
+    // APLICA O FILTRO NA TABELA INTEIRA
+    private void aplicarFiltro() {
+        String texto = txtPesquisa.getText();
+        if (texto.trim().length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            // (?i) torna a pesquisa case-insensitive (ignora maiúsculas/minúsculas)
+            // Busca em TODAS as colunas.
+            try {
+                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto));
+            } catch (java.util.regex.PatternSyntaxException e) {
+                // Ignora filtro inválido (evita crash se o usuário digitar um caractere regex)
+                sorter.setRowFilter(null);
+            }
+        }
     }
 
     private void configurarRenderizadorTabela() {
-        // Configurar renderizador personalizado para a coluna de Status Estoque (índice 4)
-        TabelaFerramentas.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+       
+        TabelaFerramentas.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
                     boolean isSelected, boolean hasFocus, int row, int column) {
@@ -56,7 +100,7 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         });
 
         // Configurar renderizador para a coluna de Detalhes Estoque (índice 5)
-        TabelaFerramentas.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
+        TabelaFerramentas.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
                     boolean isSelected, boolean hasFocus, int row, int column) {
@@ -72,7 +116,7 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         });
 
         // Configurar renderizador para a coluna de Preço (índice 3)
-        TabelaFerramentas.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
+        TabelaFerramentas.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
                     boolean isSelected, boolean hasFocus, int row, int column) {
@@ -88,29 +132,33 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         });
     }
 
-    private void atualizarBanco() {
+    public void atualizarBanco() {
         DefaultTableModel model = (DefaultTableModel) TabelaFerramentas.getModel();
         model.setRowCount(0);
+        this.listaCompletaFerramentas.clear();
 
         List<Ferramentas> lista = ferramentasControle.listarFerramentas();
 
         if (lista != null) {
+            this.listaCompletaFerramentas = lista; // Armazena a lista completa
             for (Ferramentas f : lista) {
                 String statusEstoque = f.getStatusEstoque();
                 String resumoEstoque = f.getResumoEstoque();
+                String categoria = f.getCategoria() != null ? f.getCategoria() : "N/D"; // Pega Categoria
                 
                 model.addRow(new Object[]{
-                    f.getId_ferramenta(),             // ID
-                    f.getNome_ferramenta(),           // NOME
-                    f.getMarca_ferramenta(),          // MARCA
-                    String.format("R$ %.2f", f.getPreco()), // PREÇO formatado
-                    statusEstoque,                    // STATUS DO ESTOQUE
-                    resumoEstoque                     // RESUMO COMPLETO
+                    f.getId(), // 0: ID
+                    f.getNome(), // 1: Nome
+                    f.getMarca(), // 2: Marca
+                    categoria, // 3: Categoria 
+                    String.format("R$ %.2f", f.getPreco()), // 4: Preço
+                    statusEstoque, // 5: Status Estoque
+                    resumoEstoque // 6: Detalhes do Estoque
                 });
             }
         }
         
-        // Atualizar estatísticas
+        aplicarFiltro(); // Reaplica o filtro após atualizar os dados
         atualizarEstatisticasEstoque(lista);
     }
 
@@ -164,35 +212,35 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         panelEstatisticas = new javax.swing.JPanel();
         btnEditarFerramenta = new javax.swing.JButton();
         btnRelatorioEstoque = new javax.swing.JButton();
+        txtPesquisa = new javax.swing.JTextField(); 
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Gerenciar Ferramentas - Controle de Estoque");
-        setPreferredSize(new java.awt.Dimension(900, 600));
+        setPreferredSize(new java.awt.Dimension(1100, 650));
 
-        // Configurar a tabela com melhorias visuais
         TabelaFerramentas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Ferramenta", "Marca", "Preço", "Status Estoque", "Detalhes do Estoque"
+                "ID", "Ferramenta", "Marca", "Categoria", "Custo de Aquisição", "Status Estoque", "Detalhes do Estoque"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, 
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Long.class, java.lang.String.class, java.lang.String.class, 
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -204,12 +252,10 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
             }
         });
         
-        // Melhorar aparência da tabela
         TabelaFerramentas.setShowGrid(true);
         TabelaFerramentas.setGridColor(new Color(220, 220, 220));
         TabelaFerramentas.setRowHeight(25);
         TabelaFerramentas.getTableHeader().setReorderingAllowed(false);
-        TabelaFerramentas.setAutoCreateRowSorter(true); // Permitir ordenação
         
         jScrollPane1.setViewportView(TabelaFerramentas);
 
@@ -267,6 +313,11 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
                 btnRelatorioEstoqueActionPerformed(evt);
             }
         });
+        
+        // Configuração do campo de pesquisa
+        txtPesquisa.setPreferredSize(new java.awt.Dimension(300, 37)); 
+        txtPesquisa.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisar (Nome, Marca, Status)"));
+
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -278,17 +329,17 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
                     .addComponent(jScrollPane1)
                     .addComponent(lblEstatisticas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnEstoqueBaixo)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnRelatorioEstoque)
-                                .addGap(18, 18, 18)
-                                .addComponent(autualizarBD))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnEditarFerramenta)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton1)))
+                        .addComponent(btnEstoqueBaixo)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnRelatorioEstoque)
+                        .addGap(18, 18, 18)
+                        .addComponent(autualizarBD)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)) // LARGURA 300
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnEditarFerramenta)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -299,7 +350,8 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEstoqueBaixo)
                     .addComponent(btnRelatorioEstoque)
-                    .addComponent(autualizarBD))
+                    .addComponent(autualizarBD)
+                    .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -311,13 +363,37 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
+
         pack();
-        setLocationRelativeTo(null); // Centralizar na tela
-    }                     
+        setLocationRelativeTo(null); 
+    } 
+    
+    // Retorna o objeto selecionado da lista completa
+    private Ferramentas getFerramentaSelecionada() {
+        int viewRow = TabelaFerramentas.getSelectedRow();
+        if (viewRow == -1 || listaCompletaFerramentas == null || listaCompletaFerramentas.isEmpty()) {
+            return null;
+        }
+        
+        // Converte a linha da View (após filtragem/ordenação) para a linha do Modelo
+        int modelRow = TabelaFerramentas.convertRowIndexToModel(viewRow);
+
+        // Obtém o ID da ferramenta da primeira coluna do modelo
+        Object idObj = TabelaFerramentas.getModel().getValueAt(modelRow, 0);
+        Long idSelecionado = ((Number) idObj).longValue();
+
+        // Encontra o objeto Ferramentas na lista completa usando o ID
+        for (Ferramentas f : listaCompletaFerramentas) {
+            if (f.getId() != null && f.getId().equals(idSelecionado)) {
+                return f;
+            }
+        }
+        return null;
+    }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-        int rowIndex = TabelaFerramentas.getSelectedRow();
-        if (rowIndex == -1) {
+        Ferramentas ferramenta = getFerramentaSelecionada();
+        if (ferramenta == null) {
             JOptionPane.showMessageDialog(this, 
                 "Selecione uma ferramenta para excluir.", 
                 "Seleção Necessária", 
@@ -325,14 +401,10 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
             return;
         }
 
-        // Obter dados da ferramenta selecionada para confirmacao
-        Object idObj = TabelaFerramentas.getValueAt(rowIndex, 0);
-        Object nomeObj = TabelaFerramentas.getValueAt(rowIndex, 1);
-        Object statusObj = TabelaFerramentas.getValueAt(rowIndex, 4);
-        
-        int idFerramenta = ((Number) idObj).intValue();
-        String nomeFerramenta = nomeObj.toString();
-        String statusEstoque = statusObj.toString();
+        // Usa Long do modelo
+        int idFerramenta = ferramenta.getId().intValue(); 
+        String nomeFerramenta = ferramenta.getNome();
+        String statusEstoque = ferramenta.getStatusEstoque();
 
         String mensagemConfirmacao = String.format(
             "<html><b>Confirma exclusão da ferramenta?</b><br><br>"
@@ -404,9 +476,11 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         }
     }
 
+    // Ação do botão EDITAR
     private void btnEditarFerramentaActionPerformed(java.awt.event.ActionEvent evt) {
-        int rowIndex = TabelaFerramentas.getSelectedRow();
-        if (rowIndex == -1) {
+        Ferramentas ferramentaParaEditar = getFerramentaSelecionada();
+        
+        if (ferramentaParaEditar == null) {
             JOptionPane.showMessageDialog(this, 
                 "Selecione uma ferramenta para editar.", 
                 "Seleção Necessária", 
@@ -414,12 +488,8 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
             return;
         }
         
-        // Falta implementar lógica de edição nesse espaço
-        
-        JOptionPane.showMessageDialog(this, 
-            "Funcionalidade de edição será implementada em breve!", 
-            "Funcionalidade em Desenvolvimento", 
-            JOptionPane.INFORMATION_MESSAGE);
+        // 1. Chama a nova tela de edição, passando o objeto e a ref da tela pai
+        new editarFerramentas(ferramentaParaEditar, this).setVisible(true);
     }
 
     private void btnRelatorioEstoqueActionPerformed(java.awt.event.ActionEvent evt) {
@@ -496,7 +566,7 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify                     
+    // Variables declaration - do not modify                     
     private javax.swing.JTable TabelaFerramentas;
     private javax.swing.JButton autualizarBD;
     private javax.swing.JButton btnEstoqueBaixo;
@@ -504,5 +574,6 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
     private javax.swing.JButton btnRelatorioEstoque;
     private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
-    // End of variables declaration                   
+
+    // End of variables declaration                   
 }
