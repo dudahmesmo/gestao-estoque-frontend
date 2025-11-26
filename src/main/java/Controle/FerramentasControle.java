@@ -14,7 +14,7 @@ public class FerramentasControle {
     }
 
     /**
-     * MÉTODO PARA ADICIONAR uma nova ferramenta com categoria
+     * Adicionar nova ferramenta com categoria
      */
     public boolean adicionarFerramenta(String nome, String marca, double preco, 
                                      int Quantidade_estoque, int Quantidade_minima, 
@@ -27,7 +27,7 @@ public class FerramentasControle {
             novaFerramenta.setQuantidade_estoque(Quantidade_estoque);
             novaFerramenta.setQuantidade_minima(Quantidade_minima);
             novaFerramenta.setQuantidade_maxima(Quantidade_maxima);
-            novaFerramenta.setCategoria(categoria); // NOVO CAMPO
+            novaFerramenta.setCategoria(categoria); 
             novaFerramenta.setDisponivel(Quantidade_estoque > 0);
 
             apiClient.cadastrarFerramenta(novaFerramenta);
@@ -38,15 +38,12 @@ public class FerramentasControle {
         }
     }
 
-    /**
-     * Método antigo mantido para compatibilidade
-     */
     public boolean adicionarFerramenta(String nome, String marca, double preco) {
         return adicionarFerramenta(nome, marca, preco, 0, 1, 100, "Geral");
     }
 
     /**
-     * MÉTODO PARA OBTER CATEGORIAS do back-end
+     * Obter categorias do back-end
      */
     public java.util.List<String> obterCategorias() {
         try {
@@ -60,7 +57,7 @@ public class FerramentasControle {
     }
 
     /**
-     * MÉTODO PARA LISTAR todas as ferramentas (GET)
+     * Listar todas as ferramentas (GET)
      */
     public List<Ferramentas> listarFerramentas() {
         try {
@@ -72,7 +69,7 @@ public class FerramentasControle {
     }
 
     /**
-     * MÉTODO PARA DELETAR uma ferramenta pelo ID (DELETE)
+     * Deletar uma ferramenta pelo ID (DELETE)
      */
     public boolean deletarFerramenta(int id) {
         try {
@@ -85,13 +82,12 @@ public class FerramentasControle {
     }
 
     /**
-     * MÉTODO PARA ATUALIZAR uma ferramenta
+     * Atualizar uma ferramenta 
      */
     public boolean atualizarFerramenta(Ferramentas ferramenta) {
         try {
-            // Aqui você implementaria a chamada para atualizar no API Client
-            // apiClient.atualizarFerramenta(ferramenta);
-            System.out.println("Atualizando ferramenta: " + ferramenta.getNome());
+            
+            apiClient.atualizarFerramenta(ferramenta); 
             return true;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar: " + e.getMessage());
@@ -100,7 +96,7 @@ public class FerramentasControle {
     }
 
     /**
-     * MÉTODO PARA VERIFICAR ESTOQUE BAIXO
+     * Verificar estoque baixo
      */
     public List<Ferramentas> getFerramentasComEstoqueBaixo() {
         try {
@@ -115,8 +111,9 @@ public class FerramentasControle {
         }
         return null;
     }
-        /**
-     * MÉTODO PARA OBTER FERRAMENTAS POR CATEGORIA
+    
+    /**
+     * Obter ferramentas por categoria
      */
     public List<Ferramentas> getFerramentasPorCategoria(String categoria) {
         try {
@@ -134,7 +131,7 @@ public class FerramentasControle {
     }
 
     /**
-     * MÉTODO PARA OBTER FERRAMENTAS POR STATUS
+     * Obter ferramentas por status
      */
     public List<Ferramentas> getFerramentasPorStatus(String status) {
         try {

@@ -180,6 +180,31 @@ public class ApiClient {
             throw new Exception("Falha ao excluir ferramenta. Código: " + response.statusCode());
         }
     }
+    
+    public void atualizarFerramenta(Ferramentas ferramenta) throws Exception {
+    // 1. O Back-end espera o ID na URL
+        if (ferramenta.getId() == null) {
+            throw new IllegalArgumentException("ID da ferramenta é obrigatório para atualização.");
+        }
+    
+        String jsonBody = gson.toJson(ferramenta);
+    
+    // URL: BASE_URL + /ferramentas/{id}
+        HttpRequest request = HttpRequest.newBuilder()
+               .uri(URI.create(BASE_URL + "/ferramentas/" + ferramenta.getId())) 
+               .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
+               .header("Content-Type", "application/json")
+               .build();
+    
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+        String errorMessage = response.body() != null && !response.body().isEmpty() 
+                                ? response.body() : "Nenhuma mensagem de erro do servidor.";
+            throw new Exception("Falha ao atualizar ferramenta. Código: " + response.statusCode() + ". Detalhes: " + errorMessage);
+        }
+    }
+
 
     // MÉTODOS DE EMPRÉSTIMO
     
