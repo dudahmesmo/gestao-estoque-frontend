@@ -1,7 +1,10 @@
 package Controle;
 
 import java.util.List;
+
 import javax.swing.JOptionPane;
+
+import Modelo.Amigos;
 import Modelo.Emprestimos;
 import http.ApiClient;
 
@@ -15,16 +18,13 @@ public class EmprestimosControle {
 
     /**
      * Registra um novo empréstimo (POST para a API).
-     * O Backend deve mudar o status da Ferramenta para indisponível.
      */
     public boolean registrarEmprestimo(Emprestimos novoEmprestimo) {
         try {
-            // Chama o método HTTP real no ApiClient
             apiClient.registrarEmprestimo(novoEmprestimo); 
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            // A mensagem de erro da API é passada para a View
             JOptionPane.showMessageDialog(null, "Erro ao registrar empréstimo: " + e.getMessage());
             return false;
         }
@@ -32,11 +32,9 @@ public class EmprestimosControle {
 
     /**
      * Registra a devolução de uma ferramenta (PUT para a API).
-     * O Backend deve mudar o status da Ferramenta de volta para disponível.
      */
     public boolean registrarDevolucao(int idFerramenta) {
         try {
-            // Chama o método HTTP real no ApiClient
             apiClient.registrarDevolucao(idFerramenta);
             return true;
         } catch (Exception e) {
@@ -46,9 +44,34 @@ public class EmprestimosControle {
         }
     }
     
-    // Método de listar Empréstimos Ativos (para relatórios)
     public List<Emprestimos> listarEmprestimosAtivos() {
-        // Implementação de listagem pendente
-        return null; 
+        try {
+            return apiClient.listarEmprestimosAtivos();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao listar empréstimos ativos: " + e.getMessage());
+            return null; 
+        }
+    }
+    
+    /*
+    // Lista Empréstimos Históricos (para Relatório)
+    public List<Emprestimos> listarHistoricoEmprestimos() {
+        try {
+            return apiClient.listarHistoricoEmprestimos();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao listar histórico de empréstimos: " + e.getMessage());
+            return null; 
+        }
+    }
+    */
+
+    public List<Amigos> listarDevedores() {
+        try {
+            
+            return apiClient.listarDevedores(); 
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao listar devedores: " + e.getMessage());
+            return null; 
+        }
     }
 }

@@ -1,9 +1,11 @@
 package Controle;
 
-import Modelo.Ferramentas;
-import http.ApiClient; 
 import java.util.List;
+
 import javax.swing.JOptionPane;
+
+import Modelo. Ferramentas;
+import http.ApiClient;
 
 public class FerramentasControle {
 
@@ -14,140 +16,170 @@ public class FerramentasControle {
     }
 
     /**
-     * MÉTODO PARA ADICIONAR uma nova ferramenta com categoria
+     * Adicionar nova ferramenta com categoria
      */
-    public boolean adicionarFerramenta(String nome, String marca, double preco, 
-                                     int Quantidade_estoque, int Quantidade_minima, 
-                                     int Quantidade_maxima, String categoria) {
+    public boolean adicionarFerramenta (String nome, String marca, 
+            double preco, 
+            int Quantidade_estoque, int 
+            Quantidade_minima, int Quantidade_maxima, String 
+            categoria) {
         try {
             Ferramentas novaFerramenta = new Ferramentas();
-            novaFerramenta.setNome(nome);
-            novaFerramenta.setMarca(marca);
-            novaFerramenta.setPreco(preco);
-            novaFerramenta.setQuantidade_estoque(Quantidade_estoque);
-            novaFerramenta.setQuantidade_minima(Quantidade_minima);
-            novaFerramenta.setQuantidade_maxima(Quantidade_maxima);
-            novaFerramenta.setCategoria(categoria); // NOVO CAMPO
-            novaFerramenta.setDisponivel(Quantidade_estoque > 0);
+            novaFerramenta.setNome (nome);
+            novaFerramenta.setMarca (marca);
+            novaFerramenta.setPreco (preco);
+            novaFerramenta.setQuantidade_estoque (Quantidade_estoque);
+            novaFerramenta.setQuantidade_minima (Quantidade_minima);
+            novaFerramenta.setQuantidade_maxima (Quantidade_maxima);
+            novaFerramenta.setCategoria (categoria);
+            novaFerramenta.setDisponivel (Quantidade_estoque > 0);
 
-            apiClient.cadastrarFerramenta(novaFerramenta);
+            apiClient.cadastrarFerramenta (novaFerramenta);
             return true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Falha ao cadastrar: " + e.getMessage());
+            JOptionPane.showMessageDialog (null, "Falha ao cadastrar: "
+                    + e.getMessage());
             return false;
         }
     }
 
-    /**
-     * Método antigo mantido para compatibilidade
-     */
-    public boolean adicionarFerramenta(String nome, String marca, double preco) {
-        return adicionarFerramenta(nome, marca, preco, 0, 1, 100, "Geral");
+    public boolean adicionarFerramenta (String nome, String marca, 
+            double preco) {
+        return adicionarFerramenta (nome, marca, preco, 0, 1, 100,
+                "Geral");
     }
 
     /**
-     * MÉTODO PARA OBTER CATEGORIAS do back-end
+     * Obter categorias do back-end
      */
-    public java.util.List<String> obterCategorias() {
+    public java.util.List<String> obterCategorias () {
         try {
             // Chamada para o API Client obter categorias
             return apiClient.obterCategorias();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao carregar categorias: " + e.getMessage());
+            JOptionPane.showMessageDialog (null, "Erro ao carregar"
+                    + " categorias: " + e.getMessage());
             // Retorna categorias padrão em caso de erro
-            return java.util.Arrays.asList("Elétrica", "Manual", "Hidráulica", "Pneumática", "Geral");
+            return java.util.Arrays.asList("Elétrica", "Manual",
+                    "Hidraulica", "Pneumática", "Geral");
         }
     }
 
     /**
-     * MÉTODO PARA LISTAR todas as ferramentas (GET)
+     * Listar todas as ferramentas (GET)
      */
-    public List<Ferramentas> listarFerramentas() {
+    public List<Ferramentas> listarFerramentas () {
         try {
-            return apiClient.listarFerramentas();
+            // Garante o retorno direto do cliente.
+            return apiClient.listarFerramentas ();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao listar. Verifique o servidor.");
+            JOptionPane.showMessageDialog (null, "Erro ao listar: "
+                    + "Verifique a conexão com o servidor e o modelo de dados.");
             return null;
         }
     }
 
     /**
-     * MÉTODO PARA DELETAR uma ferramenta pelo ID (DELETE)
+     * Deletar uma ferramenta pelo ID (DELETE)
      */
-    public boolean deletarFerramenta(int id) {
+    public boolean deletarFerramenta (int id) {
         try {
-            apiClient.excluirFerramenta(id);
+            apiClient.excluirFerramenta (id);
             return true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao excluir: " + e.getMessage());
+            JOptionPane.showMessageDialog (null, "Erro ao excluir: " +
+                    e.getMessage());
             return false;
         }
     }
 
     /**
-     * MÉTODO PARA ATUALIZAR uma ferramenta
+     * Atualizar uma ferramenta
      */
-    public boolean atualizarFerramenta(Ferramentas ferramenta) {
+    public boolean atualizarFerramenta (Ferramentas ferramenta) {
         try {
-            // Aqui você implementaria a chamada para atualizar no API Client
-            // apiClient.atualizarFerramenta(ferramenta);
-            System.out.println("Atualizando ferramenta: " + ferramenta.getNome());
+            apiClient.atualizarFerramenta (ferramenta);
             return true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar: " + e.getMessage());
+            JOptionPane.showMessageDialog (null, "Erro ao atualizar: "
+                    + e.getMessage());
             return false;
         }
     }
 
     /**
-     * MÉTODO PARA VERIFICAR ESTOQUE BAIXO
+     * Verificar estoque baixo
      */
-    public List<Ferramentas> getFerramentasComEstoqueBaixo() {
+    public List<Ferramentas> getFerramentasComEstoqueBaixo () {
         try {
-            List<Ferramentas> todas = apiClient.listarFerramentas();
+            // Chama a API e atribui o resultado à variável 'todas'
+            List<Ferramentas> todas = apiClient.listarFerramentas(); 
+            
             if (todas != null) {
                 return todas.stream()
-                    .filter(Ferramentas::isEstoqueBaixo)
-                    .toList();
+                        .filter (Ferramentas::isEstoqueBaixo)
+                        .toList();
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao verificar estoque baixo.");
+            JOptionPane.showMessageDialog (null, "Erro ao verificar"
+                    + " estoque baixo.");
         }
         return null;
     }
-        /**
-     * MÉTODO PARA OBTER FERRAMENTAS POR CATEGORIA
+
+    /**
+     * Obter ferramentas por categoria
      */
-    public List<Ferramentas> getFerramentasPorCategoria(String categoria) {
+    public List<Ferramentas> getFerramentasPorCategoria (String categoria) {
         try {
-            List<Ferramentas> todas = apiClient.listarFerramentas();
-            if (todas != null && categoria != null && !categoria.equals("Todas")) {
+            // Chama a API e atribui o resultado à variável 'todas'
+            List<Ferramentas> todas = apiClient.listarFerramentas(); 
+            
+            // Se a categoria *NÃO* for "Todas", então filtra.
+            if (todas != null && categoria != null &&
+                    !categoria.equals("Todas")) { 
+                
                 return todas.stream()
-                    .filter(f -> f.getCategoria().equals(categoria))
-                    .toList();
+                        .filter (f -> f.getCategoria() != null && 
+                        f.getCategoria().equals(categoria)) 
+                        .toList(); 
             }
-            return todas;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao filtrar por categoria.");
-            return null;
+            
+            // Se for "Todas" ou alguma condição falhar, retorna todas.
+            return todas; 
+            
+        } catch (Exception e) { 
+            JOptionPane.showMessageDialog (null, "Erro ao filtrar por"
+                    + " categoria."); 
+            return null; 
         }
     }
 
     /**
-     * MÉTODO PARA OBTER FERRAMENTAS POR STATUS
+     * Obter ferramentas por status
      */
-    public List<Ferramentas> getFerramentasPorStatus(String status) {
-        try {
-            List<Ferramentas> todas = apiClient.listarFerramentas();
-            if (todas != null && status != null && !status.equals("Todos")) {
-                return todas.stream()
-                    .filter(f -> f.getStatusEstoque().contains(status.toUpperCase()))
-                    .toList();
+    public List<Ferramentas> getFerramentasPorStatus (String status) {
+        try { 
+            // Chama a API e atribui o resultado à variável 'todas'
+            List<Ferramentas> todas = apiClient.listarFerramentas(); 
+            
+            // Se o status *NÃO* for "Todos", então filtra.
+            if (todas != null && status != null &&
+                    !status.equals("Todos")) { 
+                
+                return todas.stream() 
+                        .filter (f-> 
+                        f.getStatusEstoque().contains(status.toUpperCase())) 
+                        .toList(); 
             }
-            return todas;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao filtrar por status.");
-            return null;
+            
+            // Se for "Todos" ou alguma condição falhar, retorna todas.
+            return todas; 
+            
+        } catch (Exception e) { 
+            JOptionPane.showMessageDialog (null, "Erro ao filtrar por"
+                    + " status."); 
+            return null; 
         }
     }
 }
