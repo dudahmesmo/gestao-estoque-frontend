@@ -14,7 +14,7 @@ public class Amigos {
     public Amigos() {
     }
 
-    // --- Getters e Setters ---
+    // GETTERS E SETTERS
 
     public Long getId_amigo() {
         return id;
@@ -37,7 +37,7 @@ public class Amigos {
         this.telefone = telefone;
     }
 
-    // --- Getters e Setters Novos ---
+    // GETTERS E SETTERS
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

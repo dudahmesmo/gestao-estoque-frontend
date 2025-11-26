@@ -14,6 +14,7 @@ public class Ferramentas {
     private int Quantidade_minima;
     private int Quantidade_maxima;
     private String categoria;
+    
 
     public Ferramentas() {}
 
@@ -44,7 +45,7 @@ public class Ferramentas {
     }
    
 
-    // MÉTODOS GETTERS E SETTERS
+    // GETTERS E SETTERS
     public Long getId() { return id; } 
     public void setId(Long id) { this.id = id; }
 

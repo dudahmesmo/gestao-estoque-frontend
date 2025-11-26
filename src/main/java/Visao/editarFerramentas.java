@@ -36,12 +36,12 @@ public class editarFerramentas extends JFrame {
         this.ferramentaOriginal = ferramentaParaEditar;
         this.telaPai = telaGerenciamento;
         
-        // Se a ferramenta for nula (erro de seleção), não inicie.
+        // Se a ferramenta for nula, não inicia
         if (ferramentaParaEditar == null) {
             throw new IllegalArgumentException("Objeto Ferramenta não pode ser nulo para edição.");
         }
 
-        initComponents(); // Inicializa os componentes e o layout
+        initComponents(); 
         carregarCategorias();
         preencherCampos(); 
         
@@ -57,9 +57,9 @@ public class editarFerramentas extends JFrame {
         txtQuantidade_minima.setText(String.valueOf(ferramentaOriginal.getQuantidade_minima()));
         txtQuantidade_maxima.setText(String.valueOf(ferramentaOriginal.getQuantidade_maxima()));
         
-        // Seleciona a categoria atual
-        if (ferramentaOriginal.getCategoria() != null && comboBoxCategoria.getItemCount() > 0) {
-             comboBoxCategoria.setSelectedItem(ferramentaOriginal.getCategoria());
+        if (ferramentaOriginal.getCategoria() != null && !ferramentaOriginal.getCategoria().isEmpty()) {
+     
+     comboBoxCategoria.setSelectedItem(ferramentaOriginal.getCategoria());  
         }
     }
 
@@ -80,12 +80,14 @@ public class editarFerramentas extends JFrame {
         }
     }
 
-    // Ação do botão SALVAR EDIÇÃO
+    // Ação do botão SALVAR EDIÇÃO 
     private void btnSalvarActionPerformed(ActionEvent evt) {
         try {
             // 1. Coleta dos dados
             double preco = Double.parseDouble(txtCustoF.getText().replace(",", "."));
-            
+            String categoriaNome = (String) comboBoxCategoria.getSelectedItem(); // Obtém o nome
+
+            // 2. Cria o objeto Ferramentas 
             Ferramentas ferramentaAtualizada = new Ferramentas(
                 ferramentaOriginal.getId(), 
                 txtNome.getText().trim(), 
@@ -94,10 +96,10 @@ public class editarFerramentas extends JFrame {
                 Integer.parseInt(txtQuantidade_estoque.getText()), 
                 Integer.parseInt(txtQuantidade_minima.getText()), 
                 Integer.parseInt(txtQuantidade_maxima.getText()), 
-                (String) comboBoxCategoria.getSelectedItem()
+                categoriaNome 
             );
             
-            // 2. Chama o controle para atualizar (PUT)
+            // 3. Chama o controle para atualizar (PUT)
             boolean sucesso = ferramentaControle.atualizarFerramenta(ferramentaAtualizada);
 
             if (sucesso) {
