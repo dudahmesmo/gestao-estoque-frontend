@@ -5,18 +5,34 @@ import javax.swing.table.DefaultTableModel;
 import Controle.AmigosControle;
 import Modelo.Amigos; 
 import java.util.List; 
+import java.util.Collections;
+import java.util.Comparator;
+import Visao.registroEmprestimo; // Import necessário
 
 public class gerenciarAmigo extends javax.swing.JFrame {
 
     private AmigosControle amigosControle; 
+    private final registroEmprestimo telaPrincipal; 
 
-    public gerenciarAmigo() {
-        initComponents(); // Inicializa os componentes da interface gráfica
+    // Construtor principal (para ser usado pelo registroEmprestimo)
+    public gerenciarAmigo(registroEmprestimo telaPrincipal) {
+        initComponents();
+        this.telaPrincipal = telaPrincipal;
         
-        // Inicializa o controle com o construtor (que inicializa o ApiClient)
         this.amigosControle = new AmigosControle();
 
-        atualizarTabela(); // Atualiza a tabela assim que a janela abre
+        atualizarTabela();
+        this.setLocationRelativeTo(null);
+        List<Amigos> listaDeAmigos = this.amigosControle.listarAmigos();
+
+        // Implementação da Ordenação Alfabética
+        if (listaDeAmigos != null) {
+            Collections.sort(listaDeAmigos, Comparator.comparing(Amigos::getNome)); 
+        }
+    }
+    
+    public gerenciarAmigo() {
+        this(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -140,6 +156,12 @@ public class gerenciarAmigo extends javax.swing.JFrame {
         if (sucesso) {
             atualizarTabela(); // Atualiza a tabela visualmente
             JOptionPane.showMessageDialog(this, "Amigo excluído com sucesso!");
+            
+            // Atualiza a lista na tela principal
+            if (telaPrincipal != null) { 
+                telaPrincipal.updateComboAmigos(); // Chama o método de atualização do combo
+            }
+
         } else {
             JOptionPane.showMessageDialog(this, "Erro ao excluir amigo.");
         }
@@ -153,19 +175,25 @@ public class gerenciarAmigo extends javax.swing.JFrame {
         // 1. Pega o modelo da tabela
         DefaultTableModel model = (DefaultTableModel) TabelaAmigos.getModel();
         
-        // 2. Limpa a tabela visualmente (reseta as linhas)
+        // 2. Limpa a tabela visualmente
         model.setRowCount(0);
             
         // 3. Chama o Controle para buscar os dados da API
         List<Amigos> listaDeAmigos = this.amigosControle.listarAmigos();
 
-        // 4. Preenche a tabela com os resultados da API
+        // 4. Implementação da Ordenação Alfabética
+        if (listaDeAmigos != null) {
+            // Ordena a lista de Amigos por Nome
+            listaDeAmigos.sort(Comparator.comparing(Amigos::getNome));
+        }
+        
+        // 5. Preenche a tabela com os resultados da API
         if (listaDeAmigos != null) {
             for (Amigos amigo : listaDeAmigos) {
                 model.addRow(new Object[]{
-                    amigo.getId(),      
-                    amigo.getNome(),     
-                    amigo.getTelefone()  
+                    amigo.getId(),
+                    amigo.getNome(),
+                    amigo.getTelefone()
                 });
             }
         }

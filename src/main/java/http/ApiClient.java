@@ -109,7 +109,7 @@ public class ApiClient {
     public void cadastrarAmigo(Amigos amigo) throws Exception {
         String jsonBody = gson.toJson(amigo);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/amigos")) 
+                .uri(URI.create(BASE_URL + "/amigos/"))
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .header("Content-Type", "application/json") 
                 .build();
@@ -121,7 +121,7 @@ public class ApiClient {
 
     public List<Amigos> listarAmigos() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/amigos")) 
+                .uri(URI.create(BASE_URL + "/amigos/")) 
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -134,7 +134,7 @@ public class ApiClient {
 
     public void excluirAmigo(int id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/amigos/" + id)) 
+                .uri(URI.create(BASE_URL + "/amigos/" + id))
                 .DELETE()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
