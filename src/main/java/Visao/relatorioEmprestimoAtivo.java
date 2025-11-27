@@ -4,8 +4,9 @@
  */
 package Visao;
 
+
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JTextField; 
+import javax.swing.JTextField;
 import Controle.AmigosControle;
 // import DAO.AmigosDAO;
 // import projetodb.projetoa3sql.Conexao;
@@ -25,13 +26,15 @@ import java.util.Date;
 // import java.text.ParseException;
 import javax.swing.JComboBox;
 
+
 /**
  *
  * @author maria
  */
 public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
-  
+ 
    
+
 
     /**
      * Creates new form relatorioEmprestimoAtivo
@@ -40,6 +43,7 @@ public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
         initComponents();
         atualizarBanco();
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -50,14 +54,17 @@ public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+
         jScrollPane1 = new javax.swing.JScrollPane();
         tableEmprestimosAtivos = new javax.swing.JTable();
         autualizarBD = new javax.swing.JButton();
+
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Relatório Empréstimos Ativos");
         setAlwaysOnTop(true);
         setResizable(false);
+
 
         tableEmprestimosAtivos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -80,6 +87,7 @@ public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
                 java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
 
+
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
@@ -87,12 +95,14 @@ public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
         tableEmprestimosAtivos.setShowGrid(true);
         jScrollPane1.setViewportView(tableEmprestimosAtivos);
 
+
         autualizarBD.setText("Atualizar banco de dados");
         autualizarBD.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 autualizarBDActionPerformed(evt);
             }
         });
+
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -117,15 +127,18 @@ public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
                 .addContainerGap(76, Short.MAX_VALUE))
         );
 
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
+
+   
     private void atualizarBanco() {
      
      /* try {
     // 1. Estabelecer conexão com o banco de dados
     Connection conexao = Conexao.conectar();
+
 
     // 2. Escrever a consulta SQL para selecionar os empréstimos ativos com status "Em dia" ou "Atrasado"
     String sql = "SELECT e.id_emprestimo, a.nome_usuario AS Amigo, f.nome_ferramenta AS Ferramenta, e.data_emprestimo AS 'Data de Empréstimo', e.data_devolucao_esperada AS 'Devolução Prevista' FROM Emprestimos e " +
@@ -133,13 +146,16 @@ public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
                  "JOIN ferramentas f ON e.id_ferramenta = f.id_ferramenta " +
                  "WHERE e.status_emprestimo IN ('Em dia', 'Atrasado')";
 
+
     // 3. Executar a consulta SQL
     try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
         ResultSet rs = pstmt.executeQuery();
 
+
         // Limpar a tabela antes de adicionar novos dados
         DefaultTableModel model = (DefaultTableModel) tableEmprestimosAtivos.getModel();
         model.setRowCount(0);
+
 
         // Processar os resultados e preencher a tabela de empréstimos ativos
         while (rs.next()) {
@@ -148,6 +164,7 @@ public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
             String ferramenta = rs.getString("Ferramenta");
             String dataEmprestimo = rs.getString("Data de Empréstimo");
             String devolucaoPrevista = rs.getString("Devolução Prevista");
+
 
             Object[] rowData = {id, amigo, ferramenta, dataEmprestimo, devolucaoPrevista};
             model.addRow(rowData);
@@ -158,25 +175,28 @@ public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
     JOptionPane.showMessageDialog(this, "Erro ao recuperar dados dos empréstimos ativos: " + e.getMessage());
 } */
 
+
     System.out.println("Lógica de 'atualizarBanco' (Relatório Empréstimos Ativos) será implementada com ApiClient.");
-        
+       
         DefaultTableModel model = (DefaultTableModel) tableEmprestimosAtivos.getModel();
         model.setRowCount(0);
  }
     private void autualizarBDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autualizarBDActionPerformed
        atualizarBanco();
 
+
     }//GEN-LAST:event_autualizarBDActionPerformed
+
 
     /**
      * @param args the command line arguments
      */
-    
+   
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -196,6 +216,7 @@ public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -203,6 +224,7 @@ public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
             }
         });
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton autualizarBD;

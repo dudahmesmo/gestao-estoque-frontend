@@ -1,8 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ /* Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package Visao;
+
 
 import javax.swing.table.DefaultTableModel;
 // import java.sql.Connection;
@@ -13,14 +13,16 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 // import projetodb.projetoa3sql.Conexao;
 
+
 /**
  * Esta classe representa a interface gráfica para exibir o relatório de ferramentas.
  * Ela é responsável por recuperar os dados das ferramentas do banco de dados e exibi-los em uma tabela.
  * Além disso, ela também calcula o custo total das ferramentas e o exibe na interface.
- * 
+ *
  * @author maria
  */
 public class relatorioFerramenta extends javax.swing.JFrame {
+
 
     /**
      * Creates new form relatorioFerramenta
@@ -31,6 +33,7 @@ public class relatorioFerramenta extends javax.swing.JFrame {
         atualizarBanco(); // Atualiza os dados da tabela de ferramentas
     }
 
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -40,14 +43,17 @@ public class relatorioFerramenta extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+
         jScrollPane1 = new javax.swing.JScrollPane();
         toolsTable = new javax.swing.JTable();
         totalCostLabel = new javax.swing.JLabel();
         AtualizarBD = new javax.swing.JButton();
 
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Relatório de Ferramentas e Custo Total de Aquisição");
         setResizable(false);
+
 
         toolsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -69,6 +75,7 @@ public class relatorioFerramenta extends javax.swing.JFrame {
                 java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
             };
 
+
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
@@ -76,8 +83,10 @@ public class relatorioFerramenta extends javax.swing.JFrame {
         toolsTable.setShowGrid(true);
         jScrollPane1.setViewportView(toolsTable);
 
+
         totalCostLabel.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         totalCostLabel.setText("Total de Custo: R$ 0.00");
+
 
         AtualizarBD.setText("Atualizar banco de dados");
         AtualizarBD.addActionListener(new java.awt.event.ActionListener() {
@@ -85,6 +94,7 @@ public class relatorioFerramenta extends javax.swing.JFrame {
                 AtualizarBDActionPerformed(evt);
             }
         });
+
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -115,24 +125,30 @@ public class relatorioFerramenta extends javax.swing.JFrame {
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
 
     private void atualizarBanco() {
      /* try {
     // 1. Estabelecer conexão com o banco de dados
     Connection conexao = Conexao.conectar();
 
+
     // 2. Escrever a consulta SQL para selecionar os dados das ferramentas
     String sql = "SELECT id_ferramenta, nome_ferramenta, marca_ferramenta, preco FROM ferramentas";
+
 
     // 3. Executar a consulta SQL
     try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
         ResultSet rs = pstmt.executeQuery();
 
+
         // Limpar a tabela antes de adicionar novos dados
         DefaultTableModel model = (DefaultTableModel) toolsTable.getModel();
         model.setRowCount(0);
+
 
         // Processar os resultados e preencher a tabela de ferramentas
         while (rs.next()) {
@@ -141,9 +157,11 @@ public class relatorioFerramenta extends javax.swing.JFrame {
             String marca = rs.getString("marca_ferramenta");
             double preco = rs.getDouble("preco");
 
+
             Object[] rowData = {id, nome, marca, preco};
             model.addRow(rowData);
         }
+
 
         // 4. Calcular o custo total
         calcularTotalCusto();
@@ -152,15 +170,17 @@ public class relatorioFerramenta extends javax.swing.JFrame {
     JOptionPane.showMessageDialog(this, "Erro ao recuperar dados das ferramentas: " + e.getMessage());
 } */
     System.out.println("Lógica de 'atualizarBanco' (Relatório Ferramenta) será implementada com ApiClient.");
-        
+       
         DefaultTableModel model = (DefaultTableModel) toolsTable.getModel();
         model.setRowCount(0);
     }
     private void AtualizarBDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AtualizarBDActionPerformed
-      
+     
         atualizarBanco();
 
+
     }//GEN-LAST:event_AtualizarBDActionPerformed
+
 
     /**
      * @param args the command line arguments
@@ -169,7 +189,7 @@ public class relatorioFerramenta extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -189,6 +209,7 @@ public class relatorioFerramenta extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -197,9 +218,11 @@ public class relatorioFerramenta extends javax.swing.JFrame {
         });
     }
 
+
     private void calcularTotalCusto() {
         DefaultTableModel model = (DefaultTableModel) toolsTable.getModel();
 double totalCost = 0;
+
 
 // Itera sobre cada linha da tabela para calcular o custo total
 for (int i = 0; i < model.getRowCount(); i++) {
@@ -214,12 +237,12 @@ for (int i = 0; i < model.getRowCount(); i++) {
         }
     }
         }
-        
+       
         totalCostLabel.setText("Total de Custo: R$ " + String.format("%.2f", totalCost));
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
-    
+   
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AtualizarBD;
     private javax.swing.JScrollPane jScrollPane1;
@@ -227,6 +250,7 @@ for (int i = 0; i < model.getRowCount(); i++) {
     private javax.swing.JLabel totalCostLabel;
     // End of variables declaration//GEN-END:variables
 
-    
-    
+
+   
+   
 }

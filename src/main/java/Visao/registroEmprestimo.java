@@ -18,31 +18,28 @@ import Visao.relatorioDevedores;
 import Visao.relatorioEmprestimoAtivo;
 import Visao.relatorioFerramenta;
 import Visao.relatorioHistoricoEmprestimo;
-import Visao.consultarEstoque; 
+import Visao.consultarEstoque;
 
 import Controle.AmigosControle;
-import Controle.EmprestimosControle; 
+import Controle.EmprestimosControle;
 import Controle.FerramentasControle;
 import Modelo.Amigos;
 import Modelo.Emprestimos;
 import Modelo.Ferramentas;
 
-
 /**
  * Registro de Empréstimo
  */
 public class registroEmprestimo extends javax.swing.JFrame {
-    
+
     private AmigosControle amigoControle;
-    private FerramentasControle ferramentaControle; 
-    private EmprestimosControle emprestimosControle; 
-    
-    
+    private FerramentasControle ferramentaControle;
+    private EmprestimosControle emprestimosControle;
+
     // Listas para guardar os objetos
     private List<Ferramentas> ferramentasDisponiveis;
-    private List<Emprestimos> emprestimosAtivos; 
+    private List<Emprestimos> emprestimosAtivos;
     private List<Amigos> listaAmigos;
-    
 
     public registroEmprestimo() {
         initComponents();
@@ -50,36 +47,35 @@ public class registroEmprestimo extends javax.swing.JFrame {
         this.amigoControle = new AmigosControle();
         this.ferramentaControle = new FerramentasControle();
         this.emprestimosControle = new EmprestimosControle();
-        
+
         // Inicializa as listas
         this.ferramentasDisponiveis = new ArrayList<>();
-        this.emprestimosAtivos = new ArrayList<>(); 
+        this.emprestimosAtivos = new ArrayList<>();
         this.listaAmigos = new ArrayList<>();
-        
+
         this.setLocationRelativeTo(null);
-        
+
         // Chama os métodos que carregam os combos
-        updateComboAmigos(); 
-        updateComboFerramentas(); 
-        updateComboDevolucao(); 
+        updateComboAmigos();
+        updateComboFerramentas();
+        updateComboDevolucao();
     }
 
-    
     /**
-     * Atualiza a JComboBox de Amigos 
+     * Atualiza a JComboBox de Amigos
      */
     public void updateComboAmigos() {
         System.out.println("Atualizando ComboBox de Amigos");
-        
+
         itemAmigoRegistro.removeAllItems();
         itemAmigoDevolucao.removeAllItems();
-        
+
         this.listaAmigos = this.amigoControle.listarAmigos();
 
         if (this.listaAmigos != null) {
             // Ordena alfabeticamente
             Collections.sort(this.listaAmigos, Comparator.comparing(Amigos::getNome));
-            
+
             for (Modelo.Amigos amigo : this.listaAmigos) {
                 itemAmigoRegistro.addItem(amigo.getNome());
                 itemAmigoDevolucao.addItem(amigo.getNome());
@@ -88,40 +84,42 @@ public class registroEmprestimo extends javax.swing.JFrame {
     }
 
     /**
-     * Atualiza a JComboBox de Ferramentas (para EMPRÉSTIMO), aplicando o filtro de disponibilidade.
+     * Atualiza a JComboBox de Ferramentas (para EMPRÉSTIMO), aplicando o filtro
+     * de disponibilidade.
      */
     public void updateComboFerramentas() {
         System.out.println("Atualizando ComboBox de Ferramentas Disponíveis");
-        
+
         itemFerramenta.removeAllItems();
-        
-        List<Ferramentas> listaCompleta = this.ferramentaControle.listarFerramentas(); 
-        
+
+        List<Ferramentas> listaCompleta = this.ferramentaControle.listarFerramentas();
+
         this.ferramentasDisponiveis.clear();
-        
+
         if (listaCompleta != null) {
             // Ordena alfabeticamente
             Collections.sort(listaCompleta, Comparator.comparing(Ferramentas::getNome));
-            
+
             for (Ferramentas ferramenta : listaCompleta) {
-                if (ferramenta.isDisponivel()) { 
+                if (ferramenta.isDisponivel()) {
                     itemFerramenta.addItem(ferramenta.toString());
                     this.ferramentasDisponiveis.add(ferramenta);
                 }
             }
         }
     }
-    
+
     /**
-     * MÉTODO: Atualiza o ComboBox para DEVOLUÇÃO (mostra ferramentas ativamente emprestadas).
+     * MÉTODO: Atualiza o ComboBox para DEVOLUÇÃO (mostra ferramentas ativamente
+     * emprestadas).
      */
     public void updateComboDevolucao() {
         System.out.println("Atualizando ComboBox de Ferramentas para Devolução (Empréstimos Ativos)");
-        
+
         itemFerramentaDevolucao.removeAllItems();
         // Busca a lista de empréstimos ativos 
-        this.emprestimosAtivos = this.emprestimosControle.listarEmprestimosAtivos(); 
-        
+        this.emprestimosAtivos = this.emprestimosControle.listarEmprestimosAtivos();
+
         if (this.emprestimosAtivos != null) {
             for (Emprestimos emprestimo : this.emprestimosAtivos) {
                 // Formata o item do ComboBox para DEVOLUÇÃO (Amigo - Ferramenta)
@@ -131,18 +129,21 @@ public class registroEmprestimo extends javax.swing.JFrame {
         }
     }
 
-    
     /**
      * Método auxiliar para obter o ID da ferramenta pelo toString() do ComboBox
      */
     private Long getFerramentaIdByName(String nome) {
-        if (nome == null) return null;
-        
+        if (nome == null) {
+            return null;
+        }
+
         // 1. Tenta achar na lista de disponíveis (para empréstimo)
         for (Ferramentas f : this.ferramentasDisponiveis) {
-            if (f.toString().equals(nome)) return f.getId(); 
+            if (f.toString().equals(nome)) {
+                return f.getId();
+            }
         }
-        
+
         // 2. Para devolução, busca o ID da Ferramenta pelo item do Empréstimo Ativo
         if (this.emprestimosAtivos != null) {
             for (Emprestimos e : this.emprestimosAtivos) {
@@ -152,13 +153,15 @@ public class registroEmprestimo extends javax.swing.JFrame {
                 }
             }
         }
-        
+
         return null;
     }
-    
+
     // Método auxiliar para obter o ID do amigo pelo nome
     private Long getAmigoIdByName(String nome) {
-        if (nome == null) return null;
+        if (nome == null) {
+            return null;
+        }
         for (Amigos a : this.listaAmigos) {
             if (a.getNome().equals(nome)) {
                 return a.getId_amigo();
@@ -166,13 +169,12 @@ public class registroEmprestimo extends javax.swing.JFrame {
         }
         return null;
     }
-    
+
     // IMPLEMENTAÇÃO DOS BOTÕES
-    
     /**
      * Ação do botão para registrar um novo empréstimo.
      */
-    private void buttonRegistrarEmprestimoActionPerformed(java.awt.event.ActionEvent evt) { 
+    private void buttonRegistrarEmprestimoActionPerformed(java.awt.event.ActionEvent evt) {
         try {
             String amigoSelecionado = (String) itemAmigoRegistro.getSelectedItem();
             String ferramentaSelecionada = (String) itemFerramenta.getSelectedItem();
@@ -187,91 +189,90 @@ public class registroEmprestimo extends javax.swing.JFrame {
             // 2. Resolve IDs 
             Long idAmigo = getAmigoIdByName(amigoSelecionado);
             Long idFerramenta = getFerramentaIdByName(ferramentaSelecionada);
-            
+
             if (idAmigo == null || idFerramenta == null) {
                 JOptionPane.showMessageDialog(this, "Erro: Amigo ou Ferramenta não encontrados no sistema.");
                 return;
             }
-            
+
             // 3. Converte a data (formato dd-MM-yyyy)
             SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-            format.setLenient(false); 
+            format.setLenient(false);
             java.util.Date parsedEmprestimoDate = format.parse(dataEmprestimoStr);
-            
+
             // Cria o objeto empréstimo (ID=0 é placeholder, a API gera o ID)
-            Emprestimos novoEmprestimo = new Emprestimos(0, idFerramenta.intValue(), ferramentaSelecionada, 
-                                                         parsedEmprestimoDate, new Date(), 
-                                                         idAmigo.intValue(), amigoSelecionado, "", "Em dia"); 
-            
+            Emprestimos novoEmprestimo = new Emprestimos(0, idFerramenta.intValue(), ferramentaSelecionada,
+                    parsedEmprestimoDate, new Date(),
+                    idAmigo.intValue(), amigoSelecionado, "", "Em dia");
+
             // 4. Chama o Controle (API)
             boolean sucesso = emprestimosControle.registrarEmprestimo(novoEmprestimo);
 
             if (sucesso) {
                 JOptionPane.showMessageDialog(this, "Empréstimo registrado com sucesso.");
-                updateComboFerramentas(); 
-                updateComboDevolucao(); 
+                updateComboFerramentas();
+                updateComboDevolucao();
                 dataEmprestimo.setText("");
             } else {
                 JOptionPane.showMessageDialog(this, "Falha ao registrar empréstimo.");
             }
-            
+
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(this, "Erro ao converter data. Use o formato DD-MM-YYYY.");
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro inesperado ao registrar empréstimo.");
         }
-    } 
+    }
 
     /**
      * Ação do botão para registrar uma devolução.
      */
-    private void buttonRegistrarDevolucaoActionPerformed(java.awt.event.ActionEvent evt) { 
+    private void buttonRegistrarDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {
         try {
             String ferramentaSelecionada = (String) itemFerramentaDevolucao.getSelectedItem();
-            
+
             if (ferramentaSelecionada == null) {
                 JOptionPane.showMessageDialog(this, "Selecione uma ferramenta para devolução.");
                 return;
             }
-            
+
             // Resolve ID da Ferramenta pelo nome do item no combo box (corrigido para usar a lógica de empréstimos)
-            Long idFerramenta = getFerramentaIdByName(ferramentaSelecionada); 
-            
+            Long idFerramenta = getFerramentaIdByName(ferramentaSelecionada);
+
             if (idFerramenta == null) {
-                 JOptionPane.showMessageDialog(this, "Erro: Ferramenta não encontrada no sistema.");
-                 return;
+                JOptionPane.showMessageDialog(this, "Erro: Ferramenta não encontrada no sistema.");
+                return;
             }
 
             // A chamada de devolução precisa do ID da Ferramenta.
-            boolean sucesso = emprestimosControle.registrarDevolucao(idFerramenta.intValue()); 
-            
+            boolean sucesso = emprestimosControle.registrarDevolucao(idFerramenta.intValue());
+
             if (sucesso) {
                 JOptionPane.showMessageDialog(this, "Devolução registrada com sucesso.");
-                updateComboFerramentas(); 
-                updateComboDevolucao(); 
-                dataDeDevolucao.setText(""); 
+                updateComboFerramentas();
+                updateComboDevolucao();
+                dataDeDevolucao.setText("");
             } else {
                 JOptionPane.showMessageDialog(this, "Falha ao registrar devolução.");
             }
 
         } catch (Exception e) {
-             e.printStackTrace();
-             JOptionPane.showMessageDialog(this, "Erro inesperado ao registrar devolução.");
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro inesperado ao registrar devolução.");
         }
-    } 
-    
+    }
+
     /**
      * Ação do botão "Atualizar banco de dados"
      */
-    private void autualizarBancoActionPerformed(java.awt.event.ActionEvent evt) { 
-        updateComboAmigos(); 
+    private void autualizarBancoActionPerformed(java.awt.event.ActionEvent evt) {
+        updateComboAmigos();
         updateComboFerramentas();
-        updateComboDevolucao(); 
-    } 
-    
+        updateComboDevolucao();
+    }
+
     // GERADO PELO NETBEANS (java swing)
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -306,7 +307,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItemConsultarEstoque = new javax.swing.JMenuItem(); 
+        jMenuItemConsultarEstoque = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         menuRFerramenta = new javax.swing.JMenuItem();
         menuREativos = new javax.swing.JMenuItem();
@@ -346,7 +347,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
             }
         });
 
-        itemFerramenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
+        itemFerramenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{" "}));
         itemFerramenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemFerramentaActionPerformed(evt);
@@ -379,59 +380,59 @@ public class registroEmprestimo extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(311, 311, 311)
-                .addComponent(buttonRegistrarEmprestimo)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(itemAmigoRegistro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(itemFerramenta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(dataEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel8))
-                        .addGap(0, 244, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(autualizarBanco))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(311, 311, 311)
+                                .addComponent(buttonRegistrarEmprestimo)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jLabel2)
+                                                        .addComponent(jLabel1))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(itemAmigoRegistro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(itemFerramenta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel5)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(dataEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jLabel9)
+                                                        .addComponent(jLabel8))
+                                                .addGap(0, 244, Short.MAX_VALUE)))
+                                .addContainerGap())
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(autualizarBanco))
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(autualizarBanco)
-                .addGap(25, 25, 25)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(itemAmigoRegistro, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(itemFerramenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(dataEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
-                .addComponent(buttonRegistrarEmprestimo)
-                .addGap(27, 27, 27))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(autualizarBanco)
+                                .addGap(25, 25, 25)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel1)
+                                        .addComponent(itemAmigoRegistro, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel2)
+                                        .addComponent(itemFerramenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel5)
+                                        .addComponent(dataEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel8))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
+                                .addComponent(buttonRegistrarEmprestimo)
+                                .addGap(27, 27, 27))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Registro de Devolução", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14))); // NOI18N
@@ -476,54 +477,54 @@ public class registroEmprestimo extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(40, 40, 40)
-                        .addComponent(itemAmigoDevolucao, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(18, 18, 18)
-                        .addComponent(itemFerramentaDevolucao, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(18, 18, 18)
-                        .addComponent(dataDeDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 236, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(319, 319, 319)
-                .addComponent(buttonRegistrarDevolucao)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                                .addComponent(jLabel4)
+                                                .addGap(40, 40, 40)
+                                                .addComponent(itemAmigoDevolucao, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                                .addComponent(jLabel7)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(itemFerramentaDevolucao, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                                .addComponent(jLabel6)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(dataDeDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jLabel11)
+                                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(0, 236, Short.MAX_VALUE)))
+                                .addContainerGap())
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(319, 319, 319)
+                                .addComponent(buttonRegistrarDevolucao)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(itemAmigoDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(itemFerramentaDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(dataDeDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel11)
-                .addGap(18, 18, 18)
-                .addComponent(buttonRegistrarDevolucao)
-                .addGap(43, 43, 43))
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(22, 22, 22)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel4)
+                                        .addComponent(itemAmigoDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel7)
+                                        .addComponent(itemFerramentaDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel6)
+                                        .addComponent(dataDeDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel10))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel11)
+                                .addGap(18, 18, 18)
+                                .addComponent(buttonRegistrarDevolucao)
+                                .addGap(43, 43, 43))
         );
 
         menuCadastrar.setText("Cadastrar");
@@ -563,7 +564,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
             }
         });
         jMenu2.add(jMenuItem3);
-        
+
         // Consultar Estoque
         jMenuItemConsultarEstoque.setText("Consultar Estoque");
         jMenuItemConsultarEstoque.addActionListener(new java.awt.event.ActionListener() {
@@ -616,92 +617,87 @@ public class registroEmprestimo extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(140, 140, 140)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(151, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(140, 140, 140)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap(151, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(35, 35, 35)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(42, 42, 42)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>                        
 
-    
     // MÉTODOS DE MANIPULAÇÃO DE EVENTOS 
-    
-    private void itemAmigoRegistroItemStateChanged(java.awt.event.ItemEvent evt) {                                                  
-    }                                                 
+    private void itemAmigoRegistroItemStateChanged(java.awt.event.ItemEvent evt) {
+    }
 
-    private void itemAmigoRegistroActionPerformed(java.awt.event.ActionEvent evt) {                                                  
-    }                                                 
+    private void itemAmigoRegistroActionPerformed(java.awt.event.ActionEvent evt) {
+    }
 
-    private void itemFerramentaActionPerformed(java.awt.event.ActionEvent evt) {                                               
-    }                                              
+    private void itemFerramentaActionPerformed(java.awt.event.ActionEvent evt) {
+    }
 
-    private void dataEmprestimoActionPerformed(java.awt.event.ActionEvent evt) {                                               
-    }                                              
+    private void dataEmprestimoActionPerformed(java.awt.event.ActionEvent evt) {
+    }
 
-    private void dataDeDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {                                                
-    }                                               
+    private void dataDeDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {
+    }
 
-    private void itemAmigoDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {                                                   
-    }                                                  
+    private void itemAmigoDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {
+    }
 
-    private void itemFerramentaDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {                                                        
-    }                                                       
+    private void itemFerramentaDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {
+    }
 
-    
-    private void menuItemCadastrarAmigoActionPerformed(java.awt.event.ActionEvent evt) {                                                       
-         new cadastrarAmigo().setVisible(true);
-    }                                                      
+    private void menuItemCadastrarAmigoActionPerformed(java.awt.event.ActionEvent evt) {
+        new cadastrarAmigo().setVisible(true);
+    }
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-         new cadastrarFerramentas().setVisible(true);
-    }                                        
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
+        new cadastrarFerramentas().setVisible(true);
+    }
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        new gerenciarAmigo().setVisible(true); 
-    }                                        
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
+        new gerenciarAmigo().setVisible(true);
+    }
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
         new gerenciarFerramentas().setVisible(true);
-    }                                        
+    }
 
     // Abre a tela de consultar estoque
     private void jMenuItemConsultarEstoqueActionPerformed(java.awt.event.ActionEvent evt) {
         new consultarEstoque().setVisible(true);
     }
 
-    private void menuRFerramentaActionPerformed(java.awt.event.ActionEvent evt) {                                                
+    private void menuRFerramentaActionPerformed(java.awt.event.ActionEvent evt) {
         new relatorioFerramenta().setVisible(true);
-    }                                               
+    }
 
-    private void menuREativosActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    private void menuREativosActionPerformed(java.awt.event.ActionEvent evt) {
         new relatorioEmprestimoAtivo().setVisible(true);
-    }                                            
+    }
 
-    private void menuRHistoricosActionPerformed(java.awt.event.ActionEvent evt) {                                                
+    private void menuRHistoricosActionPerformed(java.awt.event.ActionEvent evt) {
         new relatorioHistoricoEmprestimo().setVisible(true);
-    }                                               
+    }
 
-    private void menuRDevedoresActionPerformed(java.awt.event.ActionEvent evt) {                                              
-         new relatorioDevedores().setVisible(true);
-    }                                             
-
+    private void menuRDevedoresActionPerformed(java.awt.event.ActionEvent evt) {
+        new relatorioDevedores().setVisible(true);
+    }
 
     // MÉTODO main
-    
     /**
      * @param args the command line arguments
      */
@@ -734,9 +730,9 @@ public class registroEmprestimo extends javax.swing.JFrame {
             public void run() {
                 new registroEmprestimo().setVisible(true);
             }
-            
+
         }
-        ); 
+        );
     }
 
     // Variables declaration - do not modify                     

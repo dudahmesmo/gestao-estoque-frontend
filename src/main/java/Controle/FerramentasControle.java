@@ -15,9 +15,7 @@ public class FerramentasControle {
         this.apiClient = new ApiClient();
     }
 
-    /**
-     * Adicionar nova ferramenta com categoria
-     */
+    // Adicionar nova ferramenta com categoria
     public boolean adicionarFerramenta (String nome, String marca, 
             double preco, 
             int Quantidade_estoque, int 
@@ -49,12 +47,9 @@ public class FerramentasControle {
                 "Geral");
     }
 
-    /**
-     * Obter categorias do back-end
-     */
+    // Obter categorias do back-end
     public java.util.List<String> obterCategorias () {
         try {
-            // Chamada para o API Client obter categorias
             return apiClient.obterCategorias();
         } catch (Exception e) {
             JOptionPane.showMessageDialog (null, "Erro ao carregar"
@@ -65,9 +60,7 @@ public class FerramentasControle {
         }
     }
 
-    /**
-     * Listar todas as ferramentas (GET)
-     */
+    // Listar todas as ferramentas (GET)
     public List<Ferramentas> listarFerramentas () {
         try {
             // Garante o retorno direto do cliente.
@@ -79,9 +72,8 @@ public class FerramentasControle {
         }
     }
 
-    /**
-     * Deletar uma ferramenta pelo ID (DELETE)
-     */
+    // Deletar uma ferramenta pelo ID (DELETE)
+     
     public boolean deletarFerramenta (int id) {
         try {
             apiClient.excluirFerramenta (id);
@@ -93,9 +85,7 @@ public class FerramentasControle {
         }
     }
 
-    /**
-     * Atualizar uma ferramenta
-     */
+    // Atualizar uma ferramenta
     public boolean atualizarFerramenta (Ferramentas ferramenta) {
         try {
             apiClient.atualizarFerramenta (ferramenta);
@@ -107,9 +97,7 @@ public class FerramentasControle {
         }
     }
 
-    /**
-     * Verificar estoque baixo
-     */
+    // Verificar estoque baixo
     public List<Ferramentas> getFerramentasComEstoqueBaixo () {
         try {
             // Chama a API e atribui o resultado à variável 'todas'
@@ -127,9 +115,7 @@ public class FerramentasControle {
         return null;
     }
 
-    /**
-     * Obter ferramentas por categoria
-     */
+    // Obter ferramentas por categoria
     public List<Ferramentas> getFerramentasPorCategoria (String categoria) {
         try {
             // Chama a API e atribui o resultado à variável 'todas'
@@ -155,12 +141,9 @@ public class FerramentasControle {
         }
     }
 
-    /**
-     * Obter ferramentas por status
-     */
+    // Obter ferramentas por status
     public List<Ferramentas> getFerramentasPorStatus (String status) {
         try { 
-            // Chama a API e atribui o resultado à variável 'todas'
             List<Ferramentas> todas = apiClient.listarFerramentas(); 
             
             // Se o status *NÃO* for "Todos", então filtra.
