@@ -15,7 +15,6 @@ public class Amigos {
     }
 
     // GETTERS E SETTERS
-
     public Long getId_amigo() {
         return id;
     }
@@ -36,8 +35,6 @@ public class Amigos {
     public void setTelefone_usuario(String telefone) {
         this.telefone = telefone;
     }
-
-    // GETTERS E SETTERS
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

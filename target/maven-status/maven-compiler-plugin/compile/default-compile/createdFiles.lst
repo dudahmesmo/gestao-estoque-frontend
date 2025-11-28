@@ -12,9 +12,9 @@ Visao\cadastrarAmigo$3.class
 Visao\registroEmprestimo$1.class
 http\ApiClient$6.class
 Visao\consultarEstoque$11.class
-Visao\relatorioEmprestimoAtivo$2.class
 Visao\consultarEstoque$7.class
 Visao\gerenciarFerramentas$8.class
+http\ApiClient$9.class
 projetodb\projetoa3sql\ProjetoA3SQL.class
 Visao\gerenciarFerramentas$11.class
 Visao\registroEmprestimo$16.class
@@ -22,17 +22,17 @@ Visao\registroEmprestimo$5.class
 Visao\relatorioFerramenta$1.class
 Controle\FerramentasControle.class
 Visao\gerenciarAmigo$5.class
-Visao\relatorioEmprestimoAtivo$3.class
 Visao\relatorioHistoricoEmprestimo$1.class
 Visao\gerenciarAmigo.class
+http\ApiClient$8.class
 Visao\consultarEstoque$10.class
 Controle\AmigosControle$1.class
-Visao\relatorioFerramenta$3.class
 Visao\registroEmprestimo$18.class
 Visao\consultarEstoque$9.class
 Visao\cadastrarAmigo$4.class
 Visao\consultarEstoque$6.class
 Visao\registroEmprestimo$2.class
+http\ApiClient$10.class
 Visao\registroEmprestimo$15.class
 Modelo\Ferramentas.class
 Visao\cadastrarFerramentas$1.class
@@ -44,10 +44,8 @@ Visao\registroEmprestimo$12.class
 http\ApiClient.class
 Visao\gerenciarFerramentas$6.class
 Visao\registroEmprestimo$20.class
-Visao\relatorioFerramenta$2.class
 http\ApiClient$4.class
 Visao\cadastrarAmigo.class
-Visao\relatorioDevedores$3.class
 Visao\consultarEstoque$8.class
 Visao\cadastrarAmigo$1.class
 Visao\registroEmprestimo$17.class
@@ -57,6 +55,7 @@ Visao\registroEmprestimo$10.class
 Visao\registroEmprestimo.class
 Visao\gerenciarAmigo$4.class
 Visao\registroEmprestimo$9.class
+http\ApiClient$11.class
 http\ApiClient$7.class
 Visao\cadastrarFerramentas.class
 Visao\registroEmprestimo$14.class
@@ -74,7 +73,6 @@ http\ApiClient$3.class
 Visao\gerenciarFerramentas$5.class
 Visao\registroEmprestimo$11.class
 Visao\relatorioFerramenta.class
-Visao\relatorioHistoricoEmprestimo$3.class
 Visao\registroEmprestimo$13.class
 Visao\consultarEstoque$4.class
 Visao\cadastrarAmigo$2.class
@@ -87,5 +85,4 @@ Visao\gerenciarFerramentas$10.class
 Visao\gerenciarFerramentas$2.class
 Visao\gerenciarFerramentas$9.class
 Visao\registroEmprestimo$7.class
-Visao\relatorioDevedores$2.class
 Modelo\Amigos.class

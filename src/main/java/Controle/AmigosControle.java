@@ -27,7 +27,6 @@ public class AmigosControle {
     }
 
     // 1. MÉTODO LISTAR (GET)
-    
     public List<Amigos> listarAmigos() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -50,8 +49,7 @@ public class AmigosControle {
         }
     }
 
-    // 2. MÉTODO DELETAR (DELETE) - Retorna boolean
-    
+    // 2. MÉTODO DELETAR (DELETE) 
     public boolean deletarAmigo(int id) {
         try {
             String urlDeletar = API_URL + "/" + id; 
@@ -78,7 +76,6 @@ public class AmigosControle {
     }
 
     // 3. MÉTODO ADICIONAR (POST)
-
     public boolean adicionarAmigo(String nome, String telefone) {
         try {
             // 1. Cria o objeto Amigo

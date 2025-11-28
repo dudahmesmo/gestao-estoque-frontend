@@ -18,7 +18,6 @@ public class Ferramentas {
 
     public Ferramentas() {}
 
-    // Construtor de Cadastro
     public Ferramentas(String nome, String marca, double preco, int Quantidade_estoque, 
                        int Quantidade_minima, int Quantidade_maxima, String categoria) {
         this.nome = nome;
