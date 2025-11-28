@@ -3,22 +3,12 @@ package Visao;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 import javax.swing.JOptionPane;
-
-import Visao.cadastrarAmigo;
-import Visao.cadastrarFerramentas;
-import Visao.gerenciarAmigo;
-import Visao.gerenciarFerramentas;
-import Visao.relatorioDevedores;
-import Visao.relatorioEmprestimoAtivo;
-import Visao.relatorioFerramenta;
-import Visao.relatorioHistoricoEmprestimo;
-import Visao.consultarEstoque;
 
 import Controle.AmigosControle;
 import Controle.EmprestimosControle;
@@ -27,19 +17,17 @@ import Modelo.Amigos;
 import Modelo.Emprestimos;
 import Modelo.Ferramentas;
 
-/**
- * Registro de Empréstimo
- */
 public class registroEmprestimo extends javax.swing.JFrame {
 
     private AmigosControle amigoControle;
     private FerramentasControle ferramentaControle;
     private EmprestimosControle emprestimosControle;
 
-    // Listas para guardar os objetos
     private List<Ferramentas> ferramentasDisponiveis;
     private List<Emprestimos> emprestimosAtivos;
     private List<Amigos> listaAmigos;
+
+    private javax.swing.JMenuItem menuItemProdutosPorCategoria;
 
     public registroEmprestimo() {
         initComponents();
@@ -129,9 +117,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
         }
     }
 
-    /**
-     * Método auxiliar para obter o ID da ferramenta pelo toString() do ComboBox
-     */
+    // Método auxiliar para obter o ID da ferramenta pelo toString() do ComboBox
     private Long getFerramentaIdByName(String nome) {
         if (nome == null) {
             return null;
@@ -237,7 +223,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
                 return;
             }
 
-            // Resolve ID da Ferramenta pelo nome do item no combo box (corrigido para usar a lógica de empréstimos)
+            // Resolve ID da Ferramenta pelo nome do item.
             Long idFerramenta = getFerramentaIdByName(ferramentaSelecionada);
 
             if (idFerramenta == null) {
@@ -314,10 +300,12 @@ public class registroEmprestimo extends javax.swing.JFrame {
         menuRHistoricos = new javax.swing.JMenuItem();
         menuRDevedores = new javax.swing.JMenuItem();
 
+        menuItemProdutosPorCategoria = new javax.swing.JMenuItem();
+
         jFormattedTextField1.setText("jFormattedTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Sistema de Empréstimo de Ferramentas");
+        setTitle("StockTool - Sistema de Empréstimo de Ferramentas e Gerenciamento de Estoque");
         setBackground(new java.awt.Color(204, 0, 51));
         setResizable(false);
 
@@ -572,7 +560,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
                 jMenuItemConsultarEstoqueActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItemConsultarEstoque); // Adiciona ao menu Gerenciar
+        jMenu2.add(jMenuItemConsultarEstoque);
 
         jMenuBar1.add(jMenu2);
 
@@ -610,6 +598,17 @@ public class registroEmprestimo extends javax.swing.JFrame {
         });
         jMenu3.add(menuRDevedores);
 
+        // RELATÓRIO: Produtos por Categoria
+        menuItemProdutosPorCategoria.setText("Produtos por Categoria");
+
+        menuItemProdutosPorCategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                new Visao.relatorioCategoriaProduto().setVisible(true);
+            }
+        });
+
+        jMenu3.add(menuItemProdutosPorCategoria);
+
         jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
@@ -638,10 +637,6 @@ public class registroEmprestimo extends javax.swing.JFrame {
         pack();
     }// </editor-fold>                        
 
-    // MÉTODOS DE MANIPULAÇÃO DE EVENTOS 
-    private void itemAmigoRegistroItemStateChanged(java.awt.event.ItemEvent evt) {
-    }
-
     private void itemAmigoRegistroActionPerformed(java.awt.event.ActionEvent evt) {
     }
 
@@ -655,9 +650,6 @@ public class registroEmprestimo extends javax.swing.JFrame {
     }
 
     private void itemAmigoDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {
-    }
-
-    private void itemFerramentaDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {
     }
 
     private void menuItemCadastrarAmigoActionPerformed(java.awt.event.ActionEvent evt) {
@@ -697,45 +689,13 @@ public class registroEmprestimo extends javax.swing.JFrame {
         new relatorioDevedores().setVisible(true);
     }
 
-    // MÉTODO main
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(registroEmprestimo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(registroEmprestimo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(registroEmprestimo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(registroEmprestimo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new registroEmprestimo().setVisible(true);
-            }
-
-        }
-        );
+    private void itemAmigoRegistroItemStateChanged(java.awt.event.ItemEvent evt) {
     }
 
-    // Variables declaration - do not modify                     
+    private void itemFerramentaDevolucaoActionPerformed(java.awt.event.ActionEvent evt) {
+    }
+
+    // Variables declaration - do not modify 
     private javax.swing.JButton autualizarBanco;
     private javax.swing.JButton buttonRegistrarDevolucao;
     private javax.swing.JButton buttonRegistrarEmprestimo;
@@ -772,5 +732,5 @@ public class registroEmprestimo extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuREativos;
     private javax.swing.JMenuItem menuRFerramenta;
     private javax.swing.JMenuItem menuRHistoricos;
-    // End of variables declaration                   
+    // End of variables declaration 
 }

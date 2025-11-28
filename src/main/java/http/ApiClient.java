@@ -261,6 +261,42 @@ public class ApiClient {
         }
     }
 
+    // MÉTODOS DE RELATÓRIO DE FERRAMENTAS
+    public Map<String, Object> getCustoTotalEstoque() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/ferramentas/relatorios/custo-total"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new Exception("Falha ao obter o relatório de custos. Código: " + response.statusCode());
+        }
+
+        Type tipoMapa = new TypeToken<Map<String, Object>>() {
+        }.getType();
+        return gson.fromJson(response.body(), tipoMapa);
+    }
+
+    //  Relatório de Quantidade por Categoria 
+    public List<Object[]> getQuantidadeProdutosPorCategoria() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/ferramentas/relatorios/quantidade-por-categoria"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new Exception("Falha ao obter o relatório de quantidade por categoria. Código: " + response.statusCode());
+        }
+
+        Type tipoListaArray = new TypeToken<List<Object[]>>() {
+        }.getType();
+        return gson.fromJson(response.body(), tipoListaArray);
+    }
+
     // MÉTODOS DE EMPRÉSTIMO
     public void registrarEmprestimo(Emprestimos emprestimo) throws
             Exception {
@@ -363,15 +399,14 @@ public class ApiClient {
     // Lista Devedores (Relatório)
     public List<Amigos> listarDevedores() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/amigos/devedores"))
+                .uri(URI.create(BASE_URL + "/emprestimos/relatorios/devedores-em-atraso"))
                 .GET()
                 .build();
 
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
-            throw new Exception("Falha ao listar devedores. Código: " + response.statusCode());
+            throw new Exception("Falha ao obter o relatório de devedores. Código: " + response.statusCode());
         }
 
         Type tipoListaAmigos = new TypeToken<List<Amigos>>() {
@@ -379,24 +414,7 @@ public class ApiClient {
         return gson.fromJson(response.body(), tipoListaAmigos);
     }
 
-    public Map<String, Object> getCustoTotalEstoque() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/ferramentas/relatorios/custo-total"))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new Exception("Falha ao obter o relatório de custos. Código: " + response.statusCode());
-        }
-
-        Type tipoMapa = new TypeToken<Map<String, Object>>() {
-        }.getType();
-        return gson.fromJson(response.body(), tipoMapa);
-    }
-
-    //Relatório de Ferramentas Mais Emprestadas
+    // Relatório de Ferramentas Mais Emprestadas
     public List<Object[]> getFerramentasMaisEmprestadas() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/emprestimos/relatorios/mais-emprestadas"))
@@ -430,23 +448,5 @@ public class ApiClient {
         Type tipoListaArray = new TypeToken<List<Object[]>>() {
         }.getType();
         return gson.fromJson(response.body(), tipoListaArray);
-    }
-
-    // Relatório de Devedores 
-    public List<Amigos> getDevedoresEmAtraso() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/emprestimos/relatorios/devedores-em-atraso"))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new Exception("Falha ao obter o relatório de devedores. Código: " + response.statusCode());
-        }
-
-        Type tipoListaAmigos = new TypeToken<List<Amigos>>() {
-        }.getType();
-        return gson.fromJson(response.body(), tipoListaAmigos);
     }
 }
