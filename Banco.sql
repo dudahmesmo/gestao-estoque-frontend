@@ -1,3 +1,7 @@
+-- Nome do Banco: gestao_estoque
+-- Usuário: root
+-- Senha: DataBaseA3
+
 CREATE DATABASE IF NOT EXISTS `gestao_estoque` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
 USE `gestao_estoque`;
 
