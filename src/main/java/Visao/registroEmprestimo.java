@@ -3,10 +3,10 @@ package Visao;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -305,7 +305,7 @@ public class registroEmprestimo extends javax.swing.JFrame {
         jFormattedTextField1.setText("jFormattedTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Sistema de Empréstimo de Ferramentas");
+        setTitle("StockTool - Sistema de Empréstimo de Ferramentas e Gerenciamento de Estoque");
         setBackground(new java.awt.Color(204, 0, 51));
         setResizable(false);
 
