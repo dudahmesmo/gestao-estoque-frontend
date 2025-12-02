@@ -32,7 +32,6 @@ public class ApiClient {
     }
 
     // MÉTODOS DE CATEGORIA
-    // Obter categorias
     public List<String> obterCategorias() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/api/categorias/nomes"))
@@ -52,10 +51,8 @@ public class ApiClient {
 
         return gson.fromJson(response.body(), tipolistaStrings);
     }
-
-    // CADASTRAR CATEGORIA
-    public void cadastrarCategoria(String nome, String descricao)
-            throws Exception {
+    
+    public void cadastrarCategoria(String nome, String descricao) throws Exception {
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("nome", nome);
         requestBody.put("descricao", descricao != null ? descricao : "");
@@ -71,16 +68,12 @@ public class ApiClient {
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200 && response.statusCode()
-                != 201) {
-            throw new Exception("Falha ao cadastrar categoria. Código: "
-                    + response.statusCode());
+        if (response.statusCode() != 200 && response.statusCode() != 201) {
+            throw new Exception("Falha ao cadastrar categoria. Código: " + response.statusCode());
         }
     }
-
-    // LISTAR TODAS AS CATEGORIAS 
-    public List<Map<String, Object>> listarCategoriasCompletas() throws
-            Exception {
+    
+    public List<Map<String, Object>> listarCategoriasCompletas() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/api/categorias"))
                 .GET()
@@ -90,8 +83,7 @@ public class ApiClient {
                 HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
-            throw new Exception("Falha ao listar categorias. Código: "
-                    + response.statusCode());
+            throw new Exception("Falha ao listar categorias. Código: " + response.statusCode());
         }
 
         Type tipolistaCategorias = new TypeToken<List<Map<String, Object>>>() {
@@ -99,8 +91,7 @@ public class ApiClient {
 
         return gson.fromJson(response.body(), tipolistaCategorias);
     }
-
-    // EXCLUIR CATEGORIA
+    
     public void excluirCategoria(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/api/categorias/" + id))
@@ -110,10 +101,8 @@ public class ApiClient {
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200 && response.statusCode()
-                != 204) {
-            throw new Exception("Falha ao excluir categoria. Código: "
-                    + response.statusCode());
+        if (response.statusCode() != 200 && response.statusCode() != 204) {
+            throw new Exception("Falha ao excluir categoria. Código: " + response.statusCode());
         }
     }
 
@@ -130,10 +119,8 @@ public class ApiClient {
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200 && response.statusCode()
-                != 201) {
-            throw new Exception("Falha ao cadastrar amigo. Código: "
-                    + response.statusCode());
+        if (response.statusCode() != 200 && response.statusCode() != 201) {
+            throw new Exception("Falha ao cadastrar amigo. Código: " + response.statusCode());
         }
     }
 
@@ -166,17 +153,35 @@ public class ApiClient {
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200 && response.statusCode()
-                != 204) {
-            throw new Exception("Falha ao excluir amigo. Código: "
-                    + response.statusCode());
+        if (response.statusCode() != 200 && response.statusCode() != 204) {
+            throw new Exception("Falha ao excluir amigo. Código: " + response.statusCode());
         }
     }
 
     // MÉTODOS DE FERRAMENTAS
-    public void cadastrarFerramenta(Ferramentas ferramenta) throws
-            Exception {
-        String jsonBody = gson.toJson(ferramenta);
+    public void cadastrarFerramenta(Ferramentas ferramenta) throws Exception {
+        
+        Map<String, Object> requestBody = new HashMap<>();
+        
+        requestBody.put("nome", ferramenta.getNome());
+        requestBody.put("marca", ferramenta.getMarca());
+        requestBody.put("preco", ferramenta.getPreco());
+        requestBody.put("quantidadeEstoque", ferramenta.getQuantidade_estoque());
+        requestBody.put("quantidadeMinimaEstoque", ferramenta.getQuantidade_minima());
+        requestBody.put("quantidadeMaximaEstoque", ferramenta.getQuantidade_maxima());
+        requestBody.put("disponivel", ferramenta.isDisponivel());
+        
+        // Mapeamento da Categoria
+        String categoriaNome = ferramenta.getCategoria();
+        if (categoriaNome != null && !categoriaNome.isEmpty()) {
+            Map<String, String> categoriaMap = new HashMap<>();
+            categoriaMap.put("nome", categoriaNome); 
+            requestBody.put("categoria", categoriaMap);
+        } else {
+            requestBody.put("categoria", null);
+        }
+
+        String jsonBody = gson.toJson(requestBody);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/ferramentas"))
@@ -187,10 +192,13 @@ public class ApiClient {
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200 && response.statusCode()
-                != 201) {
+        if (response.statusCode() != 200 && response.statusCode() != 201) {
+            String errorMessage = response.body() != null
+                    && !response.body().isEmpty()
+                    ? response.body() : "Nenhuma mensagem de erro do servidor.";
+
             throw new Exception("Falha ao cadastrar ferramenta. Código: "
-                    + response.statusCode());
+                    + response.statusCode() + ". Detalhes: " + errorMessage);
         }
     }
 
@@ -204,8 +212,7 @@ public class ApiClient {
                 HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
-            throw new Exception("Falha ao listar ferramentas. Código: "
-                    + response.statusCode());
+            throw new Exception("Falha ao listar ferramentas. Código: " + response.statusCode());
         }
 
         Type tipolistaFerramentas = new TypeToken<List<Ferramentas>>() {
@@ -223,22 +230,39 @@ public class ApiClient {
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200 && response.statusCode()
-                != 204) {
-            throw new Exception("Falha ao excluir ferramenta. Código: "
-                    + response.statusCode());
+        if (response.statusCode() != 200 && response.statusCode() != 204) {
+            throw new Exception("Falha ao excluir ferramenta. Código: " + response.statusCode());
         }
     }
 
-    public void atualizarFerramenta(Ferramentas ferramenta) throws
-            Exception {
-        // 1. Back-end espera o ID na URL
+    public void atualizarFerramenta(Ferramentas ferramenta) throws Exception {
         if (ferramenta.getId() == null) {
             throw new IllegalArgumentException("ID da ferramenta é"
                     + " obrigatório para atualização.");
         }
 
-        String jsonBody = gson.toJson(ferramenta);
+        Map<String, Object> requestBody = new HashMap<>();
+        
+        requestBody.put("id", ferramenta.getId()); 
+        requestBody.put("nome", ferramenta.getNome());
+        requestBody.put("marca", ferramenta.getMarca());
+        requestBody.put("preco", ferramenta.getPreco());
+        requestBody.put("quantidadeEstoque", ferramenta.getQuantidade_estoque());
+        requestBody.put("quantidadeMinimaEstoque", ferramenta.getQuantidade_minima());
+        requestBody.put("quantidadeMaximaEstoque", ferramenta.getQuantidade_maxima());
+        requestBody.put("disponivel", ferramenta.isDisponivel());
+        
+        // Mapeamento da Categoria 
+        String categoriaNome = ferramenta.getCategoria();
+        if (categoriaNome != null && !categoriaNome.isEmpty()) {
+            Map<String, String> categoriaMap = new HashMap<>();
+            categoriaMap.put("nome", categoriaNome); 
+            requestBody.put("categoria", categoriaMap);
+        } else {
+            requestBody.put("categoria", null);
+        }
+
+        String jsonBody = gson.toJson(requestBody);
 
         // URL: BASE_URL + /ferramentas/(id)
         HttpRequest request = HttpRequest.newBuilder()
@@ -261,46 +285,8 @@ public class ApiClient {
         }
     }
 
-    // MÉTODOS DE RELATÓRIO DE FERRAMENTAS
-    public Map<String, Object> getCustoTotalEstoque() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/ferramentas/relatorios/custo-total"))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new Exception("Falha ao obter o relatório de custos. Código: " + response.statusCode());
-        }
-
-        Type tipoMapa = new TypeToken<Map<String, Object>>() {
-        }.getType();
-        return gson.fromJson(response.body(), tipoMapa);
-    }
-
-    //  Relatório de Quantidade por Categoria 
-    public List<Object[]> getQuantidadeProdutosPorCategoria() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/ferramentas/relatorios/quantidade-por-categoria"))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new Exception("Falha ao obter o relatório de quantidade por categoria. Código: " + response.statusCode());
-        }
-
-        Type tipoListaArray = new TypeToken<List<Object[]>>() {
-        }.getType();
-        return gson.fromJson(response.body(), tipoListaArray);
-    }
-
     // MÉTODOS DE EMPRÉSTIMO
-    public void registrarEmprestimo(Emprestimos emprestimo) throws
-            Exception {
-
+    public void registrarEmprestimo(Emprestimos emprestimo) throws Exception {
         Map<String, Long> amigoMap = new HashMap<>();
         amigoMap.put("id", (long) emprestimo.getIdAmigo());
 
@@ -308,8 +294,7 @@ public class ApiClient {
         ferramentaMap.put("id", (long) emprestimo.getIdFerramenta());
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String dataEmprestimoStr
-                = sdf.format(emprestimo.getDataEmprestimo());
+        String dataEmprestimoStr = sdf.format(emprestimo.getDataEmprestimo());
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("amigo", amigoMap);
@@ -328,8 +313,7 @@ public class ApiClient {
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200 && response.statusCode()
-                != 201) {
+        if (response.statusCode() != 200 && response.statusCode() != 201) {
             String errorMessage = response.body() != null
                     && !response.body().isEmpty()
                     ? response.body() : "Nenhuma mensagem de erro do servidor.";
@@ -341,7 +325,7 @@ public class ApiClient {
 
     public void registrarDevolucao(int idFerramenta) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/emprestimos/devolver/"
+                .uri(URI.create(BASE_URL + "/emprestimos/devolver/" 
                         + idFerramenta))
                 .PUT(HttpRequest.BodyPublishers.noBody())
                 .build();
@@ -349,14 +333,13 @@ public class ApiClient {
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200 && response.statusCode()
-                != 204) {
+        if (response.statusCode() != 200 && response.statusCode() != 204) {
             throw new Exception("Falha ao registrar devolução. Código: "
                     + response.statusCode());
         }
     }
-
-    // Lista Empréstimos Ativos
+    
+    // Métodos de Listagem 
     public List<Modelo.Emprestimos> listarEmprestimosAtivos() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/emprestimos/ativos"))
@@ -377,7 +360,6 @@ public class ApiClient {
         return new Gson().fromJson(response.body(), tipoListaEmprestimos);
     }
 
-    // Lista Empréstimos Históricos
     public List<Emprestimos> listarHistoricoEmprestimos() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/emprestimos/historico"))
@@ -395,7 +377,7 @@ public class ApiClient {
         }.getType();
         return gson.fromJson(response.body(), tipoListaEmprestimos);
     }
-
+    
     // Lista Devedores (Relatório)
     public List<Amigos> listarDevedores() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
@@ -413,8 +395,25 @@ public class ApiClient {
         }.getType();
         return gson.fromJson(response.body(), tipoListaAmigos);
     }
+    
+    // Métodos de Relatório de Ferramentas
+    public Map<String, Object> getCustoTotalEstoque() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/ferramentas/relatorios/custo-total"))
+                .GET()
+                .build();
 
-    // Relatório de Ferramentas Mais Emprestadas
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new Exception("Falha ao obter o relatório de custos. Código: " + response.statusCode());
+        }
+
+        Type tipoMapa = new TypeToken<Map<String, Object>>() {
+        }.getType();
+        return gson.fromJson(response.body(), tipoMapa);
+    }
+    
     public List<Object[]> getFerramentasMaisEmprestadas() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/emprestimos/relatorios/mais-emprestadas"))
@@ -432,7 +431,6 @@ public class ApiClient {
         return gson.fromJson(response.body(), tipoListaArray);
     }
 
-    // Relatório de Ferramentas Mais Devolvidas
     public List<Object[]> getFerramentasMaisDevolvidas() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/emprestimos/relatorios/mais-devolvidas"))
@@ -443,6 +441,23 @@ public class ApiClient {
 
         if (response.statusCode() != 200) {
             throw new Exception("Falha ao obter o relatório de mais devolvidas. Código: " + response.statusCode());
+        }
+
+        Type tipoListaArray = new TypeToken<List<Object[]>>() {
+        }.getType();
+        return gson.fromJson(response.body(), tipoListaArray);
+    }
+    
+    public List<Object[]> getQuantidadeProdutosPorCategoria() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/ferramentas/relatorios/quantidade-por-categoria"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new Exception("Falha ao obter o relatório de quantidade por categoria. Código: " + response.statusCode());
         }
 
         Type tipoListaArray = new TypeToken<List<Object[]>>() {

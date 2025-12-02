@@ -1,6 +1,7 @@
 package Modelo;
 
 import java.text.DecimalFormat; 
+import com.google.gson.annotations.SerializedName; 
 
 public class Ferramentas {
 
@@ -10,16 +11,23 @@ public class Ferramentas {
     private double preco;
     private Boolean disponivel = true; 
     private double custoAquisicao;
+    
+    @SerializedName("Quantidade_estoque") 
     private int Quantidade_estoque;
+    
+    @SerializedName("Quantidade_minima")
     private int Quantidade_minima;
+    
+    @SerializedName("Quantidade_maxima")
     private int Quantidade_maxima;
+    
     private String categoria;
     
-
+    
     public Ferramentas() {}
 
     public Ferramentas(String nome, String marca, double preco, int Quantidade_estoque, 
-                       int Quantidade_minima, int Quantidade_maxima, String categoria) {
+                        int Quantidade_minima, int Quantidade_maxima, String categoria) {
         this.nome = nome;
         this.marca = marca;
         this.preco = preco;
@@ -31,7 +39,7 @@ public class Ferramentas {
     }
 
     public Ferramentas(Long id, String nome, String marca, double preco, int Quantidade_estoque, 
-                       int Quantidade_minima, int Quantidade_maxima, String categoria) {
+                        int Quantidade_minima, int Quantidade_maxima, String categoria) {
         this.id = id;
         this.nome = nome;
         this.marca = marca;
@@ -42,9 +50,9 @@ public class Ferramentas {
         this.categoria = categoria;
         this.disponivel = Quantidade_estoque > 0;
     }
-   
-
+    
     // GETTERS E SETTERS
+
     public Long getId() { return id; } 
     public void setId(Long id) { this.id = id; }
 
@@ -70,10 +78,10 @@ public class Ferramentas {
     public String getCategoria() { return categoria; }
     public void setCategoria(String categoria) { this.categoria = categoria; }
     
+    // GETTERS E SETTERS DE QUANTIDADE
     public int getQuantidade_estoque() { return Quantidade_estoque; }
     public void setQuantidade_estoque(int Quantidade_estoque) { 
         this.Quantidade_estoque = Quantidade_estoque; 
-        // Atualiza automaticamente o status de disponibilidade
         if (this.Quantidade_estoque <= 0) {
             this.disponivel = false;
         } else {
@@ -91,17 +99,15 @@ public class Ferramentas {
         this.Quantidade_maxima = Quantidade_maxima; 
     }
     
-    // MÉTODO PARA VERIFICAR SE ESTÁ ABAIXO DO MÍNIMO
+    // MÉTODOS DE LÓGICA DE ESTOQUE
     public boolean isEstoqueBaixo() {
         return Quantidade_estoque <= Quantidade_minima;
     }
     
-    // MÉTODO PARA VERIFICAR SE ESTÁ ACIMA DO MÁXIMO
     public boolean isEstoqueExcedido() {
         return Quantidade_estoque > Quantidade_maxima;
     }
     
-    // MÉTODO PARA OBTER STATUS COMPLETO DO ESTOQUE
     public String getStatusEstoque() {
         if (Quantidade_estoque <= 0) {
             return "FORA DE ESTOQUE";
@@ -114,7 +120,6 @@ public class Ferramentas {
         }
     }
     
-    // Método para obter resumo de estoque
     public String getResumoEstoque() {
         return "Atual: " + Quantidade_estoque + " | Mín: " + Quantidade_minima + " | Máx: " + Quantidade_maxima;
     }
@@ -133,7 +138,7 @@ public class Ferramentas {
         return this.id + " - " + this.nome + " (" + this.marca + ") - " + cat + " - R$ " + df.format(this.preco) + " - " + status;
     }
     
-    // Método para obter status simplificado (exibição rápida)
+    // Método para obter status simplificado
     public String getStatusSimples() {
         if (Quantidade_estoque <= 0) {
             return "❌ FORA DE ESTOQUE";
