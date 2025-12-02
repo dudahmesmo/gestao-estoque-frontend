@@ -2,6 +2,7 @@ package Visao;
 
 import Controle.FerramentasControle;
 import Modelo.Ferramentas;
+import Modelo.Categoria;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -96,12 +97,14 @@ public class consultarEstoque extends javax.swing.JFrame {
 
         if (lista != null && !lista.isEmpty()) {
             for (Ferramentas f : lista) {
+                String nomeCategoria = f.getCategoria() != null ? f.getCategoria().getNome() : "Sem Categoria";
+                
                 model.addRow(new Object[]{
-                    f.getId_ferramenta(),
-                    f.getNome_ferramenta(),
-                    f.getMarca_ferramenta(),
+                    f.getId(),
+                    f.getNome(),
+                    f.getMarca(),
                     f.getQuantidade_estoque(),
-                    f.getCategoria(),
+                    nomeCategoria, // Usa o nome da categoria
                     f.getStatusEstoque(),
                     String.format("R$ %.2f", f.getPreco()),
                     f.getResumoEstoque()
@@ -166,25 +169,27 @@ public class consultarEstoque extends javax.swing.JFrame {
 
         if (todasFerramentas != null) {
             for (Ferramentas f : todasFerramentas) {
+                String nomeCategoria = f.getCategoria() != null ? f.getCategoria().getNome() : "Sem Categoria";
+                
                 // Aplicar filtros
                 boolean atendeCategoria = filtroCategoria.equals("Todas") || 
-                                         f.getCategoria().equals(filtroCategoria);
+                                         nomeCategoria.equals(filtroCategoria);
                 
                 boolean atendeStatus = filtroStatus.equals("Todos") || 
                                       f.getStatusEstoque().contains(filtroStatus.toUpperCase());
                 
                 boolean atendePesquisa = textoPesquisa.isEmpty() ||
-                                        f.getNome_ferramenta().toLowerCase().contains(textoPesquisa) ||
-                                        f.getMarca_ferramenta().toLowerCase().contains(textoPesquisa) ||
-                                        f.getCategoria().toLowerCase().contains(textoPesquisa);
+                                        f.getNome().toLowerCase().contains(textoPesquisa) ||
+                                        f.getMarca().toLowerCase().contains(textoPesquisa) ||
+                                        nomeCategoria.toLowerCase().contains(textoPesquisa);
 
                 if (atendeCategoria && atendeStatus && atendePesquisa) {
                     model.addRow(new Object[]{
-                        f.getId_ferramenta(),
-                        f.getNome_ferramenta(),
-                        f.getMarca_ferramenta(),
+                        f.getId(),
+                        f.getNome(),
+                        f.getMarca(),
                         f.getQuantidade_estoque(),
-                        f.getCategoria(),
+                        nomeCategoria,
                         f.getStatusEstoque(),
                         String.format("R$ %.2f", f.getPreco()),
                         f.getResumoEstoque()
@@ -225,7 +230,7 @@ public class consultarEstoque extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, 
+                java.lang.Long.class, java.lang.String.class, java.lang.String.class, 
                 java.lang.Integer.class, java.lang.String.class, java.lang.String.class,
                 java.lang.String.class, java.lang.String.class
             };
@@ -390,21 +395,29 @@ public class consultarEstoque extends javax.swing.JFrame {
 
     private void carregarCategoriasFiltro() {
         try {
-            List<String> categorias = ferramentasControle.obterCategorias();
-            if (categorias != null && !categorias.isEmpty()) {
+            // Usar o método auxiliar para obter nomes de categorias
+            List<String> nomesCategorias = ferramentasControle.obterNomesCategorias();
+            if (nomesCategorias != null && !nomesCategorias.isEmpty()) {
                 comboFiltroCategoria.removeAllItems();
                 comboFiltroCategoria.addItem("Todas");
-                for (String categoria : categorias) {
-                    comboFiltroCategoria.addItem(categoria);
+                for (String nomeCategoria : nomesCategorias) {
+                    comboFiltroCategoria.addItem(nomeCategoria);
                 }
             }
         } catch (Exception e) {
             System.err.println("Erro ao carregar categorias para filtro: " + e.getMessage());
+            // Adicionar categorias padrão
+            comboFiltroCategoria.addItem("Elétrica");
+            comboFiltroCategoria.addItem("Manual");
+            comboFiltroCategoria.addItem("Hidráulica");
+            comboFiltroCategoria.addItem("Pneumática");
+            comboFiltroCategoria.addItem("Geral");
         }
     }
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {
         carregarDados();
+        carregarCategoriasFiltro(); // Recarregar categorias também
         JOptionPane.showMessageDialog(this, 
             "Estoque atualizado com sucesso!", 
             "Atualização", 
@@ -469,6 +482,18 @@ public class consultarEstoque extends javax.swing.JFrame {
                 relatorio.append("✅ <b>Todos os estoques estão em condições adequadas!</b><br>");
             }
 
+            // Listar categorias com quantidade
+            relatorio.append("<br><b>📁 DISTRIBUIÇÃO POR CATEGORIA:</b><br>");
+            java.util.Map<String, Integer> categoriasCount = new java.util.HashMap<>();
+            for (Ferramentas f : todasFerramentas) {
+                String nomeCategoria = f.getCategoria() != null ? f.getCategoria().getNome() : "Sem Categoria";
+                categoriasCount.put(nomeCategoria, categoriasCount.getOrDefault(nomeCategoria, 0) + 1);
+            }
+            
+            for (java.util.Map.Entry<String, Integer> entry : categoriasCount.entrySet()) {
+                relatorio.append(String.format("• %s: <b>%d</b> itens<br>", entry.getKey(), entry.getValue()));
+            }
+
             relatorio.append("</html>");
 
             JOptionPane.showMessageDialog(this, 
@@ -509,17 +534,33 @@ public class consultarEstoque extends javax.swing.JFrame {
                 foraEstoque, estoqueBaixo
             ));
             
-            if (estoqueCritico != null && !estoqueCritico.isEmpty()) {
+            if ((estoqueCritico != null && !estoqueCritico.isEmpty()) || foraEstoque > 0) {
                 mensagem.append("<b>Itens que necessitam de atenção imediata:</b><br>");
                 mensagem.append("<table border='1' cellpadding='5' style='border-collapse: collapse;'>");
-                mensagem.append("<tr style='background-color: #f0f0f0;'><th>Item</th><th>Estoque Atual</th><th>Mínimo</th><th>Status</th></tr>");
+                mensagem.append("<tr style='background-color: #f0f0f0;'><th>Item</th><th>Categoria</th><th>Estoque Atual</th><th>Mínimo</th><th>Status</th></tr>");
                 
-                for (Ferramentas f : estoqueCritico) {
-                    String cor = f.getQuantidade_estoque() <= 0 ? "red" : "orange";
-                    mensagem.append(String.format(
-                        "<tr><td><b>%s</b> (%s)</td><td align='center' style='color: %s;'><b>%d</b></td><td align='center'>%d</td><td>%s</td></tr>",
-                        f.getNome(), f.getMarca(), cor, f.getQuantidade_estoque(), f.getQuantidade_minima(), f.getStatusEstoque()
-                    ));
+                // Adicionar itens fora de estoque
+                for (Ferramentas f : todasFerramentas) {
+                    if (f.getQuantidade_estoque() <= 0) {
+                        String nomeCategoria = f.getCategoria() != null ? f.getCategoria().getNome() : "Sem Categoria";
+                        mensagem.append(String.format(
+                            "<tr><td><b>%s</b> (%s)</td><td>%s</td><td align='center' style='color: red;'><b>%d</b></td><td align='center'>%d</td><td>%s</td></tr>",
+                            f.getNome(), f.getMarca(), nomeCategoria, f.getQuantidade_estoque(), f.getQuantidade_minima(), f.getStatusEstoque()
+                        ));
+                    }
+                }
+                
+                // Adicionar itens com estoque baixo
+                if (estoqueCritico != null) {
+                    for (Ferramentas f : estoqueCritico) {
+                        if (f.getQuantidade_estoque() > 0) { // Já adicionamos os fora de estoque acima
+                            String nomeCategoria = f.getCategoria() != null ? f.getCategoria().getNome() : "Sem Categoria";
+                            mensagem.append(String.format(
+                                "<tr><td><b>%s</b> (%s)</td><td>%s</td><td align='center' style='color: orange;'><b>%d</b></td><td align='center'>%d</td><td>%s</td></tr>",
+                                f.getNome(), f.getMarca(), nomeCategoria, f.getQuantidade_estoque(), f.getQuantidade_minima(), f.getStatusEstoque()
+                            ));
+                        }
+                    }
                 }
                 mensagem.append("</table>");
             } else {

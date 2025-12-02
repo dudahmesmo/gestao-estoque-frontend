@@ -1,32 +1,53 @@
 package Visao;
 
-import java.util.List;
- 
-import javax.swing.JOptionPane;
+import Modelo.Categoria;
+import Controle.FerramentasControle;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import Controle.FerramentasControle;
+import java.awt.*;
+import java.text.DecimalFormat;
+import java.util.List;
 
 public class cadastrarFerramentas extends javax.swing.JFrame {
     
     private FerramentasControle ferramentaControle;
     private javax.swing.JLabel lblStatusEstoque;
+    private javax.swing.JComboBox<Categoria> comboBoxCategoria;
+    private javax.swing.JTextField txtCadastrarNomeFerramenta;
+    private javax.swing.JTextField txtCadastrarMarcaFerramenta;
+    private javax.swing.JTextField txtCadastrarCustoF;
+    private javax.swing.JTextField txtQuantidade_estoque;
+    private javax.swing.JTextField txtQuantidade_minima;
+    private javax.swing.JTextField txtQuantidade_maxima;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1, jLabel2, jLabel3, jLabel4, jLabel5, jLabel6, jLabel7;
 
     public cadastrarFerramentas() {
         initComponents(); 
         this.ferramentaControle = new FerramentasControle();
         
-        jLabel3.setText("Custo de Aquisição (R$):");
-        jLabel4.setText("Quantidade em Estoque:");
-        jLabel5.setText("Quantidade Mínima:"); 
-        jLabel6.setText("Quantidade Máxima:");
-        jLabel7.setText("Categoria:");
-        
         // Configurar valores padrão
         txtQuantidade_estoque.setText("0");
         txtQuantidade_minima.setText("1");
         txtQuantidade_maxima.setText("100");
+        
+        // Configurar o renderer do JComboBox para mostrar o nome da Categoria
+        comboBoxCategoria.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, 
+                    int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Categoria) {
+                    setText(((Categoria) value).getNome());
+                } else if (value == null) {
+                    setText("Selecione uma categoria");
+                } else {
+                    setText(value.toString());
+                }
+                return this;
+            }
+        });
         
         // Carregar categorias do back-end 
         carregarCategorias();
@@ -160,69 +181,85 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
     private void carregarCategorias() {
         System.out.println("Iniciando carregamento de categorias...");
         
-        try {
-            // Limpar o comboBox primeiro
-            comboBoxCategoria.removeAllItems();
-            
-            // Adicionar item padrão
-            comboBoxCategoria.addItem("Selecione uma categoria");
-            
-            // Obter categorias do back-end através do controle
-            System.out.println("Solicitando categorias ao controle...");
-            List<String> categorias = ferramentaControle.obterCategorias();
-            
-            if (categorias != null && !categorias.isEmpty()) {
-                System.out.println("Categorias recebidas: " + categorias.size());
-                
-                // Adicionar categorias obtidas do back-end
-                for (String categoria : categorias) {
-                    System.out.println("Adicionando categoria: " + categoria);
-                    comboBoxCategoria.addItem(categoria);
-                }
-                
-                JOptionPane.showMessageDialog(this, 
-                    "Categorias carregadas com sucesso! Total: " + categorias.size(), 
-                    "Sucesso", 
-                    JOptionPane.INFORMATION_MESSAGE);
-                    
-            } else {
-                System.out.println("Lista de categorias vazia ou nula");
-                // Adicionar categorias padrão em caso de erro
-                adicionarCategoriasPadrao();
-                JOptionPane.showMessageDialog(this, 
-                    "Usando categorias padrão (back-end não disponível)", 
-                    "Aviso", 
-                    JOptionPane.WARNING_MESSAGE);
+        // Usar SwingWorker para não travar a interface
+        SwingWorker<List<Categoria>, Void> worker = new SwingWorker<List<Categoria>, Void>() {
+            @Override
+            protected List<Categoria> doInBackground() throws Exception {
+                System.out.println("Solicitando categorias ao controle...");
+                return ferramentaControle.obterCategorias();
             }
             
-        } catch (Exception e) {
-            System.err.println("Erro ao carregar categorias: " + e.getMessage());
-            e.printStackTrace();
-            
-            // Adicionar categorias padrão em caso de erro
-            adicionarCategoriasPadrao();
-            JOptionPane.showMessageDialog(this, 
-                "Erro ao carregar categorias. Usando categorias padrão.\nErro: " + e.getMessage(), 
-                "Erro", 
-                JOptionPane.ERROR_MESSAGE);
-        }
+            @Override
+            protected void done() {
+                try {
+                    // Limpar o comboBox primeiro
+                    comboBoxCategoria.removeAllItems();
+                    
+                    // Adicionar item vazio/nulo para seleção
+                    comboBoxCategoria.addItem(null);
+                    
+                    List<Categoria> categorias = get();
+                    
+                    if (categorias != null && !categorias.isEmpty()) {
+                        System.out.println("Categorias recebidas: " + categorias.size());
+                        
+                        // Adicionar categorias obtidas do back-end
+                        for (Categoria categoria : categorias) {
+                            System.out.println("Adicionando categoria: " + categoria.getNome());
+                            comboBoxCategoria.addItem(categoria);
+                        }
+                        
+                        // Selecionar o primeiro item (vazio)
+                        comboBoxCategoria.setSelectedIndex(0);
+                        
+                        JOptionPane.showMessageDialog(cadastrarFerramentas.this, 
+                            "Categorias carregadas com sucesso! Total: " + categorias.size(), 
+                            "Sucesso", 
+                            JOptionPane.INFORMATION_MESSAGE);
+                            
+                    } else {
+                        System.out.println("Lista de categorias vazia ou nula");
+                        // Adicionar categorias padrão em caso de erro
+                        adicionarCategoriasPadrao();
+                        JOptionPane.showMessageDialog(cadastrarFerramentas.this, 
+                            "Usando categorias padrão (back-end não disponível)", 
+                            "Aviso", 
+                            JOptionPane.WARNING_MESSAGE);
+                    }
+                    
+                } catch (Exception e) {
+                    System.err.println("Erro ao carregar categorias: " + e.getMessage());
+                    e.printStackTrace();
+                    
+                    // Adicionar categorias padrão em caso de erro
+                    adicionarCategoriasPadrao();
+                    JOptionPane.showMessageDialog(cadastrarFerramentas.this, 
+                        "Erro ao carregar categorias. Usando categorias padrão.\nErro: " + e.getMessage(), 
+                        "Erro", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+        
+        worker.execute();
     }
 
     private void adicionarCategoriasPadrao() {
-        String[] categoriasPadrao = {
-            "Elétrica", 
-            "Manual", 
-            "Hidráulica", 
-            "Pneumática", 
-            "Medição", 
-            "Corte", 
-            "Fixação", 
-            "Jardim", 
-            "Construção", 
-            "Outros"
+        // Criar objetos Categoria para as categorias padrão
+        Categoria[] categoriasPadrao = {
+            new Categoria(1L, "Elétrica"),
+            new Categoria(2L, "Manual"),
+            new Categoria(3L, "Hidráulica"),
+            new Categoria(4L, "Pneumática"),
+            new Categoria(5L, "Medição"),
+            new Categoria(6L, "Corte"),
+            new Categoria(7L, "Fixação"),
+            new Categoria(8L, "Jardim"),
+            new Categoria(9L, "Construção"),
+            new Categoria(10L, "Outros")
         };
         
-        for (String categoria : categoriasPadrao) {
+        for (Categoria categoria : categoriasPadrao) {
             comboBoxCategoria.addItem(categoria);
         }
     }
@@ -274,17 +311,51 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
                 return;
             }
             
+            // Validação de preço
+            if (txtCadastrarCustoF.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                    "Preço é obrigatório.",
+                    "Campo Obrigatório",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
             // Lógica de PREÇO (Troca vírgula por ponto)
             String precoTexto = txtCadastrarCustoF.getText().replace(",", ".");
-            double preco = Double.parseDouble(precoTexto);
+            double preco;
+            try {
+                preco = Double.parseDouble(precoTexto);
+                if (preco < 0) {
+                    JOptionPane.showMessageDialog(this,
+                        "Preço não pode ser negativo.",
+                        "Preço Inválido",
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this,
+                    "Preço inválido. Use números com ponto ou vírgula decimal.",
+                    "Preço Inválido",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             
             // Lógica para quantidades
-            int Quantidade_estoque = Integer.parseInt(txtQuantidade_estoque.getText());
-            int Quantidade_minima = Integer.parseInt(txtQuantidade_minima.getText());
-            int Quantidade_maxima = Integer.parseInt(txtQuantidade_maxima.getText());
+            int Quantidade_estoque, Quantidade_minima, Quantidade_maxima;
+            try {
+                Quantidade_estoque = Integer.parseInt(txtQuantidade_estoque.getText());
+                Quantidade_minima = Integer.parseInt(txtQuantidade_minima.getText());
+                Quantidade_maxima = Integer.parseInt(txtQuantidade_maxima.getText());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this,
+                    "Quantidades devem ser números inteiros.",
+                    "Quantidade Inválida",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             
             // Obter categoria selecionada
-            String categoria = (String) comboBoxCategoria.getSelectedItem();
+            Categoria categoriaSelecionada = (Categoria) comboBoxCategoria.getSelectedItem();
 
             // Validações
             if (nome.length() < 2) {
@@ -292,7 +363,7 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
                 return;
             }
             
-            if (categoria == null || categoria.equals("Selecione uma categoria")) {
+            if (categoriaSelecionada == null) {
                 JOptionPane.showMessageDialog(this, "Selecione uma categoria válida.");
                 return;
             }
@@ -330,19 +401,29 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
                 }
             }
 
-            // Passa os dados para o Controle (incluindo a categoria)
-            boolean sucesso = ferramentaControle.adicionarFerramenta(nome, marca, preco, Quantidade_estoque, Quantidade_minima, Quantidade_maxima, categoria);
+            // Passa os dados para o Controle (incluindo o objeto Categoria)
+            boolean sucesso = ferramentaControle.adicionarFerramenta(
+                nome, marca, preco, 
+                Quantidade_estoque, Quantidade_minima, Quantidade_maxima, 
+                categoriaSelecionada
+            );
 
             if (sucesso) {
-                String mensagemSucesso = "Ferramenta cadastrada com sucesso!\n";
-                mensagemSucesso += "Status do estoque: ";
+                DecimalFormat df = new DecimalFormat("#,##0.00");
+                String mensagemSucesso = "Ferramenta cadastrada com sucesso!\n\n";
+                mensagemSucesso += "Nome: " + nome + "\n";
+                mensagemSucesso += "Marca: " + marca + "\n";
+                mensagemSucesso += "Preço: R$ " + df.format(preco) + "\n";
+                mensagemSucesso += "Categoria: " + categoriaSelecionada.getNome() + "\n";
+                mensagemSucesso += "Estoque: " + Quantidade_estoque + " unidades\n";
                 
+                // Status do estoque
                 if (Quantidade_estoque <= 0) {
-                    mensagemSucesso += "FORA DE ESTOQUE";
+                    mensagemSucesso += "\nStatus: ❌ FORA DE ESTOQUE";
                 } else if (Quantidade_estoque <= Quantidade_minima) {
-                    mensagemSucesso += "ESTOQUE BAIXO";
+                    mensagemSucesso += "\nStatus: ⚠️ ESTOQUE BAIXO";
                 } else {
-                    mensagemSucesso += "EM ESTOQUE";
+                    mensagemSucesso += "\nStatus: ✅ EM ESTOQUE";
                 }
                 
                 JOptionPane.showMessageDialog(this, mensagemSucesso, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -377,12 +458,28 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
         txtQuantidade_estoque.setText("0");
         txtQuantidade_minima.setText("1");
         txtQuantidade_maxima.setText("100");
-        comboBoxCategoria.setSelectedIndex(0);
+        comboBoxCategoria.setSelectedIndex(0); // Seleciona o primeiro item (nulo)
         lblStatusEstoque.setText("Status: Aguardando dados...");
         lblStatusEstoque.setForeground(new java.awt.Color(100, 100, 100));
+        txtCadastrarNomeFerramenta.requestFocus(); // Foco no primeiro campo
     }
 
+    /**
+     * Método para testar a tela de cadastro
+     */
     public static void main(String args[]) {
+        // Usar try-with-resources para garantir que o look and feel seja configurado
+        try {
+            // Configurar o look and feel do sistema
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            
+            // Configurar melhor renderização de fontes
+            System.setProperty("awt.useSystemAAFontSettings", "on");
+            System.setProperty("swing.aatext", "true");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 new cadastrarFerramentas().setVisible(true);
@@ -397,21 +494,26 @@ public class cadastrarFerramentas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify                     
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JTextField txtCadastrarCustoF;
-    private javax.swing.JTextField txtCadastrarMarcaFerramenta;
-    private javax.swing.JTextField txtCadastrarNomeFerramenta;
-    private javax.swing.JTextField txtQuantidade_estoque;
-    private javax.swing.JTextField txtQuantidade_minima;
-    private javax.swing.JTextField txtQuantidade_maxima;
-    private javax.swing.JComboBox<String> comboBoxCategoria;
-   // private javax.swing.JLabel lblStatusEstoque;
-    // End of variables declaration                                
+    //private javax.swing.JButton jButton1;
+    //private javax.swing.JLabel jLabel1;
+    //private javax.swing.JLabel jLabel2;
+    //private javax.swing.JLabel jLabel3;
+    //private javax.swing.JLabel jLabel4;
+    //private javax.swing.JLabel jLabel5;
+    //private javax.swing.JLabel jLabel6;
+    //private javax.swing.JLabel jLabel7;
+    //private javax.swing.JTextField txtCadastrarCustoF;
+    //private javax.swing.JTextField txtCadastrarMarcaFerramenta;
+    //private javax.swing.JTextField txtCadastrarNomeFerramenta;
+    //private javax.swing.JTextField txtQuantidade_estoque;
+    //private javax.swing.JTextField txtQuantidade_minima;
+    //private javax.swing.JTextField txtQuantidade_maxima;
+    // End of variables declaration
+    
+    /**
+     * Método para recarregar categorias manualmente
+     */
+    public void recarregarCategorias() {
+        carregarCategorias();
+    }
 }

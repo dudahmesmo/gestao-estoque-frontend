@@ -13,6 +13,7 @@ import javax.swing.table.TableRowSorter;
 
 import Controle.FerramentasControle;
 import Modelo.Ferramentas;
+import Modelo.Categoria;
 
 public class gerenciarFerramentas extends javax.swing.JFrame {
 
@@ -144,13 +145,13 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
             for (Ferramentas f : lista) {
                 String statusEstoque = f.getStatusEstoque();
                 String resumoEstoque = f.getResumoEstoque();
-                String categoria = f.getCategoria() != null ? f.getCategoria() : "N/D"; // Pega Categoria
+                String categoriaNome = f.getCategoria() != null ? f.getCategoria().getNome() : "Sem Categoria"; // CORREÇÃO AQUI: usa getNome()
                 
                 model.addRow(new Object[]{
                     f.getId(), // 0: ID
                     f.getNome(), // 1: Nome
                     f.getMarca(), // 2: Marca
-                    categoria, // 3: Categoria 
+                    categoriaNome, // 3: Categoria - agora é o nome
                     String.format("R$ %.2f", f.getPreco()), // 4: Preço
                     statusEstoque, // 5: Status Estoque
                     resumoEstoque // 6: Detalhes do Estoque
@@ -405,13 +406,15 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         int idFerramenta = ferramenta.getId().intValue(); 
         String nomeFerramenta = ferramenta.getNome();
         String statusEstoque = ferramenta.getStatusEstoque();
+        String categoriaNome = ferramenta.getCategoria() != null ? ferramenta.getCategoria().getNome() : "Sem Categoria"; // CORREÇÃO AQUI
 
         String mensagemConfirmacao = String.format(
             "<html><b>Confirma exclusão da ferramenta?</b><br><br>"
             + "ID: %d<br>"
             + "Nome: %s<br>"
+            + "Categoria: %s<br>"
             + "Status: %s</html>",
-            idFerramenta, nomeFerramenta, statusEstoque
+            idFerramenta, nomeFerramenta, categoriaNome, statusEstoque
         );
 
         int confirm = JOptionPane.showConfirmDialog(this, 
@@ -454,12 +457,13 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
             StringBuilder mensagem = new StringBuilder();
             mensagem.append("<html><b>FERRAMENTAS COM ESTOQUE BAIXO:</b><br><br>");
             mensagem.append("<table border='0' cellpadding='3'>");
-            mensagem.append("<tr><th>Ferramenta</th><th>Estoque Atual</th><th>Mínimo</th><th>Status</th></tr>");
+            mensagem.append("<tr><th>Ferramenta</th><th>Categoria</th><th>Estoque Atual</th><th>Mínimo</th><th>Status</th></tr>");
             
             for (Ferramentas f : estoqueBaixo) {
+                String categoriaNome = f.getCategoria() != null ? f.getCategoria().getNome() : "Sem Categoria"; // CORREÇÃO AQUI
                 mensagem.append(String.format(
-                    "<tr><td>%s</td><td align='center'>%d</td><td align='center'>%d</td><td>%s</td></tr>",
-                    f.getNome(), f.getQuantidade_estoque(), f.getQuantidade_minima(), f.getStatusEstoque()
+                    "<tr><td>%s</td><td>%s</td><td align='center'>%d</td><td align='center'>%d</td><td>%s</td></tr>",
+                    f.getNome(), categoriaNome, f.getQuantidade_estoque(), f.getQuantidade_minima(), f.getStatusEstoque()
                 ));
             }
             mensagem.append("</table></html>");
@@ -566,7 +570,7 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify                     
+    // Variables declaration - do not modify                     
     private javax.swing.JTable TabelaFerramentas;
     private javax.swing.JButton autualizarBD;
     private javax.swing.JButton btnEstoqueBaixo;
@@ -574,6 +578,8 @@ public class gerenciarFerramentas extends javax.swing.JFrame {
     private javax.swing.JButton btnRelatorioEstoque;
     private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
-
-    // End of variables declaration                   
+    //private javax.swing.JLabel lblEstatisticas;
+    //private javax.swing.JPanel panelEstatisticas;
+    //private javax.swing.JTextField txtPesquisa;
+    // End of variables declaration                   
 }

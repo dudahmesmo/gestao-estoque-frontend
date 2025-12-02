@@ -1,6 +1,6 @@
 package Modelo;
 
-import java.text.DecimalFormat; 
+import java.text.DecimalFormat;
 
 public class Ferramentas {
 
@@ -8,44 +8,69 @@ public class Ferramentas {
     private String nome;
     private String marca;
     private double preco;
-    private Boolean disponivel = true; 
+    private Boolean disponivel = true;
     private double custoAquisicao;
-    private int Quantidade_estoque;
-    private int Quantidade_minima;
-    private int Quantidade_maxima;
-    private String categoria;
-    
+    private int quantidadeEstoque;
+    private int quantidadeMinima;
+    private int quantidadeMaxima;
+    private Categoria categoria; // AGORA É UM OBJETO CATEGORIA
 
     public Ferramentas() {}
 
-    public Ferramentas(String nome, String marca, double preco, int Quantidade_estoque, 
-                       int Quantidade_minima, int Quantidade_maxima, String categoria) {
+    // Construtor sem categoria (para compatibilidade)
+    public Ferramentas(String nome, String marca, double preco, int quantidadeEstoque,
+                       int quantidadeMinima, int quantidadeMaxima) {
         this.nome = nome;
         this.marca = marca;
         this.preco = preco;
-        this.Quantidade_estoque = Quantidade_estoque;
-        this.Quantidade_minima = Quantidade_minima;
-        this.Quantidade_maxima = Quantidade_maxima;
-        this.categoria = categoria; 
-        this.disponivel = Quantidade_estoque > 0;
+        this.quantidadeEstoque = quantidadeEstoque;
+        this.quantidadeMinima = quantidadeMinima;
+        this.quantidadeMaxima = quantidadeMaxima;
+        this.disponivel = quantidadeEstoque > 0;
     }
 
-    public Ferramentas(Long id, String nome, String marca, double preco, int Quantidade_estoque, 
-                       int Quantidade_minima, int Quantidade_maxima, String categoria) {
+    // Construtor com categoria como String (para compatibilidade)
+    public Ferramentas(String nome, String marca, double preco, int quantidadeEstoque,
+                       int quantidadeMinima, int quantidadeMaxima, String nomeCategoria) {
+        this.nome = nome;
+        this.marca = marca;
+        this.preco = preco;
+        this.quantidadeEstoque = quantidadeEstoque;
+        this.quantidadeMinima = quantidadeMinima;
+        this.quantidadeMaxima = quantidadeMaxima;
+        this.categoria = new Categoria(null, nomeCategoria); // Cria categoria com ID null
+        this.disponivel = quantidadeEstoque > 0;
+    }
+
+    // Construtor com objeto Categoria (RECOMENDADO)
+    public Ferramentas(String nome, String marca, double preco, int quantidadeEstoque,
+                       int quantidadeMinima, int quantidadeMaxima, Categoria categoria) {
+        this.nome = nome;
+        this.marca = marca;
+        this.preco = preco;
+        this.quantidadeEstoque = quantidadeEstoque;
+        this.quantidadeMinima = quantidadeMinima;
+        this.quantidadeMaxima = quantidadeMaxima;
+        this.categoria = categoria;
+        this.disponivel = quantidadeEstoque > 0;
+    }
+
+    // Construtor completo com ID
+    public Ferramentas(Long id, String nome, String marca, double preco, int quantidadeEstoque,
+                       int quantidadeMinima, int quantidadeMaxima, Categoria categoria) {
         this.id = id;
         this.nome = nome;
         this.marca = marca;
         this.preco = preco;
-        this.Quantidade_estoque = Quantidade_estoque;
-        this.Quantidade_minima = Quantidade_minima;
-        this.Quantidade_maxima = Quantidade_maxima;
+        this.quantidadeEstoque = quantidadeEstoque;
+        this.quantidadeMinima = quantidadeMinima;
+        this.quantidadeMaxima = quantidadeMaxima;
         this.categoria = categoria;
-        this.disponivel = Quantidade_estoque > 0;
+        this.disponivel = quantidadeEstoque > 0;
     }
-   
 
     // GETTERS E SETTERS
-    public Long getId() { return id; } 
+    public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getNome() { return nome; }
@@ -61,62 +86,94 @@ public class Ferramentas {
     public void setDisponivel(Boolean disponivel) { this.disponivel = disponivel; }
     
     public boolean isDisponivel() { 
-        return disponivel != null && disponivel && Quantidade_estoque > 0; 
+        return disponivel != null && disponivel && quantidadeEstoque > 0; 
     }
 
     public double getCustoAquisicao() { return custoAquisicao; }
     public void setCustoAquisicao(double custoAquisicao) { this.custoAquisicao = custoAquisicao; }
     
-    public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
+    // GETTERS E SETTERS PARA CATEGORIA (AGORA É OBJETO)
+    public Categoria getCategoria() { return categoria; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
     
-    public int getQuantidade_estoque() { return Quantidade_estoque; }
-    public void setQuantidade_estoque(int Quantidade_estoque) { 
-        this.Quantidade_estoque = Quantidade_estoque; 
+    // MÉTODOS AUXILIARES PARA CATEGORIA (para compatibilidade)
+    public String getNomeCategoria() {
+        return categoria != null ? categoria.getNome() : null;
+    }
+    
+    public Long getIdCategoria() {
+        return categoria != null ? categoria.getId() : null;
+    }
+    
+    // MÉTODO DE COMPATIBILIDADE (mantido para evitar quebras)
+    public void setCategoria(String nomeCategoria) {
+        this.categoria = new Categoria(null, nomeCategoria);
+    }
+    
+    // GETTERS E SETTERS PARA QUANTIDADES (com nomes padronizados em camelCase)
+    public int getQuantidadeEstoque() { return quantidadeEstoque; }
+    public void setQuantidadeEstoque(int quantidadeEstoque) { 
+        this.quantidadeEstoque = quantidadeEstoque; 
         // Atualiza automaticamente o status de disponibilidade
-        if (this.Quantidade_estoque <= 0) {
+        if (this.quantidadeEstoque <= 0) {
             this.disponivel = false;
         } else {
             this.disponivel = true;
         }
     }
     
-    public int getQuantidade_minima() { return Quantidade_minima; }
-    public void setQuantidade_minima(int Quantidade_minima) { 
-        this.Quantidade_minima = Quantidade_minima; 
+    public int getQuantidadeMinima() { return quantidadeMinima; }
+    public void setQuantidadeMinima(int quantidadeMinima) { 
+        this.quantidadeMinima = quantidadeMinima; 
     }
     
-    public int getQuantidade_maxima() { return Quantidade_maxima; }
-    public void setQuantidade_maxima(int Quantidade_maxima) { 
-        this.Quantidade_maxima = Quantidade_maxima; 
+    public int getQuantidadeMaxima() { return quantidadeMaxima; }
+    public void setQuantidadeMaxima(int quantidadeMaxima) { 
+        this.quantidadeMaxima = quantidadeMaxima; 
+    }
+    
+    // MÉTODOS DE COMPATIBILIDADE (mantendo os nomes antigos)
+    public int getQuantidade_estoque() { return quantidadeEstoque; }
+    public void setQuantidade_estoque(int quantidadeEstoque) { 
+        this.setQuantidadeEstoque(quantidadeEstoque);
+    }
+    
+    public int getQuantidade_minima() { return quantidadeMinima; }
+    public void setQuantidade_minima(int quantidadeMinima) { 
+        this.setQuantidadeMinima(quantidadeMinima);
+    }
+    
+    public int getQuantidade_maxima() { return quantidadeMaxima; }
+    public void setQuantidade_maxima(int quantidadeMaxima) { 
+        this.setQuantidadeMaxima(quantidadeMaxima);
     }
     
     // MÉTODO PARA VERIFICAR SE ESTÁ ABAIXO DO MÍNIMO
     public boolean isEstoqueBaixo() {
-        return Quantidade_estoque <= Quantidade_minima;
+        return quantidadeEstoque <= quantidadeMinima;
     }
     
     // MÉTODO PARA VERIFICAR SE ESTÁ ACIMA DO MÁXIMO
     public boolean isEstoqueExcedido() {
-        return Quantidade_estoque > Quantidade_maxima;
+        return quantidadeEstoque > quantidadeMaxima;
     }
     
     // MÉTODO PARA OBTER STATUS COMPLETO DO ESTOQUE
     public String getStatusEstoque() {
-        if (Quantidade_estoque <= 0) {
+        if (quantidadeEstoque <= 0) {
             return "FORA DE ESTOQUE";
         } else if (isEstoqueBaixo()) {
-            return "ESTOQUE BAIXO (" + Quantidade_estoque + " unidades)";
+            return "ESTOQUE BAIXO (" + quantidadeEstoque + " unidades)";
         } else if (isEstoqueExcedido()) {
-            return "ESTOQUE EXCEDIDO (" + Quantidade_estoque + " unidades)";
+            return "ESTOQUE EXCEDIDO (" + quantidadeEstoque + " unidades)";
         } else {
-            return Quantidade_estoque + " unidades (OK)";
+            return quantidadeEstoque + " unidades (OK)";
         }
     }
     
     // Método para obter resumo de estoque
     public String getResumoEstoque() {
-        return "Atual: " + Quantidade_estoque + " | Mín: " + Quantidade_minima + " | Máx: " + Quantidade_maxima;
+        return "Atual: " + quantidadeEstoque + " | Mín: " + quantidadeMinima + " | Máx: " + quantidadeMaxima;
     }
     
     // Getters longos para compatibilidade
@@ -129,13 +186,13 @@ public class Ferramentas {
         DecimalFormat df = new DecimalFormat("#.00");
         String status = this.getStatusEstoque();
         
-        String cat = this.categoria != null ? this.categoria : "Sem Categoria";
+        String cat = this.categoria != null ? this.categoria.getNome() : "Sem Categoria";
         return this.id + " - " + this.nome + " (" + this.marca + ") - " + cat + " - R$ " + df.format(this.preco) + " - " + status;
     }
     
     // Método para obter status simplificado (exibição rápida)
     public String getStatusSimples() {
-        if (Quantidade_estoque <= 0) {
+        if (quantidadeEstoque <= 0) {
             return "❌ FORA DE ESTOQUE";
         } else if (isEstoqueBaixo()) {
             return "⚠️ ESTOQUE BAIXO";
@@ -146,10 +203,69 @@ public class Ferramentas {
 
     // Método para obter status disponível
     public String getQuantidadeDisponivel() {
-        if (Quantidade_estoque <= 0) {
+        if (quantidadeEstoque <= 0) {
             return "Indisponível";
         } else {
-            return Quantidade_estoque + " unidades";
+            return quantidadeEstoque + " unidades";
         }
+    }
+    
+    // MÉTODOS PARA JSON (serialização)
+    public String toJson() {
+        StringBuilder json = new StringBuilder();
+        json.append("{");
+        json.append("\"id\":").append(id != null ? id : "null").append(",");
+        json.append("\"nome\":\"").append(nome != null ? nome : "").append("\",");
+        json.append("\"marca\":\"").append(marca != null ? marca : "").append("\",");
+        json.append("\"preco\":").append(preco).append(",");
+        json.append("\"quantidadeEstoque\":").append(quantidadeEstoque).append(",");
+        json.append("\"quantidadeMinima\":").append(quantidadeMinima).append(",");
+        json.append("\"quantidadeMaxima\":").append(quantidadeMaxima).append(",");
+        if (categoria != null) {
+            json.append("\"categoria\":").append(categoria.toJson()).append(",");
+        } else {
+            json.append("\"categoria\":null,");
+        }
+        json.append("\"disponivel\":").append(disponivel);
+        json.append("}");
+        return json.toString();
+    }
+    
+    // Versão alternativa do toJson que não depende do método toJson() da Categoria
+    public String toJsonCompleto() {
+        StringBuilder json = new StringBuilder();
+        json.append("{");
+        json.append("\"id\":").append(id != null ? id : "null").append(",");
+        json.append("\"nome\":\"").append(nome != null ? nome : "").append("\",");
+        json.append("\"marca\":\"").append(marca != null ? marca : "").append("\",");
+        json.append("\"preco\":").append(preco).append(",");
+        json.append("\"quantidadeEstoque\":").append(quantidadeEstoque).append(",");
+        json.append("\"quantidadeMinima\":").append(quantidadeMinima).append(",");
+        json.append("\"quantidadeMaxima\":").append(quantidadeMaxima).append(",");
+        if (categoria != null) {
+            json.append("\"categoria\": {");
+            json.append("\"id\":").append(categoria.getId() != null ? categoria.getId() : "null").append(",");
+            json.append("\"nome\":\"").append(categoria.getNome() != null ? categoria.getNome() : "").append("\"");
+            json.append("},");
+        } else {
+            json.append("\"categoria\":null,");
+        }
+        json.append("\"disponivel\":").append(disponivel);
+        json.append("}");
+        return json.toString();
+    }
+    
+    // Método para verificar igualdade (baseado no ID)
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Ferramentas that = (Ferramentas) obj;
+        return id != null && id.equals(that.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }
