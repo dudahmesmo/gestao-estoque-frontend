@@ -10,26 +10,41 @@ public class Ferramentas {
     private double preco;
     private Boolean disponivel = true; 
     private double custoAquisicao;
-    private int Quantidade_estoque;      // Quantidade atual em estoque
-    private int Quantidade_minima;       // Quantidade mínima necessária
-    private int Quantidade_maxima;       // Quantidade máxima permitida
-    private String categoria;            // NOVO CAMPO - Categoria da ferramenta
+    private int Quantidade_estoque;
+    private int Quantidade_minima;
+    private int Quantidade_maxima;
+    private String categoria;
+    
 
     public Ferramentas() {}
 
     public Ferramentas(String nome, String marca, double preco, int Quantidade_estoque, 
-                      int Quantidade_minima, int Quantidade_maxima, String categoria) {
+                       int Quantidade_minima, int Quantidade_maxima, String categoria) {
         this.nome = nome;
         this.marca = marca;
         this.preco = preco;
         this.Quantidade_estoque = Quantidade_estoque;
         this.Quantidade_minima = Quantidade_minima;
         this.Quantidade_maxima = Quantidade_maxima;
-        this.categoria = categoria; // NOVO CAMPO
+        this.categoria = categoria; 
         this.disponivel = Quantidade_estoque > 0;
     }
 
-    // MÉTODOS GETTERS E SETTERS
+    public Ferramentas(Long id, String nome, String marca, double preco, int Quantidade_estoque, 
+                       int Quantidade_minima, int Quantidade_maxima, String categoria) {
+        this.id = id;
+        this.nome = nome;
+        this.marca = marca;
+        this.preco = preco;
+        this.Quantidade_estoque = Quantidade_estoque;
+        this.Quantidade_minima = Quantidade_minima;
+        this.Quantidade_maxima = Quantidade_maxima;
+        this.categoria = categoria;
+        this.disponivel = Quantidade_estoque > 0;
+    }
+   
+
+    // GETTERS E SETTERS
     public Long getId() { return id; } 
     public void setId(Long id) { this.id = id; }
 
@@ -52,11 +67,9 @@ public class Ferramentas {
     public double getCustoAquisicao() { return custoAquisicao; }
     public void setCustoAquisicao(double custoAquisicao) { this.custoAquisicao = custoAquisicao; }
     
-    // NOVO GETTER E SETTER PARA CATEGORIA
     public String getCategoria() { return categoria; }
     public void setCategoria(String categoria) { this.categoria = categoria; }
     
-    // MÉTODOS PARA CONTROLE DE ESTOQUE
     public int getQuantidade_estoque() { return Quantidade_estoque; }
     public void setQuantidade_estoque(int Quantidade_estoque) { 
         this.Quantidade_estoque = Quantidade_estoque; 
@@ -101,7 +114,7 @@ public class Ferramentas {
         }
     }
     
-    // MÉTODO PARA OBTER RESUMO DO ESTOQUE
+    // Método para obter resumo de estoque
     public String getResumoEstoque() {
         return "Atual: " + Quantidade_estoque + " | Mín: " + Quantidade_minima + " | Máx: " + Quantidade_maxima;
     }
@@ -115,9 +128,12 @@ public class Ferramentas {
     public String toString() {
         DecimalFormat df = new DecimalFormat("#.00");
         String status = this.getStatusEstoque();
-        return this.id + " - " + this.nome + " (" + this.marca + ") - " + this.categoria + " - R$ " + df.format(this.preco) + " - " + status;
+        
+        String cat = this.categoria != null ? this.categoria : "Sem Categoria";
+        return this.id + " - " + this.nome + " (" + this.marca + ") - " + cat + " - R$ " + df.format(this.preco) + " - " + status;
     }
-        // MÉTODO PARA OBTER STATUS SIMPLIFICADO (para exibição rápida)
+    
+    // Método para obter status simplificado (exibição rápida)
     public String getStatusSimples() {
         if (Quantidade_estoque <= 0) {
             return "❌ FORA DE ESTOQUE";
@@ -128,7 +144,7 @@ public class Ferramentas {
         }
     }
 
-    // MÉTODO PARA OBTER QUANTIDADE DISPONÍVEL
+    // Método para obter status disponível
     public String getQuantidadeDisponivel() {
         if (Quantidade_estoque <= 0) {
             return "Indisponível";

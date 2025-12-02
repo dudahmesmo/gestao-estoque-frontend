@@ -1,4 +1,4 @@
-package visao;
+package Visao;
 
 import Controle.FerramentasControle;
 import Modelo.Ferramentas;
