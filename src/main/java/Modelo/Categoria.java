@@ -1,37 +1,34 @@
-package modelo;
+package Modelo;
 
 public class Categoria {
     private Long id;
     private String nome;
     
-    // Construtor vazio
     public Categoria() {}
     
-    // Construtor com parâmetros
     public Categoria(Long id, String nome) {
         this.id = id;
         this.nome = nome;
     }
     
-    // Getters e Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    public String getNome() {
-        return nome;
-    }
-    
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
     
     @Override
     public String toString() {
-        return nome; // Isso será útil para exibir em JComboBox
+        return nome != null ? nome : "";
+    }
+    
+    // Adicione este método toJson()
+    public String toJson() {
+        StringBuilder json = new StringBuilder();
+        json.append("{");
+        json.append("\"id\":").append(id != null ? id : "null").append(",");
+        json.append("\"nome\":\"").append(nome != null ? nome : "").append("\"");
+        json.append("}");
+        return json.toString();
     }
 }

@@ -267,22 +267,33 @@ public class ApiClient {
     }
 
     public List<Ferramentas> listarFerramentas() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/ferramentas"))
-                .header("Accept", "application/json")
-                .GET()
-                .build();
+        try {
+            System.out.println("Acessando: " + BASE_URL + "/ferramentas");
 
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/ferramentas"))
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
 
-        if (response.statusCode() != 200) {
-            throw new Exception("Falha ao listar ferramentas. Código: "
-                    + response.statusCode());
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Status: " + response.statusCode());
+            System.out.println("Resposta: " + response.body());
+
+            if (response.statusCode() == 200) {
+                Type tipoListaFerramentas = new TypeToken<List<Ferramentas>>() {}.getType();
+                List<Ferramentas> ferramentas = gson.fromJson(response.body(), tipoListaFerramentas);
+                System.out.println("Ferramentas desserializadas: " + (ferramentas != null ? ferramentas.size() : 0));
+                return ferramentas;
+            } else {
+                throw new Exception("Erro ao listar ferramentas. Código: " + response.statusCode());
+            }
+        } catch (Exception e) {
+            System.err.println("Erro em listarFerramentas: " + e.getMessage());
+            throw e;
         }
-
-        Type tipoListaFerramentas = new TypeToken<List<Ferramentas>>() {}.getType();
-        return gson.fromJson(response.body(), tipoListaFerramentas);
     }
 
     public void excluirFerramenta(int id) throws Exception {
