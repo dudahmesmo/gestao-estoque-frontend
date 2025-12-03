@@ -12,13 +12,13 @@ public class Ferramentas {
     private Boolean disponivel = true; 
     private double custoAquisicao;
     
-    @SerializedName("Quantidade_estoque") 
+    @SerializedName("quantidadeEstoque") 
     private int Quantidade_estoque;
     
-    @SerializedName("Quantidade_minima")
+    @SerializedName("quantidadeMinimaEstoque")
     private int Quantidade_minima;
     
-    @SerializedName("Quantidade_maxima")
+    @SerializedName("quantidadeMaximaEstoque")
     private int Quantidade_maxima;
     
     private String categoria;
