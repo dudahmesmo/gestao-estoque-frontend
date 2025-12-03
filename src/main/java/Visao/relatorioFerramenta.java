@@ -85,6 +85,7 @@ public class relatorioFerramenta extends javax.swing.JFrame {
                                 .addContainerGap(25, Short.MAX_VALUE))
         );
         pack();
+        setLocationRelativeTo(null); // Centralizar a janela
     }
 
     private void atualizarBanco() {
