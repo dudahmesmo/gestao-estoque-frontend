@@ -35,8 +35,8 @@ public class FerramentasControle {
             apiClient.cadastrarFerramenta(novaFerramenta);
             return true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Falha ao cadastrar: "
-                    + e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Falha ao cadastrar: " + e.getMessage());
             return false;
         }
     }
@@ -67,7 +67,6 @@ public class FerramentasControle {
      */
     public List<Ferramentas> listarFerramentas() {
         try {
-            // Garante o retorno direto do cliente.
             return apiClient.listarFerramentas();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Erro ao listar: "
@@ -109,11 +108,9 @@ public class FerramentasControle {
      */
     public List<Ferramentas> getFerramentasComEstoqueBaixo() {
         try {
-            // Chama a API e atribui o resultado à variável 'todas'
             List<Ferramentas> todas = apiClient.listarFerramentas();
 
             if (todas != null) {
-                // Necessário que o Modelo.Ferramentas tenha o isEstoqueBaixo()
                 return todas.stream()
                         .filter(Ferramentas::isEstoqueBaixo)
                         .toList();
@@ -130,20 +127,15 @@ public class FerramentasControle {
      */
     public List<Ferramentas> getFerramentasPorCategoria(String categoria) {
         try {
-            // Chama a API e atribui o resultado à variável 'todas'
             List<Ferramentas> todas = apiClient.listarFerramentas();
 
-            // Se a categoria *NÃO* for "Todas", então filtra.
-            if (todas != null && categoria != null
-                    && !categoria.equals("Todas")) {
+            if (todas != null && categoria != null && !categoria.equals("Todas")) {
 
                 return todas.stream()
-                        .filter(f -> f.getCategoria() != null
-                        && f.getCategoria().equals(categoria))
+                        .filter(f -> f.getCategoria() != null && f.getCategoria().equals(categoria))
                         .toList();
             }
 
-            // Se for "Todas" ou alguma condição falhar, retorna todas.
             return todas;
 
         } catch (Exception e) {
@@ -160,17 +152,13 @@ public class FerramentasControle {
         try {
             List<Ferramentas> todas = apiClient.listarFerramentas();
 
-            // Se o status *NÃO* for "Todos", então filtra.
-            if (todas != null && status != null
-                    && !status.equals("Todos")) {
+            if (todas != null && status != null && !status.equals("Todos")) {
 
                 return todas.stream()
-                        .filter(f
-                                -> f.getStatusEstoque().contains(status.toUpperCase()))
+                        .filter(f -> f.getStatusEstoque().contains(status.toUpperCase()))
                         .toList();
             }
 
-            // Se for "Todos" ou alguma condição falhar, retorna todas.
             return todas;
 
         } catch (Exception e) {
@@ -183,9 +171,6 @@ public class FerramentasControle {
     // Relatório de Produtos por Categoria
     /**
      * Busca o relatório da quantidade de produtos distintos por categoria.
-     *
-     * @return List<Object[]> onde Object[] = [String nomeCategoria, Number
-     * quantidade]
      */
     public List<Object[]> getQuantidadeProdutosPorCategoria() {
         try {

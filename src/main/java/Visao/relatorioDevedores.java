@@ -74,6 +74,7 @@ public class relatorioDevedores extends javax.swing.JFrame {
                                 .addGap(25, 25, 25))
         );
         pack();
+        setLocationRelativeTo(null); // Centralizar a janela
     }
 
     private void atualizarBanco() {

@@ -72,6 +72,7 @@ public class relatorioEmprestimoAtivo extends javax.swing.JFrame {
                                 .addContainerGap(76, Short.MAX_VALUE))
         );
         pack();
+        setLocationRelativeTo(null); // Centralizar a janela
     }
 
     private void atualizarBanco() {
