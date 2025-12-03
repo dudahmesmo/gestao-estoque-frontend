@@ -22,7 +22,6 @@ public class Categoria {
         return nome != null ? nome : "";
     }
     
-    // Adicione este método toJson()
     public String toJson() {
         StringBuilder json = new StringBuilder();
         json.append("{");

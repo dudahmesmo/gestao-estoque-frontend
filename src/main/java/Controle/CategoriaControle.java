@@ -59,7 +59,7 @@ public class CategoriaControle {
     }
 
     /**
-     * Cadastrar nova categoria
+     * Cadastrar nova categoria (sem descrição)
      */
     public boolean cadastrarCategoria(String nome) {
         try {
@@ -71,7 +71,10 @@ public class CategoriaControle {
                 return false;
             }
             
-            apiClient.cadastrarCategoria(nome);
+            // Usando o ApiClient para cadastrar, passando apenas o nome
+            // O id é gerado pelo backend
+            Categoria novaCategoria = new Categoria(null, nome);
+            Categoria categoriaSalva = apiClient.cadastrarCategoria(novaCategoria);
             
             // Limpa cache para forçar atualização
             cacheCategorias = null;
@@ -210,17 +213,37 @@ public class CategoriaControle {
     
     /**
      * Método para atualizar categoria
-     * (Se seu backend tiver endpoint PUT para categorias)
      */
     public boolean atualizarCategoria(Categoria categoria) {
-        // Este método depende do backend ter um endpoint de atualização
-        // Se não tiver, você pode implementar aqui
-        
-        JOptionPane.showMessageDialog(null,
-            "Funcionalidade de atualização de categoria não implementada.\n" +
-            "Verifique se o backend tem endpoint PUT para categorias.",
-            "Aviso",
-            JOptionPane.WARNING_MESSAGE);
-        return false;
+        try {
+            if (categoria.getId() == null) {
+                JOptionPane.showMessageDialog(null,
+                    "ID da categoria é obrigatório para atualização!",
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            
+            if (categoria.getNome() == null || categoria.getNome().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                    "Nome da categoria é obrigatório!",
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            
+            // Usando o ApiClient para atualizar
+            apiClient.atualizarCategoria(categoria.getId(), categoria);
+            
+            // Limpa cache
+            cacheCategorias = null;
+            
+            JOptionPane.showMessageDialog(null,
+                "Categoria atualizada com sucesso!",
+                "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            return true;
+            
+        } catch (Exception e) {
+            exibirErro("Erro ao atualizar categoria", e);
+            return false;
+        }
     }
 }
