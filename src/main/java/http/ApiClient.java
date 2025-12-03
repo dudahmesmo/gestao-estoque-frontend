@@ -132,7 +132,7 @@ public class ApiClient {
     }
 
     // CADASTRAR CATEGORIA
-    public void cadastrarCategoria(String nome, String descricao)
+    public void cadastrarCategoria(String nome)
             throws Exception {
         Categoria categoria = new Categoria(null, nome);
         String jsonBody = gson.toJson(categoria);

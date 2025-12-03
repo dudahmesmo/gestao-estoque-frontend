@@ -61,7 +61,7 @@ public class CategoriaControle {
     /**
      * Cadastrar nova categoria
      */
-    public boolean cadastrarCategoria(String nome, String descricao) {
+    public boolean cadastrarCategoria(String nome) {
         try {
             // Validação básica
             if (nome == null || nome.trim().isEmpty()) {
@@ -71,7 +71,7 @@ public class CategoriaControle {
                 return false;
             }
             
-            apiClient.cadastrarCategoria(nome, descricao);
+            apiClient.cadastrarCategoria(nome);
             
             // Limpa cache para forçar atualização
             cacheCategorias = null;

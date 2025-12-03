@@ -118,16 +118,17 @@ public class FerramentasControle {
     /**
      * Listar todas as ferramentas.
      */
+ 
     public List<Ferramentas> listarFerramentas() {
         try {
+            System.out.println("Chamando apiClient.listarFerramentas()...");
             List<Ferramentas> ferramentas = apiClient.listarFerramentas();
-            if (ferramentas == null) {
-                throw new Exception("Nenhuma ferramenta retornada");
-            }
+            System.out.println("Ferramentas retornadas: " + (ferramentas != null ? ferramentas.size() : "null"));
             return ferramentas;
         } catch (Exception e) {
+            System.err.println("Erro em listarFerramentas no controle: " + e.getMessage());
             exibirErro("Erro ao listar ferramentas", e);
-            return new ArrayList<>();
+            return new ArrayList<>(); // Retorna lista vazia em vez de null
         }
     }
 
