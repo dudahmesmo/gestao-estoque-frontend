@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -33,24 +34,37 @@ public class ApiClient {
 
     // MÉTODOS DE CATEGORIA
     public List<String> obterCategorias() throws Exception {
+    try {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/api/categorias/nomes"))
-                .GET()
-                .build();
+            .uri(URI.create(BASE_URL + "/categorias"))
+            .GET()
+            .header("Accept", "application/json")
+            .build();
 
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, 
+            HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200) {
-            throw new Exception("Falha ao obter categorias. Código: "
-                    + response.statusCode());
+        System.out.println("Status Code: " + response.statusCode());
+        
+        if (response.statusCode() == 200) {
+            Type listType = new TypeToken<List<Map<String, Object>>>(){}.getType();
+            List<Map<String, Object>> categorias = gson.fromJson(response.body(), listType);
+            
+            List<String> nomes = new ArrayList<>();
+            for (Map<String, Object> cat : categorias) {
+                nomes.add((String) cat.get("nome"));
+            }
+            return nomes;
+        } else {
+            throw new Exception("Falha ao obter categorias. Código: " + 
+                response.statusCode());
         }
-
-        Type tipolistaStrings = new TypeToken<List<String>>() {
-        }.getType();
-
-        return gson.fromJson(response.body(), tipolistaStrings);
+    } catch (Exception e) {
+        System.err.println("Erro ao buscar categorias: " + e.getMessage());
+        e.printStackTrace();
+        throw e;
     }
+}
     
     public void cadastrarCategoria(String nome, String descricao) throws Exception {
         Map<String, String> requestBody = new HashMap<>();
